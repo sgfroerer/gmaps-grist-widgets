@@ -16,12 +16,18 @@
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     <script type="text/javascript">
-      // Check if we were redirected from 404.html
+      // Part 1: Handle the 404 redirect from sessionStorage.
       const redirect = sessionStorage.redirect;
-      delete sessionStorage.redirect; // Clean up sessionStorage
+      delete sessionStorage.redirect;
       if (redirect && redirect !== window.location.pathname) {
-        // Use the History API to "silently" move to the correct URL
         history.replaceState(null, null, redirect);
+      }
+
+      // Part 2: If the current path ends with /index.html, remove it.
+      // This ensures the router sees a clean path.
+      if (window.location.pathname.endsWith('/index.html')) {
+        const newPath = window.location.pathname.slice(0, -'index.html'.length);
+        history.replaceState(null, null, newPath || '/');
       }
     </script>
     <script type="module" crossorigin src="/gmaps-grist-widgets/Tenants/assets/index-R8C2fhDY.js"></script>
