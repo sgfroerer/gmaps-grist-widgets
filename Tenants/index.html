@@ -15,8 +15,17 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@lovable_dev" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-    <script type="module" crossorigin src="./assets/index-R8C2fhDY.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BFOFyhe1.css">
+    <script type="text/javascript">
+      // Check if we were redirected from 404.html
+      const redirect = sessionStorage.redirect;
+      delete sessionStorage.redirect; // Clean up sessionStorage
+      if (redirect && redirect !== window.location.pathname) {
+        // Use the History API to "silently" move to the correct URL
+        history.replaceState(null, null, redirect);
+      }
+    </script>
+    <script type="module" crossorigin src="/gmaps-grist-widgets/Tenants/assets/index-R8C2fhDY.js"></script>
+    <link rel="stylesheet" crossorigin href="/gmaps-grist-widgets/Tenants/assets/index-BFOFyhe1.css">
   </head>
 
   <body>
