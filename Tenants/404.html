@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="0; URL=./index.html">
+    <title>404 Not Found</title>
+    <script type="text/javascript">
+      // When a 404 occurs, GitHub Pages serves this file.
+      // We store the path the user was trying to access in sessionStorage.
+      sessionStorage.redirect = window.location.pathname;
+
+      // Then we redirect the user to the root of the Tenants application.
+      // The index.html file will then read the path from sessionStorage and
+      // use the History API to restore the correct URL without a page reload.
+      window.location.href = '/gmaps-grist-widgets/Tenants/';
+    </script>
   </head>
   <body>
   </body>
