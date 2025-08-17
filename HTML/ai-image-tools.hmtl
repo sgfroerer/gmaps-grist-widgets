@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free AI Image Tools Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 25px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .intro-text {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            font-size: 1.1rem;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .tool-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header {
+            padding: 25px 25px 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .tool-name {
+            font-size: 1.7rem;
+            font-weight: 600;
+        }
+        
+        .card-image {
+            height: 220px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .card-content {
+            padding: 25px;
+            flex-grow: 1;
+        }
+        
+        .card-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .card-content p {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 1.05rem;
+        }
+        
+        .features {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #e0e6ed;
+        }
+        
+        .features li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .features i {
+            color: #3498db;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(120deg, #3498db, #2c3e50);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+            font-size: 1rem;
+            border-top: 1px solid #e0e6ed;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-header {
+                padding: 20px;
+            }
+            
+            .tool-name {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Free AI Image Tools Gallery</h1>
+            <p class="subtitle">Discover the best free AI-powered tools for image editing and creation</p>
+            <p class="intro-text">Perfectly designed for easy viewing on iPad or computer. Explore these powerful tools with big visual components and clear descriptions.</p>
+        </header>
+        
+        <div class="tools-grid">
+            <!-- ChatGPT Card -->
+            <div class="tool-card">
+                <div class="card-header">
+                    <div class="logo" style="background: linear-gradient(135deg, #10a37f, #1a7f64);">
+                        <i class="fa-brands fa-android"></i>
+                    </div>
+                    <h2 class="tool-name">ChatGPT with DALL·E</h2>
+                </div>
+                <div class="card-image" style="background: linear-gradient(45deg, #d6f0e0, #10a37f);"></div>
+                <div class="card-content">
+                    <h3>AI-Powered Image Generation & Editing</h3>
+                    <p>Create stunning images from text descriptions or edit existing images with natural language prompts. ChatGPT with DALL·E integration makes visual creation accessible to everyone.</p>
+                    
+                    <div class="features">
+                        <h4>Best For:</h4>
+                        <ul>
+                            <li><i class="fa-solid fa-paintbrush"></i> Generating images from text descriptions</li>
+                            <li><i class="fa-solid fa-wand-magic-sparkles"></i> Editing existing images with text prompts</li>
+                            <li><i class="fa-solid fa-repeat"></i> Creating variations of existing images</li>
+                            <li><i class="fa-solid fa-expand"></i> Expanding images beyond original borders</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="https://chat.openai.com/" target="_blank" class="btn">Try ChatGPT</a>
+                </div>
+            </div>
+            
+            <!-- Google's Whisk Card -->
+            <div class="tool-card">
+                <div class="card-header">
+                    <div class="logo" style="background: linear-gradient(135deg, #4285f4, #34a853);">
+                        <i class="fa-brands fa-google"></i>
+                    </div>
+                    <h2 class="tool-name">Google's Whisk</h2>
+                </div>
+                <div class="card-image" style="background: linear-gradient(45deg, #e3f0ff, #4285f4);"></div>
+                <div class="card-content">
+                    <h3>Subject & Background Composition</h3>
+                    <p>Upload a subject image (like a person) and a background image to create seamless compositions. Whisk uses AI to perfectly blend elements for professional results.</p>
+                    
+                    <div class="features">
+                        <h4>Best For:</h4>
+                        <ul>
+                            <li><i class="fa-solid fa-user"></i> Isolating subjects from photos</li>
+                            <li><i class="fa-solid fa-mountain-sun"></i> Placing subjects on new backgrounds</li>
+                            <li><i class="fa-solid fa-palette"></i> Style transfer between images</li>
+                            <li><i class="fa-solid fa-shuffle"></i> Mixing elements from multiple images</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="https://labs.google/" target="_blank" class="btn">Explore Whisk</a>
+                </div>
+            </div>
+            
+            <!-- Canva Magic Studio Card -->
+            <div class="tool-card">
+                <div class="card-header">
+                    <div class="logo" style="background: linear-gradient(135deg, #2ab4fe, #0c6efc);">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h2 class="tool-name">Canva Magic Studio</h2>
+                </div>
+                <div class="card-image" style="background: linear-gradient(45deg, #d8f0ff, #2ab4fe);"></div>
+                <div class="card-content">
+                    <h3>All-in-One Design & Editing</h3>
+                    <p>Create professional designs with AI-powered tools. Magic Studio offers background removal, image generation, and smart editing features for stunning visuals.</p>
+                    
+                    <div class="features">
+                        <h4>Best For:</h4>
+                        <ul>
+                            <li><i class="fa-solid fa-object-ungroup"></i> Background removal</li>
+                            <li><i class="fa-solid fa-image"></i> AI image generation</li>
+                            <li><i class="fa-solid fa-font"></i> Text-to-image creation</li>
+                            <li><i class="fa-solid fa-crop"></i> Smart photo editing</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="https://www.canva.com/magic-studio/" target="_blank" class="btn">Use Magic Studio</a>
+                </div>
+            </div>
+            
+            <!-- Adobe Firefly Card -->
+            <div class="tool-card">
+                <div class="card-header">
+                    <div class="logo" style="background: linear-gradient(135deg, #ff3a00, #ff00a0);">
+                        <i class="fa-brands fa-adobe"></i>
+                    </div>
+                    <h2 class="tool-name">Adobe Firefly</h2>
+                </div>
+                <div class="card-image" style="background: linear-gradient(45deg, #ffe8e0, #ff3a00);"></div>
+                <div class="card-content">
+                    <h3>Professional-Grade AI Imaging</h3>
+                    <p>Adobe's generative AI tool for creating high-quality images, text effects, and stunning color variations. Integrates with Photoshop for seamless workflows.</p>
+                    
+                    <div class="features">
+                        <h4>Best For:</h4>
+                        <ul>
+                            <li><i class="fa-solid fa-fill-drip"></i> Generating color variations</li>
+                            <li><i class="fa-solid fa-pen-fancy"></i> Creating custom text effects</li>
+                            <li><i class="fa-solid fa-vector-square"></i> Vector recoloring</li>
+                            <li><i class="fa-solid fa-layer-group"></i> Professional photo editing</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="https://www.adobe.com/sensei/generative-ai/firefly.html" target="_blank" class="btn">Try Firefly</a>
+                </div>
+            </div>
+            
+            <!-- Bing Image Creator Card -->
+            <div class="tool-card">
+                <div class="card-header">
+                    <div class="logo" style="background: linear-gradient(135deg, #0067b8, #00bcf2);">
+                        <i class="fa-brands fa-microsoft"></i>
+                    </div>
+                    <h2 class="tool-name">Bing Image Creator</h2>
+                </div>
+                <div class="card-image" style="background: linear-gradient(45deg, #d9f0ff, #0067b8);"></div>
+                <div class="card-content">
+                    <h3>Text-to-Image Generation</h3>
+                    <p>Powered by DALL·E, Bing Image Creator turns your ideas into images. Describe what you want to see and get multiple visual options in seconds.</p>
+                    
+                    <div class="features">
+                        <h4>Best For:</h4>
+                        <ul>
+                            <li><i class="fa-solid fa-keyboard"></i> Creating images from text prompts</li>
+                            <li><i class="fa-solid fa-lightbulb"></i> Brainstorming visual ideas</li>
+                            <li><i class="fa-solid fa-images"></i> Generating multiple variations</li>
+                            <li><i class="fa-solid fa-rocket"></i> Quick concept visualization</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="https://www.bing.com/images/create" target="_blank" class="btn">Create Images</a>
+                </div>
+            </div>
+            
+            <!-- Leonardo.AI Card -->
+            <div class="tool-card">
+                <div class="card-header">
+                    <div class="logo" style="background: linear-gradient(135deg, #8a2be2, #4b0082);">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <h2 class="tool-name">Leonardo.AI</h2>
+                </div>
+                <div class="card-image" style="background: linear-gradient(45deg, #e8dfff, #8a2be2);"></div>
+                <div class="card-content">
+                    <h3>Advanced AI Canvas & Editing</h3>
+                    <p>Create and edit images with precision using an intuitive canvas. Generate assets, modify existing images, and train custom models with this powerful platform.</p>
+                    
+                    <div class="features">
+                        <h4>Best For:</h4>
+                        <ul>
+                            <li><i class="fa-solid fa-draw-polygon"></i> Canvas-based image editing</li>
+                            <li><i class="fa-solid fa-cube"></i> Generating game assets</li>
+                            <li><i class="fa-solid fa-graduation-cap"></i> Training custom models</li>
+                            <li><i class="fa-solid fa-sliders"></i> Precise image control</li>
+                        </ul>
+                    </div>
+                    
+                    <a href="https://leonardo.ai/" target="_blank" class="btn">Explore Leonardo</a>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Designed for easy viewing on iPad and desktop • All tools featured offer free tiers or free access</p>
+            <p>Show your mom the amazing world of AI image editing!</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Simple animation for the cards when they come into view
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.tool-card');
+            
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            });
+            
+            setTimeout(() => {
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 200 * index);
+                });
+            }, 300);
+            
+            // Button hover effect enhancement
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.background = 'linear-gradient(120deg, #2c3e50, #3498db)';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.background = 'linear-gradient(120deg, #3498db, #2c3e50)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
