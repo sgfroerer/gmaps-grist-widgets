@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Modern Image Viewer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Image Carousel</title>
   <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
@@ -17,11 +18,13 @@
     body {
       font-family: 'DM Sans', sans-serif;
       background-color: #f8f9fa;
-      overflow: hidden; /* Prevent scrollbars */
+      overflow: hidden;
+      padding: 8px;
     }
 
     .container-fluid {
-      padding: 0; /* Remove padding */
+      padding: 0;
+      max-width: 100%;
     }
 
     /* Compact Button Layout */
@@ -29,8 +32,9 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      margin-bottom: 1px; /* Reduced margin */
-      padding: 4px; /* Minimal padding */
+      margin-bottom: 8px;
+      padding: 4px;
+      flex-wrap: wrap;
     }
 
     .button-group {
@@ -40,24 +44,25 @@
 
     /* Modern Button Styling */
     .action-btn {
-      height: 25px;
-      min-width: 40px;
-      padding: 0 12px;
+      height: 32px;
+      min-width: 32px;
+      padding: 0 8px;
       border: none;
       border-radius: 8px;
       background: rgba(0, 0, 0, 0.05);
       color: #4f46e5;
-      font-size: 12px;
+      font-size: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       transition: all 0.2s;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      text-decoration: none;
     }
 
     .action-btn:hover {
-      background: rgba(0, 0, 0, 0.1);
+      background: rgba(79, 70, 229, 0.1);
       transform: translateY(-1px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
     }
@@ -65,10 +70,13 @@
     .copy-btn {
       flex-grow: 1;
       background: rgba(129, 214, 129, 0.8);
-      font-size: 16px;
-      color: black;
+      font-size: 14px;
+      color: #065f46;
       font-weight: 500;
       max-width: 300px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .copy-btn:hover {
@@ -76,68 +84,153 @@
     }
 
     /* Image Carousel */
-    .cards {
+    .carousel-wrapper {
       position: relative;
-      width: 100%; /* Full width of the container */
-      height: 120px; /* Reduced height */
+      width: 100%;
+      height: 120px;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #e5e7eb;
+    }
+
+    .cards-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
       display: flex;
-      justify-content: center; /* Center images horizontally */
-      align-items: center; /* Center images vertically */
+      justify-content: center;
+      align-items: center;
     }
 
     .card {
       position: absolute;
-      width: 60%; /* Width of each image */
-      height: 100%; /* Height of each image */
-      transition: transform 0.4s ease, opacity 0.4s ease;
+      width: 60%;
+      height: 100%;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.5s ease, z-index 0.5s;
       cursor: pointer;
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .card img {
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Maintain aspect ratio */
+      object-fit: cover;
+      border-radius: 10px;
+      transition: opacity 0.3s ease;
+    }
+
+    .card-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f3f4f6;
+      color: #9ca3af;
+      font-size: 14px;
       border-radius: 10px;
     }
 
-    input[type="radio"] {
-      display: none;
+    .card-placeholder i {
+      font-size: 24px;
+      margin-bottom: 8px;
     }
 
-    #item-1:checked ~ .cards #image-3,
-    #item-2:checked ~ .cards #image-1,
-    #item-3:checked ~ .cards #image-2 {
-      transform: translateX(-40%) scale(0.8);
-      opacity: 0.4;
-      z-index: 0;
+    /* Navigation Arrows */
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px;
+      z-index: 10;
     }
 
-    #item-1:checked ~ .cards #image-2,
-    #item-2:checked ~ .cards #image-3,
-    #item-3:checked ~ .cards #image-1 {
-      transform: translateX(40%) scale(0.8);
-      opacity: 0.4;
-      z-index: 0;
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.8);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: all 0.2s;
+      z-index: 5;
     }
 
-    #item-1:checked ~ .cards #image-1,
-    #item-2:checked ~ .cards #image-2,
-    #item-3:checked ~ .cards #image-3 {
-      transform: translateX(0) scale(1);
-      opacity: 1;
-      z-index: 1;
+    .nav-btn:hover {
+      background: white;
+      transform: scale(1.1);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Indicators */
+    .carousel-indicators {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 5;
+    }
+
+    .indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .indicator.active {
+      background: white;
+      transform: scale(1.2);
     }
 
     /* Error Message */
     #error {
-      color: red;
+      color: #ef4444;
       font-size: 12px;
       text-align: center;
       margin-top: 5px;
       display: none;
+      padding: 4px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 576px) {
+      .controls-wrapper {
+        gap: 4px;
+        padding: 2px;
+      }
+      
+      .action-btn {
+        height: 28px;
+        min-width: 28px;
+        padding: 0 6px;
+        font-size: 12px;
+      }
+      
+      .copy-btn {
+        font-size: 12px;
+      }
     }
   </style>
 </head>
@@ -149,7 +242,7 @@
         <a id="county" class="action-btn" href="#" aria-label="County">🔍</a>
         <a id="gis" class="action-btn" href="#" aria-label="GIS">🌎</a>
       </div>
-      <button id="copy" class="action-btn copy-btn" aria-label="Copy">📋</button>
+      <button id="copy" class="action-btn copy-btn" aria-label="Copy">📋 Copy Text</button>
       <div class="button-group">
         <a id="street-view" class="action-btn" href="#" aria-label="Street View">🛣️</a>
         <a id="co-star" class="action-btn" href="#" aria-label="CoStar">🏢</a>
@@ -157,25 +250,269 @@
     </div>
 
     <!-- Image Carousel -->
-    <input type="radio" name="slider" id="item-1" checked>
-    <input type="radio" name="slider" id="item-2">
-    <input type="radio" name="slider" id="item-3">
-    <div class="cards">
-      <label class="card" for="item-1" id="image-1">
-        <img src="" alt="Property Image">
-      </label>
-      <label class="card" for="item-2" id="image-2">
-        <img src="" alt="Property Image">
-      </label>
-      <label class="card" for="item-3" id="image-3">
-        <img src="" alt="Property Image">
-      </label>
+    <div class="carousel-wrapper">
+      <div class="cards-container" id="cards-container">
+        <!-- Cards will be generated dynamically -->
+      </div>
+      
+      <div class="carousel-nav">
+        <button class="nav-btn" id="prev-btn" aria-label="Previous image">◀</button>
+        <button class="nav-btn" id="next-btn" aria-label="Next image">▶</button>
+      </div>
+      
+      <div class="carousel-indicators" id="carousel-indicators">
+        <!-- Indicators will be generated dynamically -->
+      </div>
     </div>
 
     <!-- Error Message -->
     <div id="error"></div>
   </div>
+  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="script.js"></script>
-  </body>
+  <script>
+    let links = {
+      county: '',
+      streetView: '',
+      coStar: '',
+      gis: '',
+      copy: ''
+    };
+
+    let imageUrls = [];
+    let currentIndex = 0;
+    let autoShuffleInterval;
+
+    function updateLinks() {
+      document.getElementById('county').href = links.county || '#';
+      document.getElementById('street-view').href = links.streetView || '#';
+      document.getElementById('co-star').href = links.coStar || '#';
+      document.getElementById('gis').href = links.gis || '#';
+    }
+
+    function copyText() {
+      const textToCopy = links.copy;
+      if (textToCopy) {
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = textToCopy;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        tempTextArea.setSelectionRange(0, 99999);
+        try {
+          document.execCommand('copy');
+          const copyBtn = document.getElementById('copy');
+          copyBtn.innerHTML = "✅ Copied!";
+          setTimeout(() => copyBtn.innerHTML = "📋 Copy Text", 2000);
+        } catch (err) {
+          console.error("Clipboard access denied.", err);
+          showError("Clipboard access denied.");
+        }
+        document.body.removeChild(tempTextArea);
+      } else {
+        showError("No text available to copy.");
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error');
+      if (!msg) {
+        el.style.display = 'none';
+      } else {
+        el.innerText = msg;
+        el.style.display = 'block';
+      }
+    }
+
+    function renderCarousel() {
+      const container = document.getElementById('cards-container');
+      const indicatorsContainer = document.getElementById('carousel-indicators');
+      
+      // Clear existing content
+      container.innerHTML = '';
+      indicatorsContainer.innerHTML = '';
+      
+      if (imageUrls.length === 0) {
+        // Show placeholder when no images
+        const placeholder = document.createElement('div');
+        placeholder.className = 'card-placeholder';
+        placeholder.innerHTML = '<div><i>🖼️</i><div>No images available</div></div>';
+        container.appendChild(placeholder);
+        return;
+      }
+      
+      // Create cards for each image
+      imageUrls.forEach((url, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.index = index;
+        
+        if (url) {
+          const img = document.createElement('img');
+          img.src = url;
+          img.alt = `Property Image ${index + 1}`;
+          img.onerror = function() {
+            this.parentElement.innerHTML = '<div class="card-placeholder"><i>⚠️</i><div>Image failed to load</div></div>';
+          };
+          card.appendChild(img);
+        } else {
+          const placeholder = document.createElement('div');
+          placeholder.className = 'card-placeholder';
+          placeholder.innerHTML = '<div><i>🖼️</i><div>No image</div></div>';
+          card.appendChild(placeholder);
+        }
+        
+        container.appendChild(card);
+        
+        // Create indicators
+        const indicator = document.createElement('div');
+        indicator.className = 'indicator';
+        indicator.dataset.index = index;
+        indicator.addEventListener('click', () => goToSlide(index));
+        indicatorsContainer.appendChild(indicator);
+      });
+      
+      // Update carousel state
+      updateCarousel();
+    }
+
+    function updateCarousel() {
+      const cards = document.querySelectorAll('.card');
+      const indicators = document.querySelectorAll('.indicator');
+      
+      cards.forEach((card, index) => {
+        const offset = index - currentIndex;
+        const absOffset = Math.abs(offset);
+        
+        // Reset all styles
+        card.style.transform = '';
+        card.style.opacity = '';
+        card.style.zIndex = '';
+        
+        if (offset === 0) {
+          // Active card
+          card.style.transform = 'translateX(0) scale(1)';
+          card.style.opacity = '1';
+          card.style.zIndex = '3';
+        } else if (offset === 1 || offset === -cards.length + 1) {
+          // Next card
+          card.style.transform = 'translateX(40%) scale(0.8)';
+          card.style.opacity = '0.6';
+          card.style.zIndex = '2';
+        } else if (offset === -1 || offset === cards.length - 1) {
+          // Previous card
+          card.style.transform = 'translateX(-40%) scale(0.8)';
+          card.style.opacity = '0.6';
+          card.style.zIndex = '2';
+        } else {
+          // Hidden cards
+          card.style.transform = 'translateX(0) scale(0.6)';
+          card.style.opacity = '0.3';
+          card.style.zIndex = '1';
+        }
+      });
+      
+      // Update indicators
+      indicators.forEach((indicator, index) => {
+        if (index === currentIndex) {
+          indicator.classList.add('active');
+        } else {
+          indicator.classList.remove('active');
+        }
+      });
+      
+      // Update navigation buttons
+      document.getElementById('prev-btn').disabled = imageUrls.length <= 1;
+      document.getElementById('next-btn').disabled = imageUrls.length <= 1;
+    }
+
+    function goToSlide(index) {
+      currentIndex = index;
+      updateCarousel();
+    }
+
+    function nextSlide() {
+      if (imageUrls.length > 0) {
+        currentIndex = (currentIndex + 1) % imageUrls.length;
+        updateCarousel();
+      }
+    }
+
+    function prevSlide() {
+      if (imageUrls.length > 0) {
+        currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
+        updateCarousel();
+      }
+    }
+
+    // Grist integration
+    grist.ready({
+      columns: ["County", "Street_View", "CoStar", "GIS", "Copy", "ImageUrl"]
+    });
+
+    grist.onRecord(function(record) {
+      const mapped = grist.mapColumnNames(record);
+      
+      links.county = mapped?.County || '';
+      links.streetView = mapped?.Street_View || '';
+      links.coStar = mapped?.CoStar || '';
+      links.gis = mapped?.GIS || '';
+      links.copy = mapped?.Copy || '';
+
+      updateLinks();
+      showError("");
+
+      // Update the image carousel
+      imageUrls = mapped?.ImageUrl?.split(' ') || [];
+      currentIndex = 0;
+      
+      // Clear existing interval
+      if (autoShuffleInterval) {
+        clearInterval(autoShuffleInterval);
+      }
+      
+      // Set new interval if there are images
+      if (imageUrls.length > 1) {
+        autoShuffleInterval = setInterval(nextSlide, 3000);
+      }
+      
+      renderCarousel();
+    });
+
+    // Add event listeners
+    document.getElementById('county').addEventListener('click', (e) => {
+      if (links.county) {
+        e.preventDefault();
+        window.open(links.county, '_blank');
+      }
+    });
+    
+    document.getElementById('gis').addEventListener('click', (e) => {
+      if (links.gis) {
+        e.preventDefault();
+        window.open(links.gis, '_blank');
+      }
+    });
+    
+    document.getElementById('co-star').addEventListener('click', (e) => {
+      if (links.coStar) {
+        e.preventDefault();
+        window.open(links.coStar, '_blank');
+      }
+    });
+    
+    document.getElementById('street-view').addEventListener('click', (e) => {
+      if (links.streetView) {
+        e.preventDefault();
+        window.open(links.streetView, '_blank');
+      }
+    });
+    
+    document.getElementById('copy').addEventListener('click', copyText);
+    document.getElementById('next-btn').addEventListener('click', nextSlide);
+    document.getElementById('prev-btn').addEventListener('click', prevSlide);
+
+    // Handle window resize
+    window.addEventListener('resize', updateCarousel);
+  </script>
+</body>
 </html>
