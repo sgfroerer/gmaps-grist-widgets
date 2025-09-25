@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusFlow - ADHD Friendly Project Manager</title>
+    <style>
+        /* === DYSLEXIA-FRIENDLY FONTS & DARK MODE === */
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+        
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --bg-tertiary: #3d3d3d;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --accent-blue: #7ec0ee;
+            --accent-orange: #ffb347;
+            --accent-green: #98fb98;
+            --accent-purple: #dda0dd;
+            --accent-red: #ff6b6b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 18px;
+            line-height: 1.6;
+            overflow: hidden;
+        }
+        
+        /* === LAYOUT === */
+        .app-container {
+            display: grid;
+            grid-template-rows: 70px 1fr;
+            height: 100vh;
+        }
+        
+        /* === TOP BAR === */
+        .top-bar {
+            background-color: var(--bg-secondary);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px;
+            background-color: var(--bg-tertiary);
+            border: 1px solid #555;
+            border-radius: 25px;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+        
+        .top-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: var(--accent-blue);
+            border: none;
+            border-radius: 5px;
+            color: var(--bg-primary);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .view-toggle {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        /* === MAIN CANVAS === */
+        .main-canvas {
+            position: relative;
+            overflow: hidden;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(126, 192, 238, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(221, 160, 221, 0.1) 0%, transparent 50%);
+        }
+        
+        .bubble-container {
+            position: absolute;
+            cursor: grab;
+            transition: transform 0.3s ease;
+        }
+        
+        .bubble-container.dragging {
+            cursor: grabbing;
+            z-index: 1000;
+            transform: scale(1.05);
+        }
+        
+        /* === PROJECT BUBBLES === */
+        .project-bubble {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+        
+        .project-bubble:hover {
+            transform: scale(1.05);
+        }
+        
+        .project-bubble.active {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px var(--accent-blue), 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .project-name {
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            padding: 0 15px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-ring {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        
+        .progress-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-green) 0% var(--progress), var(--bg-tertiary) var(--progress) 100%);
+            mask: radial-gradient(white 55%, transparent 56%);
+            -webkit-mask: radial-gradient(white 55%, transparent 56%);
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .add-item-btn {
+            position: absolute;
+            bottom: 15px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        /* === CHILD BUBBLES === */
+        .child-bubble {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: absolute;
+        }
+        
+        .child-bubble:hover {
+            transform: scale(1.1);
+        }
+        
+        .child-bubble.task {
+            background-color: var(--accent-orange);
+            color: var(--bg-primary);
+        }
+        
+        .child-bubble.email {
+            background-color: var(--accent-purple);
+            color: var(--bg-primary);
+        }
+        
+        .child-bubble.note {
+            background-color: var(--accent-green);
+            color: var(--bg-primary);
+        }
+        
+        .bubble-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .bubble-content {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .bubble-date {
+            font-size: 12px;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+        
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+        
+        /* === FOCUS PANEL (SIDEBAR) === */
+        .focus-panel {
+            position: fixed;
+            right: -400px;
+            top: 70px;
+            width: 400px;
+            height: calc(100vh - 70px);
+            background-color: var(--bg-secondary);
+            border-left: 1px solid #444;
+            transition: right 0.3s ease;
+            z-index: 100;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .focus-panel.active {
+            right: 0;
+        }
+        
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .panel-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .close-panel {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .panel-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--accent-blue);
+        }
+        
+        .item-list {
+            list-style: none;
+        }
+        
+        .list-item {
+            background-color: var(--bg-tertiary);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-blue);
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .item-type {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background-color: var(--accent-blue);
+            color: var(--bg-primary);
+        }
+        
+        .item-date {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* === LIST VIEW (ALTERNATIVE VIEW) === */
+        .list-view {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .list-view.active {
+            display: block;
+        }
+        
+        .project-card {
+            background-color: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--accent-blue);
+        }
+        
+        .project-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .item-card {
+            background-color: var(--bg-tertiary);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        /* === UTILITY CLASSES === */
+        .hidden {
+            display: none;
+        }
+        
+        /* Color variants for projects */
+        .bubble-color-1 { background: linear-gradient(135deg, #7ec0ee, #5aa0d0); }
+        .bubble-color-2 { background: linear-gradient(135deg, #ffb347, #e6952e); }
+        .bubble-color-3 { background: linear-gradient(135deg, #98fb98, #7ad97a); }
+        .bubble-color-4 { background: linear-gradient(135deg, #dda0dd, #c080c0); }
+        .bubble-color-5 { background: linear-gradient(135deg, #ff6b6b, #e05252); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- TOP BAR -->
+        <header class="top-bar">
+            <div class="logo">FocusFlow</div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search projects and tasks...">
+            </div>
+            <div class="top-buttons">
+                <button id="newProjectBtn">+ New Project</button>
+                <button id="viewToggle" class="view-toggle">List View</button>
+            </div>
+        </header>
+
+        <!-- MAIN CANVAS -->
+        <main class="main-canvas" id="mainCanvas">
+            <!-- Bubble elements will be dynamically added here -->
+        </main>
+
+        <!-- FOCUS PANEL (SIDEBAR) -->
+        <aside class="focus-panel" id="focusPanel">
+            <div class="panel-header">
+                <h2 class="panel-title" id="panelTitle">Project Details</h2>
+                <button class="close-panel" id="closePanel">×</button>
+            </div>
+            <div id="panelContent">
+                <!-- Panel content will be dynamically populated -->
+            </div>
+        </aside>
+
+        <!-- LIST VIEW (ALTERNATIVE) -->
+        <section class="list-view" id="listView">
+            <!-- List view content will be dynamically populated -->
+        </section>
+    </div>
+
+    <script>
+        // === DATA STRUCTURE ===
+        let projects = JSON.parse(localStorage.getItem('focusFlowProjects')) || [];
+        let nextProjectId = parseInt(localStorage.getItem('nextProjectId')) || 1;
+        let nextItemId = parseInt(localStorage.getItem('nextItemId')) || 1;
+        let currentView = 'bubble'; // 'bubble' or 'list'
+
+        // === DOM ELEMENTS ===
+        const mainCanvas = document.getElementById('mainCanvas');
+        const focusPanel = document.getElementById('focusPanel');
+        const panelTitle = document.getElementById('panelTitle');
+        const panelContent = document.getElementById('panelContent');
+        const closePanel = document.getElementById('closePanel');
+        const newProjectBtn = document.getElementById('newProjectBtn');
+        const viewToggle = document.getElementById('viewToggle');
+        const searchInput = document.getElementById('searchInput');
+        const listView = document.getElementById('listView');
+
+        // === INITIALIZATION ===
+        document.addEventListener('DOMContentLoaded', function() {
+            renderBubbleView();
+            setupEventListeners();
+        });
+
+        // === EVENT LISTENERS ===
+        function setupEventListeners() {
+            newProjectBtn.addEventListener('click', createNewProject);
+            closePanel.addEventListener('click', closeFocusPanel);
+            viewToggle.addEventListener('click', toggleView);
+            searchInput.addEventListener('input', handleSearch);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeFocusPanel();
+                if (e.ctrlKey && e.key === 'n') {
+                    e.preventDefault();
+                    createNewProject();
+                }
+            });
+        }
+
+        // === PROJECT MANAGEMENT ===
+        function createNewProject() {
+            const projectName = prompt('Enter project name:');
+            if (!projectName) return;
+            
+            const newProject = {
+                id: nextProjectId++,
+                name: projectName,
+                description: '',
+                x: Math.random() * (window.innerWidth - 200) + 100,
+                y: Math.random() * (window.innerHeight - 200) + 100,
+                colorClass: `bubble-color-${(nextProjectId % 5) + 1}`,
+                items: [],
+                progress: 0
+            };
+            
+            projects.push(newProject);
+            saveData();
+            renderBubbleView();
+        }
+
+        function deleteProject(projectId) {
+            if (confirm('Are you sure you want to delete this project and all its items?')) {
+                projects = projects.filter(p => p.id !== projectId);
+                saveData();
+                closeFocusPanel();
+                renderBubbleView();
+            }
+        }
+
+        // === ITEM MANAGEMENT ===
+        function addItemToProject(projectId, type) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            let content = '';
+            switch(type) {
+                case 'task':
+                    content = prompt('Enter task description:');
+                    break;
+                case 'email':
+                    content = prompt('Enter email subject:');
+                    break;
+                case 'note':
+                    content = prompt('Enter note:');
+                    break;
+            }
+            
+            if (!content) return;
+            
+            const newItem = {
+                id: nextItemId++,
+                type: type,
+                content: content,
+                date: new Date().toLocaleDateString(),
+                completed: false,
+                x: Math.random() * 100 - 50, // Relative to project
+                y: Math.random() * 100 - 50
+            };
+            
+            project.items.push(newItem);
+            updateProjectProgress(project);
+            saveData();
+            renderBubbleView();
+            openFocusPanel(projectId);
+        }
+
+        function deleteItem(projectId, itemId) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            project.items = project.items.filter(item => item.id !== itemId);
+            updateProjectProgress(project);
+            saveData();
+            openFocusPanel(projectId);
+        }
+
+        function toggleTaskCompletion(projectId, itemId) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            const item = project.items.find(i => i.id === itemId);
+            if (item && item.type === 'task') {
+                item.completed = !item.completed;
+                updateProjectProgress(project);
+                saveData();
+                openFocusPanel(projectId);
+            }
+        }
+
+        function updateProjectProgress(project) {
+            const tasks = project.items.filter(item => item.type === 'task');
+            if (tasks.length === 0) {
+                project.progress = 0;
+                return;
+            }
+            
+            const completedTasks = tasks.filter(task => task.completed).length;
+            project.progress = Math.round((completedTasks / tasks.length) * 100);
+        }
+
+        // === DRAG AND DROP FUNCTIONALITY ===
+        function setupDragAndDrop(element, project) {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+            
+            element.addEventListener('mousedown', startDrag);
+            
+            function startDrag(e) {
+                isDragging = true;
+                element.classList.add('dragging');
+                startX = e.clientX;
+                startY = e.clientY;
+                initialX = project.x;
+                initialY = project.y;
+                
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+            }
+            
+            function drag(e) {
+                if (!isDragging) return;
+                
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                
+                project.x = initialX + dx;
+                project.y = initialY + dy;
+                
+                renderBubbleView();
+            }
+            
+            function stopDrag() {
+                isDragging = false;
+                element.classList.remove('dragging');
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', stopDrag);
+                saveData();
+            }
+        }
+
+        // === RENDERING ===
+        function renderBubbleView() {
+            mainCanvas.innerHTML = '';
+            
+            projects.forEach(project => {
+                // Create project bubble
+                const projectBubble = document.createElement('div');
+                projectBubble.className = `bubble-container`;
+                projectBubble.style.left = `${project.x}px`;
+                projectBubble.style.top = `${project.y}px`;
+                
+                projectBubble.innerHTML = `
+                    <div class="project-bubble ${project.colorClass}" data-project-id="${project.id}">
+                        <div class="project-name">${project.name}</div>
+                        <div class="progress-ring">
+                            <div class="progress-circle" style="--progress: ${project.progress}%"></div>
+                            <div class="progress-text">${project.progress}%</div>
+                        </div>
+                        <button class="add-item-btn" onclick="addItemToProject(${project.id}, 'task')">+</button>
+                    </div>
+                `;
+                
+                // Create child bubbles
+                project.items.forEach(item => {
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 150 + Math.random() * 50;
+                    const itemX = project.x + Math.cos(angle) * distance;
+                    const itemY = project.y + Math.sin(angle) * distance;
+                    
+                    const childBubble = document.createElement('div');
+                    childBubble.className = `child-bubble ${item.type}`;
+                    childBubble.style.left = `${itemX}px`;
+                    childBubble.style.top = `${itemY}px`;
+                    childBubble.setAttribute('data-project-id', project.id);
+                    childBubble.setAttribute('data-item-id', item.id);
+                    
+                    let icon = '📝';
+                    if (item.type === 'email') icon = '✉️';
+                    if (item.type === 'task') icon = item.completed ? '✅' : '☐';
+                    
+                    childBubble.innerHTML = `
+                        <div class="bubble-icon">${icon}</div>
+                        <div class="bubble-content">${item.content}</div>
+                        <div class="bubble-date">${item.date}</div>
+                        ${item.type === 'task' ? 
+                            `<input type="checkbox" class="task-checkbox" ${item.completed ? 'checked' : ''}>` : ''}
+                    `;
+                    
+                    mainCanvas.appendChild(childBubble);
+                    
+                    // Add click event to child bubble
+                    childBubble.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('task-checkbox')) {
+                            toggleTaskCompletion(project.id, item.id);
+                            e.stopPropagation();
+                        } else {
+                            openFocusPanel(project.id);
+                        }
+                    });
+                });
+                
+                mainCanvas.appendChild(projectBubble);
+                
+                // Add click event to project bubble
+                projectBubble.querySelector('.project-bubble').addEventListener('click', () => {
+                    openFocusPanel(project.id);
+                });
+                
+                // Setup drag and drop
+                setupDragAndDrop(projectBubble, project);
+            });
+        }
+
+        function renderListView() {
+            listView.innerHTML = '';
+            
+            if (projects.length === 0) {
+                listView.innerHTML = '<p style="text-align: center; padding: 40px;">No projects yet. Create your first project!</p>';
+                return;
+            }
+            
+            projects.forEach(project => {
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-card';
+                
+                let itemsHTML = '';
+                project.items.forEach(item => {
+                    let icon = '📝';
+                    if (item.type === 'email') icon = '✉️';
+                    if (item.type === 'task') icon = item.completed ? '✅' : '☐';
+                    
+                    itemsHTML += `
+                        <div class="item-card">
+                            <div class="item-header">
+                                <span class="item-type">${item.type}</span>
+                                <span class="item-date">${item.date}</span>
+                            </div>
+                            <div>${icon} ${item.content}</div>
+                            ${item.type === 'task' ? 
+                                `<input type="checkbox" ${item.completed ? 'checked' : ''} 
+                                 onchange="toggleTaskCompletion(${project.id}, ${item.id})">` : ''}
+                            <button onclick="deleteItem(${project.id}, ${item.id})" style="float: right; padding: 2px 8px; margin-top: 5px;">Delete</button>
+                        </div>
+                    `;
+                });
+                
+                projectCard.innerHTML = `
+                    <div class="project-card-header">
+                        <h3>${project.name} (${project.progress}% complete)</h3>
+                        <div>
+                            <button onclick="addItemToProject(${project.id}, 'task')">Add Task</button>
+                            <button onclick="addItemToProject(${project.id}, 'email')">Add Email</button>
+                            <button onclick="addItemToProject(${project.id}, 'note')">Add Note</button>
+                            <button onclick="deleteProject(${project.id})" style="background-color: var(--accent-red);">Delete Project</button>
+                        </div>
+                    </div>
+                    <div class="items-grid">
+                        ${itemsHTML || '<p>No items yet. Add some tasks, emails, or notes!</p>'}
+                    </div>
+                `;
+                
+                listView.appendChild(projectCard);
+            });
+        }
+
+        // === FOCUS PANEL ===
+        function openFocusPanel(projectId) {
+            const project = projects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            panelTitle.textContent = project.name;
+            
+            let itemsHTML = '';
+            ['task', 'email', 'note'].forEach(type => {
+                const typeItems = project.items.filter(item => item.type === type);
+                if (typeItems.length > 0) {
+                    itemsHTML += `
+                        <div class="panel-section">
+                            <h3 class="section-title">${type.charAt(0).toUpperCase() + type.slice(1)}s</h3>
+                            <ul class="item-list">
+                                ${typeItems.map(item => `
+                                    <li class="list-item">
+                                        <div class="item-header">
+                                            <span class="item-type">${type}</span>
+                                            <span class="item-date">${item.date}</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span>${item.type === 'task' ? (item.completed ? '✅' : '☐') : ''} ${item.content}</span>
+                                            <div>
+                                                ${item.type === 'task' ? 
+                                                    `<input type="checkbox" ${item.completed ? 'checked' : ''} 
+                                                     onchange="toggleTaskCompletion(${project.id}, ${item.id})" style="margin-right: 10px;">` : ''}
+                                                <button onclick="deleteItem(${project.id}, ${item.id})" style="padding: 5px 10px;">Delete</button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+            });
+            
+            panelContent.innerHTML = itemsHTML || '<p>No items yet. Add some tasks, emails, or notes!</p>';
+            
+            // Add project management buttons
+            panelContent.innerHTML += `
+                <div class="panel-section">
+                    <h3 class="section-title">Manage Project</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button onclick="addItemToProject(${project.id}, 'task')">Add Task</button>
+                        <button onclick="addItemToProject(${project.id}, 'email')">Add Email</button>
+                        <button onclick="addItemToProject(${project.id}, 'note')">Add Note</button>
+                        <button onclick="deleteProject(${project.id})" style="background-color: var(--accent-red);">Delete Project</button>
+                    </div>
+                </div>
+            `;
+            
+            focusPanel.classList.add('active');
+        }
+
+        function closeFocusPanel() {
+            focusPanel.classList.remove('active');
+        }
+
+        // === VIEW MANAGEMENT ===
+        function toggleView() {
+            if (currentView === 'bubble') {
+                currentView = 'list';
+                viewToggle.textContent = 'Bubble View';
+                mainCanvas.style.display = 'none';
+                listView.classList.add('active');
+                renderListView();
+            } else {
+                currentView = 'bubble';
+                viewToggle.textContent = 'List View';
+                mainCanvas.style.display = 'block';
+                listView.classList.remove('active');
+                renderBubbleView();
+            }
+        }
+
+        // === SEARCH FUNCTIONALITY ===
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (currentView === 'bubble') {
+                // For bubble view, we'll highlight matching bubbles
+                document.querySelectorAll('.bubble-container, .child-bubble').forEach(bubble => {
+                    const text = bubble.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        bubble.style.opacity = '1';
+                        bubble.style.transform = searchTerm ? 'scale(1.1)' : 'scale(1)';
+                    } else {
+                        bubble.style.opacity = '0.3';
+                        bubble.style.transform = 'scale(0.9)';
+                    }
+                });
+            } else {
+                // For list view, filter projects and items
+                renderListView(); // This would need more sophisticated filtering
+            }
+        }
+
+        // === DATA PERSISTENCE ===
+        function saveData() {
+            localStorage.setItem('focusFlowProjects', JSON.stringify(projects));
+            localStorage.setItem('nextProjectId', nextProjectId.toString());
+            localStorage.setItem('nextItemId', nextItemId.toString());
+        }
+
+        // Make functions available globally for HTML onclick attributes
+        window.addItemToProject = addItemToProject;
+        window.deleteProject = deleteProject;
+        window.deleteItem = deleteItem;
+        window.toggleTaskCompletion = toggleTaskCompletion;
+    </script>
+</body>
+</html>
