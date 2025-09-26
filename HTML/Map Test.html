@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grist Property Map Editor</title>
+  <link rel="icon" type="image/png" href="map2.png">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+    <style>
+        /* Paste all the CSS from your OneFileMap.html file here */
+        /* For brevity, I am omitting the 1000+ lines of CSS you provided. */
+        /* Just copy and paste it all into this section. */
+        /* General Body & Font */
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+          overflow: hidden; /* Prevent body scroll */
+          background-color: #B9DFF8; /* Match body bg */
+        }
+
+        /* Hide Leaflet Attribution */
+        .leaflet-control-attribution {
+          display: none !important;
+        }
+
+        /* Map Container */
+        #map {
+          width: 100vw;
+          height: 100vh;
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: 1; /* Base layer */
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.85);
+            display: none; /* Hidden by default, shown by JS */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #3b82f6; /* Blue accent */
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 16px;
+        }
+
+        .loading-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Map Controls Positioning & Styling */
+        .leaflet-control-zoom {
+            margin-top: 10px !important;
+            margin-left: 10px !important;
+        }
+        .leaflet-control-zoom a {
+            width: 36px; height: 36px; line-height: 36px; font-size: 1.3em;
+            border-radius: 6px; box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+            background-color: white; color: #333;
+        }
+        .leaflet-control-zoom a:hover { background-color: #f4f4f4; }
+
+        /* Custom Search Control */
+        .custom-search-control { margin: 10px !important; position: relative; z-index: 1001; }
+        .toggle-search-button {
+            width: 36px; height: 36px; font-size: 18px; border-radius: 6px; background-color: white;
+            color: #333; border: none; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; box-shadow: 0 1px 5px rgba(0,0,0,0.2); transition: background-color 0.2s;
+        }
+        .toggle-search-button:hover { background-color: #f4f4f4; }
+        .toggle-search-button.hidden { display: none; }
+        .search-container {
+            display: flex; align-items: center; gap: 5px; padding: 5px; background-color: white;
+            border-radius: 6px; box-shadow: 0 1px 5px rgba(0,0,0,0.2); position: absolute;
+            left: 46px; top: 0; z-index: 1010;
+        }
+        .search-container.hidden { display: none; }
+        .search-container .search-input { width: 220px; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
+        .search-container .search-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        .search-container .search-button, .search-container .close-search-button { width: 30px; height: 30px; font-size: 16px; border-radius: 4px; background-color: #f1f5f9; color: #334155; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s; }
+        .search-container .search-button:hover, .search-container .close-search-button:hover { background-color: #e2e8f0; }
+
+        /* Search Type Toggle */
+        .search-type-toggle { display: flex; margin-left: auto; margin-right: 10px; }
+        .search-type-button { background: none; border: 1px solid #e5e7eb; padding: 4px 8px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .search-type-button:first-child { border-radius: 4px 0 0 4px; }
+        .search-type-button:last-child { border-radius: 0 4px 4px 0; }
+        .search-type-button.active { background-color: #4b6a9b; color: white; border-color: #4b6a9b; }
+        .search-type-button:hover:not(.active) { background-color: #f3f4f6; }
+
+        /* County info card - REVERTED STYLES */
+        .county-info-card {
+            position: absolute; top: 20px; right: 10px; background-color: rgba(255, 255, 255, 0.75);
+            border-radius: 12px; padding: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+            z-index: 1001; width: auto; min-width: 120px; transition: all 0.3s ease;
+            border: 1px solid rgba(226, 232, 240, 0.6); backdrop-filter: blur(10px);
+        }
+        .county-info-card.hidden { display: none; }
+        .county-info-card h3 { margin: 0 0 8px 0; font-size: 16px; font-weight: 600; color: #1e40af; }
+        .county-button-container, .button-container { display: flex; gap: 6px; }
+        .info-button { padding: 4px 8px; background-color: #4b6a9b; color: white; border-radius: 4px; text-decoration: none; flex: 1; text-align: center; font-size: 14px; font-weight: normal; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none; display: flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; }
+        .info-button:hover { background-color: #3a5580; transform: translateY(-1px); box-shadow: 0 3px 5px rgba(0,0,0,0.15); }
+        .gis-button { background-color: #64748b; }
+        .gis-button:hover { background-color: #475569; }
+        .info-button.disabled { background-color: #9ca3af; opacity: 0.7; cursor: not-allowed; pointer-events: none; }
+
+        /* Map Legend - REVERTED STYLES */
+        .legend {
+            position: absolute !important; top: calc(20px + 120px + 10px) !important; /* Position below county card */
+            right: 10px !important; left: auto !important; bottom: auto !important;
+            background-color: rgba(255, 255, 255, 0.85) !important; border-radius: 12px !important;
+            padding: 16px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important; backdrop-filter: blur(8px) !important;
+            max-width: 280px !important; max-height: calc(100vh - 120px) !important;
+            overflow-y: auto !important; display: block !important; z-index: 1000 !important;
+        }
+        .legend-header { cursor: pointer; user-select: none; }
+        .legend h4 { color: #1e40af; font-size: 16px; font-weight: 600; margin: 0 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; white-space: nowrap !important; }
+        .legend-title { display: inline-block; }
+
+        .legend-content { margin-top: 8px; }
+        .legend-content.hidden { display: none; }
+        .legend-items { display: flex; flex-direction: column; gap: 6px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+        .legend-item.interactive { cursor: pointer; }
+        .legend-item.interactive:hover { background-color: rgba(0, 0, 0, 0.05); border-radius: 4px; }
+
+        /* Divider in legend */
+        .legend-divider {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin: 8px 0;
+            width: 100%;
+        }
+
+        /* Checkbox styling for legend */
+        .legend-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .legend-checkbox {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            background-color: white;
+        }
+
+        .legend-checkbox:checked {
+            background-color: #4b6a9b;
+            border-color: #4b6a9b;
+        }
+
+        .legend-checkbox:checked::after {
+            content: "✓";
+            font-size: 12px;
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .color-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            flex-shrink: 0;
+        }
+
+        .legend-item .label {
+            font-size: 13px;
+            color: #333;
+            flex-grow: 1;
+        }
+
+        /* Layer Controls */
+        .layer-controls {
+            position: absolute;
+            bottom: 30px;
+            right: 10px; /* Default position when ArcGIS map is hidden */
+            background-color: white;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+            z-index: 1001;
+            transition: right 0.3s ease; /* Smooth transition when position changes */
+        }
+
+        /* Layer controls position when ArcGIS map is visible */
+        .arcgis-map-active .layer-controls {
+            right: calc(33% + 20px); /* Position adjusted for normal ArcGIS map size */
+        }
+
+        /* Layer controls position when ArcGIS map is expanded */
+        .arcgis-map-expanded .layer-controls {
+            right: calc(50% + 20px); /* Position adjusted for expanded ArcGIS map */
+        }
+
+        .layer-button { display: block; width: 100%; padding: 8px 15px; background: none; border: none; text-align: left; cursor: pointer; font-size: 14px; border-bottom: 1px solid #eee; color: #333; }
+        .layer-button:last-child { border-bottom: none; }
+        .layer-button.active { background-color: #e0f2fe; color: #0c4a6e; font-weight: 600; }
+        .layer-button:hover:not(.active) { background-color: #f9fafb; }
+
+        /* Sidebar Toggle Button */
+        .sidebar-toggle-button { position: absolute; bottom: 30px; left: 10px; width: 40px; height: 40px; background-color: white; border: none; border-radius: 6px; box-shadow: 0 1px 5px rgba(0,0,0,0.2); cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; color: #333; z-index: 1001; transition: background-color 0.2s; }
+        .sidebar-toggle-button:hover { background-color: #f4f4f4; }
+
+        /* Sidebar */
+        .property-sidebar { position: absolute; top: 0; left: 0; width: 510px; height: 100%; background-color: white; box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15); z-index: 1002; transform: translateX(-100%); transition: transform 0.3s ease; display: flex; flex-direction: column; min-width: 320px; max-width: 80vw; overflow: hidden; border-right: 1px solid #d1d5db; box-sizing: border-box; }
+        .property-sidebar.active { transform: translateX(0); resize: horizontal; }
+        .property-sidebar.active::after { content: ""; position: absolute; top: 0; right: -4px; width: 8px; height: 100%; background-color: transparent; cursor: ew-resize; z-index: 1010; }
+
+        /* Sidebar Header */
+        .sidebar-header { padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; background-color: #f9fafb; flex-shrink: 0; }
+        .sidebar-header h3 { margin: 0; font-size: 18px; font-weight: 600; color: #1e3a8a; }
+        .property-count { color: #6b7280; font-size: 13px; margin-left: auto; margin-right: 12px; }
+        .close-sidebar-button { width: 28px; height: 28px; border-radius: 50%; background-color: #e5e7eb; border: none; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #4b5563; cursor: pointer; transition: all 0.2s ease; }
+        .close-sidebar-button:hover { background-color: #d1d5db; color: #1f2937; }
+
+        /* Sidebar Controls (Search) */
+        .sidebar-controls { padding: 10px 16px; border-bottom: 1px solid #e5e7eb; background-color: #fff; flex-shrink: 0; }
+        .search-filter { position: relative; width: 100%; }
+        .search-filter .search-input { width: 100%; padding: 8px 35px 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; color: #1f2937; outline: none; box-sizing: border-box; }
+        .search-filter .search-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+        .clear-search-button { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; width: 24px; height: 24px; font-size: 18px; color: #9ca3af; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+        .clear-search-button:hover { color: #4b5563; }
+
+        /* Sidebar Property List - Updated Styles */
+        .property-list { flex: 1; overflow-y: auto; overflow-x: hidden; background-color: #fff; }
+        .property-list.hidden { display: none; }
+        .property-item { padding: 12px 16px; border-bottom: 1px solid #e5e7eb; cursor: pointer; transition: background-color 0.15s ease; display: flex; gap: 12px; align-items: flex-start; position: relative; width: 100%; box-sizing: border-box; position: relative; /* Ensure positioning context */ }
+        .property-item:last-child { border-bottom: none; }
+        .property-item:hover { background-color: #f3f4f6; }
+        .property-item.active { background-color: #dbeafe; }
+        .property-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background-color: #2563eb; }
+        .classification-indicator { position: absolute; top: 0; right: 0; bottom: 0; width: 6px; }
+        .property-thumbnail { width: 100px; height: 80px; border-radius: 6px; overflow: hidden; flex-shrink: 0; background-color: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #9ca3af; text-align: center; border: 1px solid #d1d5db; flex-basis: 100px; max-width: 100px; }
+        .property-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+        .property-thumbnail span { padding: 5px; }
+        .property-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-start; gap: 4px; padding-right: 80px; /* Add padding to avoid overlap with ID */ }
+        .property-info h4 { margin: 0 0 2px 0; font-size: 15px; font-weight: 600; color: #1f2937; line-height: 1.3; white-space: normal; overflow-wrap: break-word; }
+        .property-type { font-size: 12px; color: #4b5563; line-height: 1.4; width: 100%; margin-bottom: 2px; }
+        .property-address { font-size: 13px; color: #374151; line-height: 1.4; white-space: normal; overflow-wrap: break-word; margin-bottom: 4px; }
+        .property-id { font-size: 12px; color: #6b7280; white-space: nowrap; position: absolute; top: 12px; /* Align with top padding */ right: 16px; /* Align with right padding */ }
+        .list-property-id-copy { color: #2563eb; text-decoration: none; border-bottom: 1px dashed #93c5fd; cursor: pointer; transition: color 0.2s, border-color 0.2s, background-color 0.2s; font-weight: 500; display: inline-block; padding: 1px 4px; border-radius: 3px; background-color: transparent; }
+        .list-property-id-copy:hover { color: #1d4ed8; border-bottom-style: solid; border-color: #60a5fa; background-color: #eff6ff; }
+
+        /* Sidebar Property Details - Updated with reduced spacing */
+        .property-details { flex: 1; overflow-y: auto; overflow-x: hidden; background-color: #f9fafb; padding: 0; box-sizing: border-box; }
+        .property-details.hidden { display: none !important; }
+        .details-inner-container { padding: 8px; max-width: 100%; }
+        .back-button { background-color: #e5e7eb; color: #374151; border: none; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; font-size: 13px; transition: background-color 0.2s; }
+        .back-button:hover { background-color: #d1d5db; }
+
+        /* Property navigation buttons */
+        .property-navigation { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; width: 100%; gap: 10px; }
+        #prev-property-btn, #next-property-btn { min-width: 90px; flex: 0 0 auto; }
+        #prev-property-btn:disabled, #next-property-btn:disabled { background-color: #9ca3af; opacity: 0.7; cursor: not-allowed; pointer-events: none; }
+
+        /* Property Nav Bar */
+        .property-nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 8px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+        }
+
+        /* Details Header (Updated Layout) - Fix image/text separation */
+        .details-view-header {
+            background-color: #fff;
+            padding: 0;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 10px;
+            overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0; /* Prevent overflow in flex container */
+        }
+
+        .details-view-image {
+            width: 100%;
+            height: 180px;
+            border-radius: 0;
+            background-color: #e5e7eb;
+            margin-bottom: 0;
+            position: relative;
+            flex-shrink: 0; /* Prevent image from shrinking */
+            overflow: hidden; /* Prevent content overflow */
+        }
+
+        .details-view-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* Quick Action Buttons styling - Repositioned to image section */
+        .quick-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+            z-index: 20;
+        }
+
+        .quick-action-button {
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            background-color: white;
+        }
+
+        .details-view-info {
+            position: relative;
+            text-align: left;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: white; /* Ensure background is opaque */
+            z-index: 5; /* Keep on top */
+            border-top: 1px solid #e5e7eb; /* Add visual separation */
+            min-width: 0; /* Prevent overflow in flex container */
+            overflow: hidden; /* Prevent content overflow */
+        }
+
+        /* Make headers more compact - Remove extra padding for action buttons */
+        .details-view-owner {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            line-height: 1.2;
+            cursor: pointer;
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .details-view-type {
+            font-size: 12px;
+            color: #4b5563;
+            margin-left: 8px;
+            display: inline-block;
+            background-color: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            line-height: 1.2;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .details-view-title-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            width: 100%;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .details-view-address {
+            font-size: 13px;
+            color: #374151;
+            margin-bottom: 2px;
+            cursor: pointer;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .details-view-ids {
+            font-size: 12px;
+            color: #6b7280;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            background-color: #f9fafb;
+            padding: 4px 6px;
+            border-radius: 4px;
+            margin-top: 2px;
+            width: 100%;
+            box-sizing: border-box;
+            min-width: 0;
+        }
+
+        .details-view-ids span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 0 1 auto;
+            min-width: 0;
+        }
+
+        /* Property details card layout */
+        .details-section {
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        /* Responsive adjustments for narrow sidebar */
+        @media (max-width: 400px) {
+            .details-inner-container { padding: 6px; }
+            .property-nav-bar { padding: 3px 6px; }
+            .details-view-image { height: 160px; }
+            .details-view-info { padding: 6px 8px; }
+            .details-view-owner { font-size: 15px; }
+            .details-view-type { font-size: 11px; padding: 1px 4px; }
+            .details-view-ids { padding: 3px 5px; }
+        }
+
+        /* Ensure proper wrapping when sidebar is resized */
+        @media (max-width: 350px) {
+            .details-view-title-container { flex-direction: column; align-items: flex-start; }
+            .details-view-type { margin-left: 0; margin-top: 2px; }
+        }
+
+        .collapsible-header {
+            background-color: #f9fafb;
+            padding: 10px 14px;
+            margin: 0;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 15px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .collapsible-header.collapsed {
+            border-bottom: none;
+        }
+
+        .collapsible-header:hover {
+            background-color: #f3f4f6;
+        }
+
+        .collapsible-header .toggle-icon {
+            font-size: 11px;
+            transition: transform 0.2s ease;
+            color: #6b7280;
+        }
+
+        .collapsible-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .collapsible-content {
+            padding: 12px;
+            background-color: white;
+            display: block;
+        }
+
+        .collapsible-content.hidden {
+            display: none !important;
+        }
+
+        /* Subsection Header */
+        .subsection-header {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 15px 0 10px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 6px 8px;
+            margin-bottom: 8px;
+            width: 100%;
+            padding: 0 8px 8px;
+        }
+
+        .details-grid > div, .details-row-full {
+            font-size: 13px;
+            line-height: 1.3;
+            padding: 4px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .details-label {
+            font-weight: 600;
+            color: #4b5563;
+            display: block;
+            margin-bottom: 2px;
+            font-size: 12px;
+        }
+
+        .details-row-full {
+            margin-bottom: 10px;
+        }
+
+        /* Contact Information Section */
+        .contact-info-section {
+            padding: 0;
+        }
+
+        .contact-details-grid {
+            border-top: 1px solid #e5e7eb;
+            margin-top: 0;
+            background-color: #f9fafb;
+        }
+
+        .section-header {
+            background-color: #f9fafb;
+            padding: 8px 12px;
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .phone-cards-container {
+            padding: 8px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 8px;
+        }
+
+        .phone-card {
+            background-color: #f8f9fa;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .phone-number {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            text-decoration: none;
+        }
+
+        .mobile-tag {
+            color: #10b981;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .phone-note {
+            color: #6b7280;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .phone-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .phone-action-btn {
+            background-color: #f8f9fa;
+            border: 1px solid #e1e5e9;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .phone-action-btn:hover {
+            background-color: #e9ecef;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .phone-action-btn a {
+            text-decoration: none;
+        }
+
+        .action-icon {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+
+        .phone-action-btn.webex-btn a {
+            color: #00bceb; /* Webex blue */
+        }
+
+        .phone-action-btn.tel-btn a {
+            color: #0078d4; /* Microsoft blue */
+        }
+
+        .wrong-phone {
+            background-color: #fee2e2;
+            border-color: #fecaca;
+        }
+
+        .wrong-phone-label {
+            color: #b91c1c;
+            font-size: 14px;
+        }
+
+        .no-data-msg {
+            color: #6b7280;
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .contact-details-grid {
+            padding: 12px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 0;
+        }
+
+        /* Legacy Phone Table Styles - Kept for backward compatibility */
+        .phone-details-table {
+            width: 100%;
+            margin-top: 8px;
+            margin-bottom: 10px;
+            overflow-x: auto;
+            display: none; /* Hide by default */
+        }
+
+        .phone-details-table table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .phone-details-table th,
+        .phone-details-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        .phone-details-table th {
+            font-weight: 600;
+            color: #4b5563;
+            font-size: 13px;
+            background-color: #f9fafb;
+        }
+
+        .phone-details-table th:nth-child(1) {
+            width: 30%;
+        }
+
+        .phone-details-table th:nth-child(2) {
+            width: 50%;
+        }
+
+        .phone-details-table th:nth-child(3) {
+            width: 20%;
+        }
+
+        .phone-actions-cell {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Make map legend collapsed by default */
+        .legend-content {
+            display: none; /* Changed from margin-top: 8px to be hidden by default */
+        }
+
+        /* Copy Feedback Tooltip */
+        .copy-tooltip { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.8); background-color: rgba(0, 0, 0, 0.75); color: white; padding: 10px 18px; border-radius: 6px; font-size: 14px; z-index: 10000; opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none; }
+        .copy-tooltip.active { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+        /* Toast Notifications */
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            max-width: 80%;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .toast-notification.active {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast-notification.info {
+            background-color: #3b82f6; /* Blue */
+        }
+
+        .toast-notification.success {
+            background-color: #10b981; /* Green */
+        }
+
+        .toast-notification.warning {
+            background-color: #f59e0b; /* Amber */
+        }
+
+        .toast-notification.error {
+            background-color: #ef4444; /* Red */
+        }
+
+        /* Modern Leaflet Popup Customization */
+        .custom-popup.modern-popup .leaflet-popup-content-wrapper {
+            padding: 0 !important;
+            border-radius: 8px !important;
+            background: white !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+            border: none !important;
+            width: auto !important;
+            overflow: hidden !important;
+        }
+
+        .custom-popup.modern-popup .leaflet-popup-content {
+            margin: 0 !important;
+            width: auto !important;
+            min-width: 200px !important;
+            max-width: 240px !important;
+            padding: 0 !important;
+        }
+
+        .custom-popup.modern-popup .leaflet-popup-close-button {
+            position: absolute !important;
+            top: 6px !important;
+            right: 6px !important;
+            width: 22px !important;
+            height: 22px !important;
+            font-size: 14px !important;
+            color: white !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            border-radius: 50% !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 !important;
+            line-height: 20px !important;
+            text-align: center !important;
+            z-index: 10;
+            transition: background-color 0.2s ease !important;
+        }
+
+        .custom-popup.modern-popup .leaflet-popup-close-button:hover {
+            color: white !important;
+            background: rgba(0, 0, 0, 0.5) !important;
+        }
+
+        /* Modern Popup Inner Card Styling */
+        .popup-card.modern-popup-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-image.modern-popup-image {
+            width: 100%;
+            height: 120px;
+            overflow: hidden;
+            background-color: #f3f4f6;
+        }
+
+        .popup-image.modern-popup-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .no-image-popup.modern-no-image {
+            display: none; /* Hide completely if no image */
+        }
+
+        .popup-content.modern-popup-content {
+            padding: 12px 14px;
+            text-align: left;
+        }
+
+        .modern-popup-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        .modern-popup-address {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .modern-popup-id {
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .modern-popup-id .clickable-id {
+            color: #3b82f6;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: #eff6ff;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .modern-popup-id .clickable-id:hover {
+            background-color: #dbeafe;
+        }
+
+        /* Responsive Adjustments */
+        @media screen and (max-width: 768px) {
+            .property-sidebar { width: 300px; max-width: 90vw; min-width: 280px; }
+            .details-view-image { width: 100%; height: 200px; } /* Adjust mobile image height */
+            .property-thumbnail { flex-basis: clamp(60px, 25%, 100px); }
+            .details-grid { grid-template-columns: 1fr; }
+            .action-bar { flex-direction: column; }
+            .county-info-card { max-width: calc(100vw - 40px); min-width: 150px;}
+            .legend { max-width: calc(100vw - 40px); }
+            .arcgis-map-container {
+                width: 50%;
+                height: 40%;
+            }
+
+            .arcgis-map-container.expanded {
+                width: 100%;
+                height: 50%;
+            }
+
+            /* Mobile adjustments for layer controls */
+            .arcgis-map-active .layer-controls {
+                right: calc(50% + 10px);
+            }
+
+            .arcgis-map-expanded .layer-controls {
+                right: 10px; /* When fully expanded on mobile, move back to edge */
+            }
+        }
+
+        /* Utility Class */
+        .hidden { display: none !important; }
+
+        /* ArcGIS Map Panel */
+        .arcgis-map-container {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 33%;
+            height: 33%;
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            display: none; /* Hidden by default */
+        }
+
+        .arcgis-map-container.expanded {
+            width: 50%;
+            height: 50%;
+        }
+
+        .arcgis-map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .arcgis-map-controls {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            gap: 5px;
+            z-index: 1001;
+        }
+
+        .arcgis-map-toggle {
+            background-color: white;
+            border: none;
+            border-radius: 4px;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+        }
+
+        .arcgis-map-toggle:hover {
+            background-color: #f4f4f4;
+            transform: translateY(-1px);
+        }
+
+        .arcgis-map-label {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #333;
+            z-index: 1001;
+        }
+
+        /* No image placeholder */
+        .no-image {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* Modern UI Enhancement - Preserves all functionality while improving visual appearance */
+
+        /* Apply to existing CSS by adding this file to index.html after screen.css */
+
+        /* General Improvements */
+        :root {
+            --primary-color: #4b6a9b; /* Changed from bright blue to a more subtle blue */
+            --primary-hover: #3a5580;
+            --secondary-color: #64748b;
+            --secondary-hover: #475569;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-bg: #f9fafb;
+            --border-color: #e5e7eb;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --text-muted: #6b7280;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --transition: all 0.2s ease;
+        }
+
+        /* Improved Typography */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: var(--text-primary);
+        }
+
+        /* Enhanced Sidebar */
+        .property-sidebar {
+            background-color: #fff;
+            box-shadow: var(--shadow-lg);
+            border-right: 1px solid var(--border-color);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 16px; /* Reduced padding */
+            border-bottom: none;
+        }
+
+        .sidebar-header h3 {
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: 0.01em;
+        }
+
+        .property-count {
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+        }
+
+        .close-sidebar-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: var(--transition);
+        }
+
+        .close-sidebar-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        /* Improved Search Controls */
+        .sidebar-controls {
+            padding: 12px;
+            background-color: var(--light-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-filter {
+            flex: 1;
+        }
+
+        .search-filter .search-input {
+            padding: 8px 35px 8px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .search-filter .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .tool-link-button {
+            background-color: var(--secondary-color) !important;
+            color: white !important;
+            padding: 4px 8px !important;
+            border-radius: var(--radius-sm) !important;
+            font-weight: 500 !important;
+            transition: var(--transition) !important;
+            box-shadow: var(--shadow-sm) !important;
+            text-align: center !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 3px !important;
+            margin: 0 !important;
+            font-size: 12px !important;
+            height: 26px !important;
+        }
+
+        .tool-link-button:hover {
+            background-color: var(--secondary-hover) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: var(--shadow-md) !important;
+        }
+
+        /* Property List Item Improvements */
+        .property-item {
+            padding: 12px;
+            transition: var(--transition);
+            border-bottom: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: minmax(70px, 100px) 1fr;
+            gap: 12px;
+            align-items: start;
+        }
+
+        .property-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .property-item.active {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary-color);
+            padding-left: 12px;
+        }
+
+        .property-thumbnail {
+            width: 100%;
+            aspect-ratio: 4/3;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .property-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .property-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 4px 0;
+            line-height: 1.3;
+        }
+
+        .property-type {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .property-address {
+            font-size: 14px;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .property-id {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* Property Details View Improvements */
+        .property-details {
+            background-color: white;
+            padding: 0;
+        }
+
+        /* Navigation bar for property details */
+        .property-nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--light-bg);
+        }
+
+        .property-nav-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .property-nav-right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-button {
+            background-color: var(--light-bg);
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            padding: 4px 8px;
+            font-weight: 500;
+            transition: var(--transition);
+            margin: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 12px;
+            height: 26px;
+        }
+
+        .back-button:hover {
+            background-color: #e5e7eb;
+            color: var(--text-primary);
+        }
+
+        .details-inner-container {
+            padding: 8px;
+        }
+
+        /* Details Header Improvements */
+        .details-view-header {
+            background-color: white;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            min-width: 0;
+        }
+
+        .details-view-image {
+            height: 180px;
+            background-color: #f3f4f6;
+            overflow: hidden;
+        }
+
+        .details-view-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .details-view-info {
+            padding: 8px 12px;
+            gap: 3px;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .details-view-title-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            width: 100%;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .details-view-owner {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            line-height: 1.2;
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .details-view-type {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-left: 8px;
+            display: inline-block;
+            background-color: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            line-height: 1.2;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .details-view-address {
+            font-size: 13px;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+            line-height: 1.3;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .details-view-ids {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 2px;
+            background-color: var(--light-bg);
+            padding: 4px 6px;
+            border-radius: var(--radius-sm);
+            width: 100%;
+            box-sizing: border-box;
+            min-width: 0;
+        }
+
+        .details-view-ids span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 0 1 auto;
+            min-width: 0;
+        }
+
+        .details-view-ids .id-copy {
+            background-color: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .details-view-ids .id-copy:hover {
+            background-color: #e5e7eb;
+            color: var(--text-primary);
+        }
+
+        /* Details Sections Improvements */
+        .details-section {
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background-color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .collapsible-header {
+            background-color: var(--light-bg);
+            padding: 14px 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .collapsible-header:hover {
+            background-color: #f0f2f5;
+        }
+
+        .collapsible-content {
+            padding: 16px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .details-grid > div, .details-row-full {
+            padding: 0;
+            border-bottom: none;
+        }
+
+        .details-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .details-value {
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .na-value {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Notes Box Improvements */
+        .notes-box {
+            background-color: #f9fafb;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-top: 8px;
+            color: var(--text-primary);
+        }
+
+        /* Contact Information Section Improvements */
+        .contact-info-section {
+            margin-bottom: 16px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .contact-details-grid {
+            border-top: 1px solid var(--border-color);
+            margin-top: 0;
+            background-color: white;
+        }
+
+        .section-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 12px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            font-size: 14px;
+        }
+
+        .phone-cards-container {
+            padding: 8px;
+            gap: 8px;
+            background-color: white;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+
+        .phone-card {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 8px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .phone-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .phone-link {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .mobile-tag {
+            color: var(--success-color);
+            font-weight: 500;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .phone-note {
+            color: var(--text-secondary);
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .phone-action-btn {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .phone-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .action-icon {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+
+        .phone-action-btn.webex-btn a {
+            color: #00bceb; /* Webex blue */
+        }
+
+        .phone-action-btn.tel-btn a {
+            color: #0078d4; /* Microsoft blue */
+        }
+
+        .wrong-phone {
+            background-color: #fee2e2;
+            border-color: #fecaca;
+        }
+
+        .contact-details-grid {
+            background-color: var(--light-bg);
+            padding: 16px;
+        }
+
+        /* Legacy Phone Table Styles - Hidden in modern UI */
+        .phone-details-table {
+            display: none;
+        }
+
+        /* Action Buttons Improvements */
+        .action-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .action-button {
+            flex: 1 1 auto;
+            padding: 10px 14px;
+            background-color: #f3f4f6;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: var(--transition);
+            min-width: 120px;
+        }
+
+        .action-button:hover {
+            background-color: #e5e7eb;
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        /* Map Controls Improvements */
+        .layer-controls {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .layer-button {
+            padding: 10px 16px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .layer-button.active {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar-toggle-button {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .sidebar-toggle-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Toast & Notification Improvements */
+        .toast-notification {
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+        }
+
+        .copy-tooltip {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Responsive Improvements */
+        @media (max-width: 768px) {
+            .property-sidebar {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .property-item {
+                grid-template-columns: 80px 1fr;
+                gap: 12px;
+            }
+
+            .details-view-image {
+                height: 180px;
+            }
+        }
+
+        /* Subtle Animations */
+        .property-item, .action-button, .layer-button, .back-button {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        .property-item:hover, .action-button:hover, .layer-button:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Popup Improvements */
+        .custom-popup.modern-popup .leaflet-popup-content-wrapper {
+            border-radius: var(--radius-md) !important;
+            box-shadow: var(--shadow-lg) !important;
+            overflow: hidden !important;
+        }
+
+        .popup-card.modern-popup-card {
+            border-radius: var(--radius-md);
+        }
+
+        .popup-content.modern-popup-content {
+            padding: 14px 16px;
+        }
+
+        .popup-title.modern-popup-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .popup-address.modern-popup-address {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .popup-id.modern-popup-id {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* County Info Card Improvements */
+        .county-info-card {
+            background-color: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            border: none;
+            padding: 16px;
+        }
+
+        .county-info-card h3 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .info-button {
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            transition: var(--transition);
+            height: 26px;
+            min-width: 26px;
+        }
+
+        /* Map Legend Improvements */
+        .legend {
+            background-color: white !important;
+            border-radius: var(--radius-md) !important;
+            box-shadow: var(--shadow-lg) !important;
+            border: none !important;
+            padding: 16px !important;
+        }
+
+        .legend h4 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0px !important;
+        }
+
+        .legend-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .legend-item .label {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+    </style>
+    </head>
+    <body>
+        <div id="map"></div>
+
+        <div id="loading-indicator" class="loading-overlay">
+            <div class="loading-spinner"></div>
+            <div id="loading-text" class="loading-text">Loading map data...</div>
+        </div>
+
+        <div id="sidebar" class="property-sidebar">
+            <div class="sidebar-header">
+                <h3>Properties</h3>
+                <button id="close-sidebar" class="close-sidebar-button" title="Close Sidebar">✖️</button>
+            </div>
+            <div class="sidebar-controls">
+                <button id="add-new-property-btn">➕ Add New Property</button>
+            </div>
+            <div id="property-list" class="property-list"></div>
+            <div id="property-details" class="property-details hidden"></div>
+        </div>
+
+        <!-- Leaflet JS and plugins -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+        <script>
+            "use strict";
+
+            // --- 1. GRIST CONFIGURATION ---
+            const GRIST_CONFIG = {
+                DOC_ID: 'jpAeymh63WBmuwhzhH2GDR',
+                // FIX #2: Corrected the API Base URL. It should NOT include /docs/.
+                API_BASE_URL: 'https://bs-net-lease.getgrist.com/api',
+                API_KEY: '1ad7e6e5369fbff5d6addbe79a19d3b65455a96e', // Remember to protect this key in a real app!
+                TABLE_ID: 'Properties_'
+            };
+
+            let amap;
+            let markersLayer;
+            let originalGristData = []; // Store the raw Grist records
+            let isAddingNewProperty = false;
+
+            document.addEventListener('DOMContentLoaded', function() {
+                amap = initializeMap(); // This now correctly assigns the map object to the global 'amap'
+                fetchGristData();
+            });
+
+            // --- 2. FETCH DATA FROM GRIST API ---
+            async function fetchGristData() {
+                showLoading("Fetching Grist data...");
+                try {
+                    // The URL construction now works correctly with the fixed base URL
+                    const response = await fetch(`${GRIST_CONFIG.API_BASE_URL}/docs/${GRIST_CONFIG.DOC_ID}/tables/${GRIST_CONFIG.TABLE_ID}/records`, {
+                        headers: {
+                            'Authorization': `Bearer ${GRIST_CONFIG.API_KEY}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        const errorBody = await response.text();
+                        throw new Error(`Grist API Error: ${response.status} ${response.statusText}. Response: ${errorBody}`);
+                    }
+
+                    const data = await response.json();
+                    originalGristData = data.records;
+                    const geoJsonData = gristToGeoJSON(originalGristData);
+                    updateMap(geoJsonData);
+
+                } catch (error) {
+                    console.error("Failed to fetch Grist data:", error);
+                    alert("Could not load data from Grist. Please check your configuration and API key. See console for details.");
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            function gristToGeoJSON(records) {
+                const features = records
+                .filter(record => record.fields.Latitude != null && record.fields.Longitude != null) // Ensure records have coordinates
+                .map(record => {
+                    const fields = record.fields;
+                    return {
+                        type: "Feature",
+                        geometry: {
+                            type: "Point",
+                            coordinates: [fields.Longitude, fields.Latitude]
+                        },
+                        properties: {
+                            gristId: record.id,
+                            "Property Id": fields.Property_Id,
+                            "PrimaryOwner": fields.PrimaryOwner,
+                            "Address Concatenate": fields.Property_Address,
+                            "Pop-up IMG": fields.Pop_up_IMG,
+                            "Property Type": fields.Property_Type,
+                            "Secondary Type": fields.Secondary_Type,
+                            "Classify Color": fields.Classify,
+                            ...fields
+                        }
+                    };
+                });
+                return { type: "FeatureCollection", features: features };
+            }
+
+            // --- 3. SHOW AND EDIT PROPERTY DETAILS ---
+            function showPropertyDetails(gristId) {
+                const record = originalGristData.find(r => r.id === gristId);
+                if (!record) {
+                    console.error(`Record with Grist ID ${gristId} not found.`);
+                    return;
+                }
+
+                const props = record.fields;
+                const propertyDetails = document.getElementById('property-details');
+                const propertyList = document.getElementById('property-list');
+
+                propertyDetails.innerHTML = `
+                    <h3>Edit Property</h3>
+                    <p>Grist ID: ${record.id}</p>
+
+                    <label class="details-label" for="PrimaryOwner">Primary Owner</label>
+                    <input type="text" id="PrimaryOwner" value="${props.PrimaryOwner || ''}">
+
+                    <label class="details-label" for="Property_Address">Address</label>
+                    <input type="text" id="Property_Address" value="${props.Property_Address || ''}">
+
+                    <label class="details-label" for="Latitude">Latitude</label>
+                    <input type="number" step="any" id="Latitude" value="${props.Latitude || ''}">
+
+                    <label class="details-label" for="Longitude">Longitude</label>
+                    <input type="number" step="any" id="Longitude" value="${props.Longitude || ''}">
+
+                    <label class="details-label" for="Property_Notes">Property Notes</label>
+                    <textarea id="Property_Notes">${props.Property_Notes || ''}</textarea>
+
+                    <div class="details-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                      <button id="save-property-btn" data-grist-id="${record.id}" style="flex: 1; padding: 10px; background-color: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer;">💾 Save Changes</button>
+                      <button id="cancel-edit-btn" style="flex: 1; padding: 10px; background-color: #6b7280; color: white; border: none; border-radius: 4px; cursor: pointer;">❌ Cancel</button>
+            </div>
+              `;
+
+                propertyList.classList.add('hidden');
+                propertyDetails.classList.remove('hidden');
+
+                document.getElementById('save-property-btn').addEventListener('click', savePropertyDetails);
+                document.getElementById('cancel-edit-btn').addEventListener('click', () => {
+                    propertyDetails.classList.add('hidden');
+                    propertyList.classList.remove('hidden');
+                });
+            }
+
+            async function savePropertyDetails(event) {
+                const gristId = event.target.getAttribute('data-grist-id');
+                showLoading("Saving changes...");
+
+                const updatedFields = {
+                    PrimaryOwner: document.getElementById('PrimaryOwner').value,
+                    Property_Address: document.getElementById('Property_Address').value,
+                    Latitude: parseFloat(document.getElementById('Latitude').value),
+                    Longitude: parseFloat(document.getElementById('Longitude').value),
+                    Property_Notes: document.getElementById('Property_Notes').value
+                };
+
+                try {
+                    const response = await fetch(`${GRIST_CONFIG.API_BASE_URL}/docs/${GRIST_CONFIG.DOC_ID}/tables/${GRIST_CONFIG.TABLE_ID}/records`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${GRIST_CONFIG.API_KEY}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            records: [{
+                                id: parseInt(gristId),
+                                fields: updatedFields
+                            }]
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`Grist API Error: ${JSON.stringify(errorData)}`);
+                    }
+
+                    showToast('Property updated successfully!', 'success');
+                    await fetchGristData();
+                    document.getElementById('property-details').classList.add('hidden');
+                    document.getElementById('property-list').classList.remove('hidden');
+
+                } catch (error) {
+                    console.error('Failed to save property:', error);
+                    showToast('Error saving property. See console.', 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // --- 4. ADD NEW PROPERTY ---
+            // FIX #1: This function now accepts the 'map' object as an argument
+            function setupAddNewProperty(mapInstance) {
+                document.getElementById('add-new-property-btn').addEventListener('click', () => {
+                    isAddingNewProperty = true;
+                    showToast('Click on the map to place the new property marker.');
+                    mapInstance.getContainer().style.cursor = 'crosshair';
+                });
+
+                // Use the passed-in mapInstance, not the global 'amap'
+                mapInstance.on('click', function(e) {
+                    if (isAddingNewProperty) {
+                        isAddingNewProperty = false;
+                        mapInstance.getContainer().style.cursor = '';
+                        showNewPropertyForm(e.latlng);
+                    }
+                });
+            }
+
+            function showNewPropertyForm(latlng) {
+                const propertyDetails = document.getElementById('property-details');
+                const propertyList = document.getElementById('property-list');
+
+                propertyDetails.innerHTML = `
+                    <h3>Add New Property</h3>
+                    <p>New marker at: ${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}</p>
+
+                    <label class="details-label" for="new_PrimaryOwner">Primary Owner</label>
+                    <input type="text" id="new_PrimaryOwner" placeholder="e.g., Smith Properties LLC">
+
+                    <label class="details-label" for="new_Property_Address">Address</label>
+                    <input type="text" id="new_Property_Address" placeholder="e.g., 123 Main St">
+
+                    <input type="hidden" id="new_Latitude" value="${latlng.lat}">
+                    <input type="hidden" id="new_Longitude" value="${latlng.lng}">
+
+                    <label class="details-label" for="new_Property_Notes">Property Notes</label>
+                    <textarea id="new_Property_Notes"></textarea>
+
+                    <div class="details-actions" style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button id="add-new-property-save-btn" style="flex: 1; padding: 10px; background-color: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer;">💾 Create Property</button>
+                        <button id="cancel-edit-btn" style="flex: 1; padding: 10px; background-color: #6b7280; color: white; border: none; border-radius: 4px; cursor: pointer;">❌ Cancel</button>
+            </div>
+                `;
+
+                propertyList.classList.add('hidden');
+                document.getElementById('sidebar').classList.add('active');
+                propertyDetails.classList.remove('hidden');
+
+                document.getElementById('add-new-property-save-btn').addEventListener('click', addNewProperty);
+                document.getElementById('cancel-edit-btn').addEventListener('click', () => {
+                    propertyDetails.classList.add('hidden');
+                    propertyList.classList.remove('hidden');
+                });
+            }
+
+            async function addNewProperty() {
+                showLoading("Creating new property...");
+                const newRecordFields = {
+                    PrimaryOwner: document.getElementById('new_PrimaryOwner').value,
+                    Property_Address: document.getElementById('new_Property_Address').value,
+                    Latitude: parseFloat(document.getElementById('new_Latitude').value),
+                    Longitude: parseFloat(document.getElementById('new_Longitude').value),
+                    Property_Notes: document.getElementById('new_Property_Notes').value
+                };
+
+                if (!newRecordFields.PrimaryOwner || !newRecordFields.Property_Address) {
+                    hideLoading();
+                    showToast("Owner and Address are required.", "error");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${GRIST_CONFIG.API_BASE_URL}/docs/${GRIST_CONFIG.DOC_ID}/tables/${GRIST_CONFIG.TABLE_ID}/records`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${GRIST_CONFIG.API_KEY}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ records: [{ fields: newRecordFields }] })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`Grist API Error: ${JSON.stringify(errorData)}`);
+                    }
+
+                    showToast('New property added successfully!', 'success');
+                    await fetchGristData();
+                    document.getElementById('property-details').classList.add('hidden');
+                    document.getElementById('property-list').classList.remove('hidden');
+
+                } catch (error) {
+                    console.error('Failed to add new property:', error);
+                    showToast('Error adding property. See console.', 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // --- UTILITY AND MAP INITIALIZATION FUNCTIONS ---
+            function initializeMap() {
+                const hybridLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', { maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3'] });
+                const map = L.map('map', { layers: [hybridLayer], center: [44.0, -120.5], zoom: 7 });
+
+                const sidebar = document.getElementById('sidebar');
+                document.getElementById('close-sidebar').addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                });
+
+                // FIX #1: Pass the newly created 'map' object to the setup function
+                setupAddNewProperty(map);
+
+                return map;
+            }
+
+            function updateMap(data) {
+                if (!amap) return;
+                if (markersLayer) {
+                    markersLayer.clearLayers();
+                } else {
+                    markersLayer = L.markerClusterGroup({ disableClusteringAtZoom: 18 });
+                    amap.addLayer(markersLayer);
+                }
+
+                const propertyList = document.getElementById('property-list');
+                propertyList.innerHTML = '';
+
+                const geoJsonLayer = L.geoJSON(data, {
+                    onEachFeature: function(feature, layer) {
+                        const props = feature.properties;
+                        layer.bindPopup(`<b>${props.PrimaryOwner || 'N/A'}</b><br>${props['Address Concatenate'] || 'No Address'}`);
+
+                        const item = document.createElement('div');
+                        item.className = 'property-item';
+                        item.style.padding = '10px';
+                        item.style.borderBottom = '1px solid #eee';
+                        item.style.cursor = 'pointer';
+                        item.innerHTML = `<b>${props.PrimaryOwner}</b><br><small>${props['Address Concatenate']}</small>`;
+                        item.addEventListener('click', () => {
+                            amap.flyTo([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], 18);
+                            layer.openPopup();
+                            showPropertyDetails(props.gristId);
+                            document.getElementById('sidebar').classList.add('active');
+                        });
+                        propertyList.appendChild(item);
+                    }
+                });
+
+                markersLayer.addLayer(geoJsonLayer);
+                hideLoading();
+            }
+
+            function showLoading(message = "Loading...") {
+                document.getElementById('loading-text').textContent = message;
+                document.getElementById('loading-indicator').style.display = 'flex';
+            }
+
+            function hideLoading() {
+                document.getElementById('loading-indicator').style.display = 'none';
+            }
+
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast-notification ${type}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.classList.add('active'), 10);
+                setTimeout(() => {
+                    toast.classList.remove('active');
+                    setTimeout(() => { if (toast.parentNode) { document.body.removeChild(toast); }}, 300);
+                }, 3000);
+            }
+        </script>
+    </body>
+</html>
