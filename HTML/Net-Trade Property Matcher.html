@@ -917,23 +917,98 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0 1rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+            table-layout: fixed;
+        }
+        
+        .property-table th,
+        .property-table td {
+            width: auto;
+        }
+        
+        .property-table th:nth-child(1),
+        .property-table td:nth-child(1) { /* Image */
+            width: 120px;
+        }
+        
+        .property-table th:nth-child(2),
+        .property-table td:nth-child(2) { /* Price */
+            width: 120px;
+        }
+        
+        .property-table th:nth-child(3),
+        .property-table td:nth-child(3) { /* Tenant */
+            width: 150px;
+        }
+        
+        .property-table th:nth-child(4),
+        .property-table td:nth-child(4) { /* Address */
+            width: 250px;
+        }
+        
+        .property-table th:nth-child(5),
+        .property-table td:nth-child(5) { /* Cap Rate */
+            width: 100px;
+        }
+        
+        .property-table th:nth-child(6),
+        .property-table td:nth-child(6) { /* Lease Type */
+            width: 120px;
+        }
+        
+        .property-table th:nth-child(7),
+        .property-table td:nth-child(7) { /* R. Term/Yrs */
+            width: 100px;
+        }
+        
+        .property-table th:nth-child(8),
+        .property-table td:nth-child(8) { /* Price/SF */
+            width: 100px;
         }
 
         .property-table th {
             text-align: left;
-            padding: 1.5rem;
+            padding: 1rem 0.75rem;
             background: var(--primary);
             color: white;
             font-weight: 600;
-            font-size: 1.4rem;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .property-table td {
-            padding: 1.5rem;
+            padding: 1rem 0.75rem;
             background: white;
             border-bottom: 2px solid var(--border);
-            font-size: 1.3rem;
+            font-size: 1rem;
+            vertical-align: middle;
+        }
+        
+        .property-table td.address-cell {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .property-table td.tenant-cell {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .property-table td.numeric {
+            text-align: right;
+            white-space: nowrap;
+        }
+        
+        .property-table img {
+            max-width: 100px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
         }
 
         .property-table tr:hover {
@@ -1150,6 +1225,13 @@
             border-radius: 8px;
             border: 1px solid var(--border);
         }
+        
+        .property-address-modal span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
 
         .property-address-modal i {
             color: var(--primary);
@@ -1342,11 +1424,11 @@
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 relative">
                     <button id="filtersToggle" class="w-full flex items-center justify-between text-left text-lg font-semibold text-gray-900 mb-4">
                         <span>Filters</span>
-                        <i class="fas fa-chevron-up" id="filtersToggleIcon"></i>
+                        <i class="fas fa-chevron-down" id="filtersToggleIcon"></i>
                     </button>
                     
                     <!-- Filter Grid - Responsive layout for better space utilization -->
-                    <div id="filtersContent" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6" style="display: none;">
+                    <div id="filtersContent" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6">
                         <!-- Price Range Mini-Card -->
                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
                             <h4 class="text-sm font-medium text-gray-900 mb-3">Price Range</h4>
@@ -1638,53 +1720,10 @@
         <div class="modal property-modal" id="propertyModal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 id="modalTitle">Tractor Supply Company</h2>
+                    <h2 id="modalTitle">Property Details</h2>
                     <button class="modal-close" id="modalClose">×</button>
                 </div>
-                <div class="modal-body" id="modalBody">
-                    <div class="property-modal-new-layout">
-                        <div class="property-modal-left">
-                            <div class="property-header">
-                                <div class="property-price">$7,391,000</div>
-                                <div class="property-address-modal"><i class="fas fa-map-marker-alt"></i><span>2648 Coweeman Park Drive, Kelso, WA 98626</span></div>
-                            </div>
-                            <div class="property-modal-image">
-                                <img src="https://images1.loopnet.com/i2/sla1oQNdhWt32fLWefbf8I50WrnJhgFAVEvkuJvDtdw/116/2648-Coweeman-Park-Dr-Kelso-WA-Primary-Photo-1-LargeHighDefinition.jpg" alt="Tractor Supply Company" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e0e0e0/777?text=Image+Missing';">
-                            </div>
-                        </div>
-                        <div class="property-modal-right">
-                            
-                            <div class="property-attributes">
-                        <div class="property-attribute">
-                            <span class="attribute-label">SqFt:</span>
-                            <span class="attribute-value">22,181</span>
-                        </div>
-                        <div class="property-attribute">
-                            <span class="attribute-label">Lot Size:</span>
-                            <span class="attribute-value">4.51 AC</span>
-                        </div>
-                        <div class="property-attribute">
-                            <span class="attribute-label">Cap Rate:</span>
-                            <span class="attribute-value">5.75%</span>
-                        </div>
-                        <div class="property-attribute">
-                            <span class="attribute-label">Type:</span>
-                            <span class="attribute-value">Double NN</span>
-                        </div>
-                        <div class="property-attribute">
-                            <span class="attribute-label">Lease Term:</span>
-                            <span class="attribute-value">13.9</span>
-                        </div>
-                        <div class="property-attribute">
-                            <span class="attribute-label">Price/SqFt:</span>
-                            <span class="attribute-value">$333</span>
-                        </div></div>
-                            <a href="https://www.net-trade.com/sale/-coweeman-park-drive-kelso/SJRTRTR/srchdet" target="_blank" class="btn">
-                                <i class="fas fa-external-link-alt"></i> View on Net-Trade
-                            </a>
-                        </div>
-                    </div>
-                    <div id="propertyMap"><iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1000!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s2648%20Coweeman%20Park%20Drive%2C%20Kelso%2C%20WA%2098626!5e1!3m2!1sen!2sus!4v1759045051784!5m1!1e4" frameborder="0" allowfullscreen="" style="width: 100%; height: 100%; border-radius: 8px;"></iframe></div></div>
+                <div class="modal-body" id="modalBody"></div>
             </div>
         </div>
 
@@ -1692,7 +1731,7 @@
             <div class="container"><p>© 2024 Net-Trade Property Matcher | For professional property presentations</p></div>
         </footer>
 
-        <div class="notification success" id="notification">
+        <div class="notification success show" id="notification">
             <i class="fas fa-check-circle"></i><span id="notificationText">Successfully processed 13 properties.</span>
         </div>
 
@@ -2035,22 +2074,20 @@
             function createPropertyTable(properties, currentPage, propertiesPerPage) {
                 let html = '<table class="property-table">';
                 html += '<thead><tr>';
-                const headers = ['Image', 'Price', 'Tenant', 'Address', 'Size SF', 'Lot/AC', 'Cap Rate', 'Lease Type', 'R. Term/Yrs', 'Price/SF'];
+                const headers = ['Image', 'Price', 'Tenant', 'Address', 'Cap Rate', 'Lease Type', 'R. Term/Yrs', 'Price/SF'];
                 headers.forEach(h => html += `<th>${h}</th>`);
                 html += '</tr></thead><tbody>';
                 properties.forEach((p, index) => {
                     const propertyIndex = (currentPage - 1) * propertiesPerPage + index;
                     html += `<tr data-property-id="${propertyIndex}">`;
-                    html += `<td><img src="${p[COLUMN_MAP.imageUrl] || ''}" alt="${p[COLUMN_MAP.propertyName] || ''}" style="max-width:80px; max-height:50px; object-fit:cover;"></td>`;
-                    html += `<td>${formatPrice(p[COLUMN_MAP.price])}</td>`;
-                    html += `<td>${p[COLUMN_MAP.propertyName] || ''}</td>`;
-                    html += `<td>${getFullAddress(p, ', ')}</td>`;
-                    html += `<td>${p[COLUMN_MAP.sqft] || ''}</td>`;
-                    html += `<td>${p[COLUMN_MAP.lotSize] || ''}</td>`;
-                    html += `<td>${p[COLUMN_MAP.capRate] || ''}</td>`;
+                    html += `<td><img src="${p[COLUMN_MAP.imageUrl] || ''}" alt="${p[COLUMN_MAP.propertyName] || ''}" onerror="this.onerror=null;this.src='https://placehold.co/100x60/e0e0e0/777?text=Image+Missing';"></td>`;
+                    html += `<td class="numeric">${formatPrice(p[COLUMN_MAP.price])}</td>`;
+                    html += `<td class="tenant-cell">${p[COLUMN_MAP.propertyName] || ''}</td>`;
+                    html += `<td class="address-cell">${getFullAddress(p, ', ')}</td>`;
+                    html += `<td class="numeric">${p[COLUMN_MAP.capRate] || ''}</td>`;
                     html += `<td>${p[COLUMN_MAP.type] || ''}</td>`;
-                    html += `<td>${p[COLUMN_MAP.leaseTerm] || ''}</td>`;
-                    html += `<td>${p[COLUMN_MAP.pricePerSqft] || ''}</td>`;
+                    html += `<td class="numeric">${p[COLUMN_MAP.leaseTerm] || ''}</td>`;
+                    html += `<td class="numeric">${p[COLUMN_MAP.pricePerSqft] || ''}</td>`;
                     html += '</tr>';
                 });
                 html += '</tbody></table>';
@@ -2548,30 +2585,38 @@
                 bodyContent.querySelector('.actions').remove();
                 bodyContent.querySelector('.export-options').remove();
                 
-                const functionStrs = [ 
-                    parsePrice, 
-                    formatPrice, 
-                    formatPriceValue, 
+                const functionStrs = [
+                    parsePrice,
+                    formatPrice,
+                    formatPriceValue,
                     formatFullPrice,
                     formatSize,
-                    getFullAddress, 
-                    createPropertyCard, 
-                    setupPagination, 
-                    openPropertyModal, 
-                    loadMap, 
-                    setView, 
-                    displayProperties, 
-                    filterAndSortProperties, 
-                    updateFilterIndicators, 
-                    clearSearchFilter, 
-                    clearPriceFilter, 
+                    getFullAddress,
+                    createPropertyCard,
+                    createPropertyTable,
+                    setupPagination,
+                    openPropertyModal,
+                    loadMap,
+                    setView,
+                    displayProperties,
+                    filterAndSortProperties,
+                    updateFilterIndicators,
+                    clearSearchFilter,
+                    clearPriceFilter,
                     clearSizeFilter,
                     clearCapRateFilter,
                     clearLeaseTermFilter,
                     clearTenantFilter,
                     clearRentIncreasesFilter,
-                    showNotification, 
-                    getIndexFromProperty 
+                    showNotification,
+                    getIndexFromProperty,
+                    initializeSliders,
+                    updatePriceSlider,
+                    updateSizeSlider,
+                    updateCapRateSlider,
+                    updateLeaseTermSlider,
+                    updateSliderRange,
+                    clearFilters
                 ].map(fn => fn.toString()).join('\n\n');
                 const scriptContent = `
                 document.addEventListener('DOMContentLoaded', function() {
@@ -2585,6 +2630,7 @@
                     const sortSelect = document.getElementById('sortSelect');
                     const gridView = document.getElementById('gridView');
                     const listView = document.getElementById('listView');
+                    const tableView = document.getElementById('tableView');
                     const resultsContainer = document.getElementById('resultsContainer');
                     const propertyCount = document.getElementById('propertyCount');
                     const pagination = document.getElementById('pagination');
@@ -2597,13 +2643,13 @@
                     
                     ${functionStrs}
                     
-                    function handleResultsClick(e){ 
-                        const c=e.target.closest('.property-card[data-property-id]'); 
+                    function handleResultsClick(e){
+                        const c=e.target.closest('.property-card[data-property-id], tr[data-property-id]');
                         if(c){
-                            const propertyIndex=parseInt(c.dataset.propertyId); 
-                            const p=currentFilteredProperties[propertyIndex]; 
+                            const propertyIndex=parseInt(c.dataset.propertyId);
+                            const p=currentFilteredProperties[propertyIndex];
                             if(p) openPropertyModal(p);
-                        } 
+                        }
                     }
                     
                     function handlePaginationClick(e){ 
@@ -2620,14 +2666,78 @@
                         } 
                     }
                     
+                    // Filter and toggle elements
+                    const applyFiltersBtn = document.getElementById('applyFilters');
+                    const clearFiltersBtn = document.getElementById('clearFilters');
+                    const filtersToggle = document.getElementById('filtersToggle');
+                    const filtersContent = document.getElementById('filtersContent');
+                    const filtersToggleIcon = document.getElementById('filtersToggleIcon');
+                    const tenantToggle = document.getElementById('tenantToggle');
+                    const tenantContent = document.getElementById('tenantContent');
+                    const tenantToggleIcon = document.getElementById('tenantToggleIcon');
+                    const minPriceEl = document.getElementById('minPrice');
+                    const maxPriceEl = document.getElementById('maxPrice');
+                    const minSizeEl = document.getElementById('minSize');
+                    const maxSizeEl = document.getElementById('maxSize');
+                    const minCapRateEl = document.getElementById('minCapRate');
+                    const maxCapRateEl = document.getElementById('maxCapRate');
+                    const minLeaseTermEl = document.getElementById('minLeaseTerm');
+                    const maxLeaseTermEl = document.getElementById('maxLeaseTerm');
+                    const tenantRetail = document.getElementById('tenantRetail');
+                    const tenantRestaurant = document.getElementById('tenantRestaurant');
+                    const tenantMedical = document.getElementById('tenantMedical');
+                    const tenantOffice = document.getElementById('tenantOffice');
+                    const tenantOther = document.getElementById('tenantOther');
+                    const rentIncreasesFilterEl = document.getElementById('rentIncreasesFilter');
+                    
+                    // Toggle event listeners
+                    if (filtersToggle && filtersContent && filtersToggleIcon) {
+                        filtersToggle.addEventListener('click', () => {
+                            const isHidden = filtersContent.style.display === 'none';
+                            filtersContent.style.display = isHidden ? '' : 'none';
+                            filtersToggleIcon.classList.toggle('fa-chevron-down', isHidden);
+                            filtersToggleIcon.classList.toggle('fa-chevron-up', !isHidden);
+                        });
+                    }
+                    if (tenantToggle && tenantContent && tenantToggleIcon) {
+                        tenantToggle.addEventListener('click', () => {
+                            const isHidden = tenantContent.style.display === 'none';
+                            tenantContent.style.display = isHidden ? '' : 'none';
+                            tenantToggleIcon.classList.toggle('fa-chevron-down', isHidden);
+                            tenantToggleIcon.classList.toggle('fa-chevron-up', !isHidden);
+                        });
+                    }
+                    
+                    // Filter event listeners
+                    if (applyFiltersBtn) applyFiltersBtn.addEventListener('click', filterAndSortProperties);
+                    if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', clearFilters);
+                    if (minPriceEl) minPriceEl.addEventListener('input', updatePriceSlider);
+                    if (maxPriceEl) maxPriceEl.addEventListener('input', updatePriceSlider);
+                    if (minSizeEl) minSizeEl.addEventListener('input', updateSizeSlider);
+                    if (maxSizeEl) maxSizeEl.addEventListener('input', updateSizeSlider);
+                    if (minCapRateEl) minCapRateEl.addEventListener('input', updateCapRateSlider);
+                    if (maxCapRateEl) maxCapRateEl.addEventListener('input', updateCapRateSlider);
+                    if (minLeaseTermEl) minLeaseTermEl.addEventListener('input', updateLeaseTermSlider);
+                    if (maxLeaseTermEl) maxLeaseTermEl.addEventListener('input', updateLeaseTermSlider);
+                    if (tenantRetail) tenantRetail.addEventListener('change', filterAndSortProperties);
+                    if (tenantRestaurant) tenantRestaurant.addEventListener('change', filterAndSortProperties);
+                    if (tenantMedical) tenantMedical.addEventListener('change', filterAndSortProperties);
+                    if (tenantOffice) tenantOffice.addEventListener('change', filterAndSortProperties);
+                    if (tenantOther) tenantOther.addEventListener('change', filterAndSortProperties);
+                    if (rentIncreasesFilterEl) rentIncreasesFilterEl.addEventListener('change', filterAndSortProperties);
+                    
+                    // Initialize sliders
+                    initializeSliders();
+                    
                     // Event listeners with null checks
                     if(searchInput) searchInput.addEventListener('input', filterAndSortProperties);
                     if(sortSelect) sortSelect.addEventListener('change', filterAndSortProperties);
                     if(gridView) gridView.addEventListener('click', () => setView('grid'));
                     if(listView) listView.addEventListener('click', () => setView('list'));
+                    if(tableView) tableView.addEventListener('click', () => setView('table'));
                     if(modalClose) modalClose.addEventListener('click', () => propertyModal.classList.remove('show'));
-                    if(propertyModal) propertyModal.addEventListener('click', (e) => { 
-                        if (e.target === propertyModal) propertyModal.classList.remove('show'); 
+                    if(propertyModal) propertyModal.addEventListener('click', (e) => {
+                        if (e.target === propertyModal) propertyModal.classList.remove('show');
                     });
                     if(resultsContainer) resultsContainer.addEventListener('click', handleResultsClick);
                     if(pagination) pagination.addEventListener('click', handlePaginationClick);
@@ -2670,6 +2780,7 @@
                     const sortSelect = document.getElementById('sortSelect');
                     const gridView = document.getElementById('gridView');
                     const listView = document.getElementById('listView');
+                    const tableView = document.getElementById('tableView');
                     const resultsContainer = document.getElementById('resultsContainer');
                     const propertyCount = document.getElementById('propertyCount');
                     const pagination = document.getElementById('pagination');
@@ -2772,6 +2883,29 @@ function createPropertyCard(property) {
                         <p class="property-description">${property[COLUMN_MAP.scrapedDescription] || ''}</p>
                     </div>
                 </div>`;
+            }
+
+function createPropertyTable(properties, currentPage, propertiesPerPage) {
+                let html = '<table class="property-table">';
+                html += '<thead><tr>';
+                const headers = ['Image', 'Price', 'Tenant', 'Address', 'Cap Rate', 'Lease Type', 'R. Term/Yrs', 'Price/SF'];
+                headers.forEach(h => html += `<th>${h}</th>`);
+                html += '</tr></thead><tbody>';
+                properties.forEach((p, index) => {
+                    const propertyIndex = (currentPage - 1) * propertiesPerPage + index;
+                    html += `<tr data-property-id="${propertyIndex}">`;
+                    html += `<td><img src="${p[COLUMN_MAP.imageUrl] || ''}" alt="${p[COLUMN_MAP.propertyName] || ''}" onerror="this.onerror=null;this.src='https://placehold.co/100x60/e0e0e0/777?text=Image+Missing';"></td>`;
+                    html += `<td class="numeric">${formatPrice(p[COLUMN_MAP.price])}</td>`;
+                    html += `<td class="tenant-cell">${p[COLUMN_MAP.propertyName] || ''}</td>`;
+                    html += `<td class="address-cell">${getFullAddress(p, ', ')}</td>`;
+                    html += `<td class="numeric">${p[COLUMN_MAP.capRate] || ''}</td>`;
+                    html += `<td>${p[COLUMN_MAP.type] || ''}</td>`;
+                    html += `<td class="numeric">${p[COLUMN_MAP.leaseTerm] || ''}</td>`;
+                    html += `<td class="numeric">${p[COLUMN_MAP.pricePerSqft] || ''}</td>`;
+                    html += '</tr>';
+                });
+                html += '</tbody></table>';
+                return html;
             }
 
 function setupPagination() {
@@ -3128,14 +3262,185 @@ function showNotification(message, type = 'success') {
 function getIndexFromProperty(property) {
                 return currentFilteredProperties.indexOf(property);
             }
+
+function initializeSliders() {
+                updatePriceSlider();
+                updateSizeSlider();
+                updateCapRateSlider();
+                updateLeaseTermSlider();
+            }
+
+function updatePriceSlider() {
+                const minPrice = document.getElementById('minPrice');
+                const maxPrice = document.getElementById('maxPrice');
+                const minPriceDisplay = document.getElementById('minPriceDisplay');
+                const maxPriceDisplay = document.getElementById('maxPriceDisplay');
+                
+                // Ensure min doesn't exceed max
+                if (parseInt(minPrice.value) > parseInt(maxPrice.value)) {
+                    minPrice.value = maxPrice.value;
+                }
+                
+                // Update display values
+                minPriceDisplay.textContent = formatPriceValue(parseInt(minPrice.value));
+                maxPriceDisplay.textContent = parseInt(maxPrice.value) >= 10000000 ? '$10M+' : formatPriceValue(parseInt(maxPrice.value));
+                
+                // Update slider range visual
+                updateSliderRange('price');
+                
+                // Filter properties
+                filterAndSortProperties();
+            }
+
+function updateSizeSlider() {
+                const minSize = document.getElementById('minSize');
+                const maxSize = document.getElementById('maxSize');
+                const minSizeDisplay = document.getElementById('minSizeDisplay');
+                const maxSizeDisplay = document.getElementById('maxSizeDisplay');
+                
+                // Ensure min doesn't exceed max
+                if (parseInt(minSize.value) > parseInt(maxSize.value)) {
+                    minSize.value = maxSize.value;
+                }
+                
+                // Update display values
+                minSizeDisplay.textContent = formatSize(parseInt(minSize.value));
+                maxSizeDisplay.textContent = parseInt(maxSize.value) >= 1000000 ? '1M+ SF' : formatSize(parseInt(maxSize.value));
+                
+                // Update slider range visual
+                updateSliderRange('size');
+                
+                // Filter properties
+                filterAndSortProperties();
+            }
+
+function updateCapRateSlider() {
+                const minCapRate = document.getElementById('minCapRate');
+                const maxCapRate = document.getElementById('maxCapRate');
+                const minCapRateDisplay = document.getElementById('minCapRateDisplay');
+                const maxCapRateDisplay = document.getElementById('maxCapRateDisplay');
+                
+                // Ensure min doesn't exceed max
+                if (parseFloat(minCapRate.value) > parseFloat(maxCapRate.value)) {
+                    minCapRate.value = maxCapRate.value;
+                }
+                
+                // Update display values
+                minCapRateDisplay.textContent = parseFloat(minCapRate.value).toFixed(1) + '%';
+                maxCapRateDisplay.textContent = parseFloat(maxCapRate.value) >= 15 ? '15%+' : parseFloat(maxCapRate.value).toFixed(1) + '%';
+                
+                // Update slider range visual
+                updateSliderRange('capRate');
+                
+                // Filter properties
+                filterAndSortProperties();
+            }
+
+function updateLeaseTermSlider() {
+                const minLeaseTerm = document.getElementById('minLeaseTerm');
+                const maxLeaseTerm = document.getElementById('maxLeaseTerm');
+                const minLeaseTermDisplay = document.getElementById('minLeaseTermDisplay');
+                const maxLeaseTermDisplay = document.getElementById('maxLeaseTermDisplay');
+                
+                // Ensure min doesn't exceed max
+                if (parseInt(minLeaseTerm.value) > parseInt(maxLeaseTerm.value)) {
+                    minLeaseTerm.value = maxLeaseTerm.value;
+                }
+                
+                // Update display values
+                const minYears = parseInt(minLeaseTerm.value);
+                const maxYears = parseInt(maxLeaseTerm.value);
+                minLeaseTermDisplay.textContent = minYears + (minYears === 1 ? ' yr' : ' yrs');
+                maxLeaseTermDisplay.textContent = maxYears >= 30 ? '30+ yrs' : maxYears + (maxYears === 1 ? ' yr' : ' yrs');
+                
+                // Update slider range visual
+                updateSliderRange('leaseTerm');
+                
+                // Filter properties
+                filterAndSortProperties();
+            }
+
+function updateSliderRange(type) {
+                let prefix, min, max;
+                
+                if (type === 'price') {
+                    prefix = 'Price';
+                } else if (type === 'size') {
+                    prefix = 'Size';
+                } else if (type === 'capRate') {
+                    prefix = 'CapRate';
+                } else if (type === 'leaseTerm') {
+                    prefix = 'LeaseTerm';
+                }
+                
+                min = document.getElementById(`min${prefix}`);
+                max = document.getElementById(`max${prefix}`);
+                
+                // Check if elements exist before proceeding
+                if (!min || !max) return;
+                
+                const sliderRange = min.parentElement.querySelector('.slider-range');
+                
+                // If slider-range element doesn't exist, skip visual update
+                if (!sliderRange) return;
+                
+                const minVal = parseFloat(min.value);
+                const maxVal = parseFloat(max.value);
+                const minRange = parseFloat(min.min);
+                const maxRange = parseFloat(min.max);
+                
+                const leftPercent = ((minVal - minRange) / (maxRange - minRange)) * 100;
+                const rightPercent = ((maxVal - minRange) / (maxRange - minRange)) * 100;
+                
+                sliderRange.style.left = leftPercent + '%';
+                sliderRange.style.width = (rightPercent - leftPercent) + '%';
+            }
+
+function clearFilters() {
+                // Reset search
+                document.getElementById('searchInput').value = '';
+                
+                // Reset price slider
+                document.getElementById('minPrice').value = 0;
+                document.getElementById('maxPrice').value = 10000000;
+                updatePriceSlider();
+                
+                // Reset size slider
+                document.getElementById('minSize').value = 0;
+                document.getElementById('maxSize').value = 1000000;
+                updateSizeSlider();
+                
+                // Reset cap rate slider
+                document.getElementById('minCapRate').value = 0;
+                document.getElementById('maxCapRate').value = 15;
+                updateCapRateSlider();
+                
+                // Reset lease term slider
+                document.getElementById('minLeaseTerm').value = 0;
+                document.getElementById('maxLeaseTerm').value = 30;
+                updateLeaseTermSlider();
+                
+                // Reset tenant checkboxes
+                document.getElementById('tenantRetail').checked = true;
+                document.getElementById('tenantRestaurant').checked = true;
+                document.getElementById('tenantMedical').checked = true;
+                document.getElementById('tenantOffice').checked = true;
+                document.getElementById('tenantOther').checked = true;
+                
+                // Reset rent increases filter
+                document.getElementById('rentIncreasesFilter').value = 'all';
+                
+                // Trigger filter update
+                filterAndSortProperties();
+            }
                     
-                    function handleResultsClick(e){ 
-                        const c=e.target.closest('.property-card[data-property-id]'); 
+                    function handleResultsClick(e){
+                        const c=e.target.closest('.property-card[data-property-id], tr[data-property-id]');
                         if(c){
-                            const propertyIndex=parseInt(c.dataset.propertyId); 
-                            const p=currentFilteredProperties[propertyIndex]; 
+                            const propertyIndex=parseInt(c.dataset.propertyId);
+                            const p=currentFilteredProperties[propertyIndex];
                             if(p) openPropertyModal(p);
-                        } 
+                        }
                     }
                     
                     function handlePaginationClick(e){ 
@@ -3152,14 +3457,78 @@ function getIndexFromProperty(property) {
                         } 
                     }
                     
+                    // Filter and toggle elements
+                    const applyFiltersBtn = document.getElementById('applyFilters');
+                    const clearFiltersBtn = document.getElementById('clearFilters');
+                    const filtersToggle = document.getElementById('filtersToggle');
+                    const filtersContent = document.getElementById('filtersContent');
+                    const filtersToggleIcon = document.getElementById('filtersToggleIcon');
+                    const tenantToggle = document.getElementById('tenantToggle');
+                    const tenantContent = document.getElementById('tenantContent');
+                    const tenantToggleIcon = document.getElementById('tenantToggleIcon');
+                    const minPriceEl = document.getElementById('minPrice');
+                    const maxPriceEl = document.getElementById('maxPrice');
+                    const minSizeEl = document.getElementById('minSize');
+                    const maxSizeEl = document.getElementById('maxSize');
+                    const minCapRateEl = document.getElementById('minCapRate');
+                    const maxCapRateEl = document.getElementById('maxCapRate');
+                    const minLeaseTermEl = document.getElementById('minLeaseTerm');
+                    const maxLeaseTermEl = document.getElementById('maxLeaseTerm');
+                    const tenantRetail = document.getElementById('tenantRetail');
+                    const tenantRestaurant = document.getElementById('tenantRestaurant');
+                    const tenantMedical = document.getElementById('tenantMedical');
+                    const tenantOffice = document.getElementById('tenantOffice');
+                    const tenantOther = document.getElementById('tenantOther');
+                    const rentIncreasesFilterEl = document.getElementById('rentIncreasesFilter');
+                    
+                    // Toggle event listeners
+                    if (filtersToggle && filtersContent && filtersToggleIcon) {
+                        filtersToggle.addEventListener('click', () => {
+                            const isHidden = filtersContent.style.display === 'none';
+                            filtersContent.style.display = isHidden ? '' : 'none';
+                            filtersToggleIcon.classList.toggle('fa-chevron-down', isHidden);
+                            filtersToggleIcon.classList.toggle('fa-chevron-up', !isHidden);
+                        });
+                    }
+                    if (tenantToggle && tenantContent && tenantToggleIcon) {
+                        tenantToggle.addEventListener('click', () => {
+                            const isHidden = tenantContent.style.display === 'none';
+                            tenantContent.style.display = isHidden ? '' : 'none';
+                            tenantToggleIcon.classList.toggle('fa-chevron-down', isHidden);
+                            tenantToggleIcon.classList.toggle('fa-chevron-up', !isHidden);
+                        });
+                    }
+                    
+                    // Filter event listeners
+                    if (applyFiltersBtn) applyFiltersBtn.addEventListener('click', filterAndSortProperties);
+                    if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', clearFilters);
+                    if (minPriceEl) minPriceEl.addEventListener('input', updatePriceSlider);
+                    if (maxPriceEl) maxPriceEl.addEventListener('input', updatePriceSlider);
+                    if (minSizeEl) minSizeEl.addEventListener('input', updateSizeSlider);
+                    if (maxSizeEl) maxSizeEl.addEventListener('input', updateSizeSlider);
+                    if (minCapRateEl) minCapRateEl.addEventListener('input', updateCapRateSlider);
+                    if (maxCapRateEl) maxCapRateEl.addEventListener('input', updateCapRateSlider);
+                    if (minLeaseTermEl) minLeaseTermEl.addEventListener('input', updateLeaseTermSlider);
+                    if (maxLeaseTermEl) maxLeaseTermEl.addEventListener('input', updateLeaseTermSlider);
+                    if (tenantRetail) tenantRetail.addEventListener('change', filterAndSortProperties);
+                    if (tenantRestaurant) tenantRestaurant.addEventListener('change', filterAndSortProperties);
+                    if (tenantMedical) tenantMedical.addEventListener('change', filterAndSortProperties);
+                    if (tenantOffice) tenantOffice.addEventListener('change', filterAndSortProperties);
+                    if (tenantOther) tenantOther.addEventListener('change', filterAndSortProperties);
+                    if (rentIncreasesFilterEl) rentIncreasesFilterEl.addEventListener('change', filterAndSortProperties);
+                    
+                    // Initialize sliders
+                    initializeSliders();
+                    
                     // Event listeners with null checks
                     if(searchInput) searchInput.addEventListener('input', filterAndSortProperties);
                     if(sortSelect) sortSelect.addEventListener('change', filterAndSortProperties);
                     if(gridView) gridView.addEventListener('click', () => setView('grid'));
                     if(listView) listView.addEventListener('click', () => setView('list'));
+                    if(tableView) tableView.addEventListener('click', () => setView('table'));
                     if(modalClose) modalClose.addEventListener('click', () => propertyModal.classList.remove('show'));
-                    if(propertyModal) propertyModal.addEventListener('click', (e) => { 
-                        if (e.target === propertyModal) propertyModal.classList.remove('show'); 
+                    if(propertyModal) propertyModal.addEventListener('click', (e) => {
+                        if (e.target === propertyModal) propertyModal.classList.remove('show');
                     });
                     if(resultsContainer) resultsContainer.addEventListener('click', handleResultsClick);
                     if(pagination) pagination.addEventListener('click', handlePaginationClick);
