@@ -1,0 +1,3168 @@
+
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Property Catalog</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><style>
+            /* Custom slider styling for dual-range sliders */
+            .slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                pointer-events: none;
+                position: absolute;
+                height: 20px;
+                width: 100%;
+                outline: none;
+                background: transparent;
+            }
+            
+            .slider-thumb::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+                background: #3b82f6;
+                cursor: pointer;
+                border: 2px solid #ffffff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                pointer-events: all;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .slider-thumb::-moz-range-thumb {
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+                background: #3b82f6;
+                cursor: pointer;
+                border: 2px solid #ffffff;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                pointer-events: all;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .slider-thumb::-webkit-slider-track {
+                background: #e5e7eb;
+                height: 4px;
+                border-radius: 2px;
+            }
+            
+            .slider-thumb::-moz-range-track {
+                background: #e5e7eb;
+                height: 4px;
+                border-radius: 2px;
+            }
+            
+            .slider-thumb:hover::-webkit-slider-thumb {
+                background: #2563eb;
+                transform: scale(1.1);
+            }
+            
+            .slider-thumb:hover::-moz-range-thumb {
+                background: #2563eb;
+                transform: scale(1.1);
+            }
+        </style></head><body>
+
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Net-Trade Property Matcher</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --primary: #2c3e50; /* Matte Navy */
+            --primary-dark: #1d2b3a;
+            --secondary: #7f8c8d; /* Greyish Cyan */
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --success: #16a085;
+            --warning: #f39c12;
+            --error: #c0392b;
+            --border: #dee2e6;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f9;
+            color: var(--dark);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-weight: 400;
+            font-size: 1.4rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .upload-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 968px) {
+            .upload-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .upload-box {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .upload-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .upload-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .upload-title i {
+            font-size: 1.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            resize: vertical;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1.2rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            height: 56px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+            box-shadow: 0 6px 20px rgba(113, 128, 150, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            box-shadow: 0 10px 30px rgba(113, 128, 150, 0.4);
+        }
+
+        .btn i {
+            font-size: 1.2rem;
+        }
+
+        .btn-lg {
+            padding: 1.4rem 2.5rem;
+            font-size: 1.2rem;
+            height: 64px;
+            min-width: 180px;
+        }
+
+        .btn-lg i {
+            font-size: 1.4rem;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .controls {
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+            margin-bottom: 0.5rem;
+            border: 0;
+        }
+
+        /* Responsive breakpoints for top-bar */
+        @media (max-width: 768px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            
+            .search-section {
+                flex: 1 1 auto;
+                max-width: none;
+                order: 1;
+            }
+            
+            .sort-section {
+                flex: 1 1 auto;
+                order: 2;
+            }
+            
+            .actions-section {
+                flex: 1 1 auto;
+                justify-content: space-between;
+                order: 3;
+            }
+            
+            .filter-actions {
+                flex: 1;
+            }
+            
+            .view-options {
+                flex-shrink: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .actions-section {
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: stretch;
+            }
+            
+            .filter-actions {
+                width: 100%;
+            }
+            
+            .view-options {
+                justify-content: center;
+            }
+        }
+        
+        .filters-row {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .filters-row:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: stretch;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            padding: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            color: var(--text);
+        }
+
+        .search-section {
+            flex: 1 1 300px;
+            min-width: 250px;
+            max-width: 400px;
+        }
+
+        .sort-section {
+            flex: 0 0 200px;
+            min-width: 180px;
+        }
+        .sort-section .filter-group label { 
+            display: none; 
+        }
+
+        .actions-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex: 0 1 auto;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+
+        .view-options {
+            display: flex;
+            gap: 0.25rem;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .view-option {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            height: 32px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-width: fit-content;
+        }
+
+        .view-option i {
+            margin-right: 0.4rem;
+            font-size: 0.8rem;
+        }
+
+        .view-option:hover:not(.active) {
+            background-color: var(--hover-bg);
+            color: var(--text);
+        }
+
+        .view-option.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 1rem 0;
+            border-top: 1px solid var(--border);
+            margin-top: 0.5rem;
+        }
+
+        .filter-group.price-range,
+        .filter-group.size-range {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        @media (max-width: 1200px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            
+            .search-section,
+            .sort-section,
+            .actions-section {
+                flex: 1;
+            }
+            
+            .actions-section {
+                justify-content: space-between;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                padding: 0.75rem;
+            }
+            
+            .filters-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .filter-group.price-range,
+            .filter-group.size-range {
+                min-width: unset;
+            }
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            min-width: 110px;
+        }
+
+        .filter-group label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 1rem 1.25rem;
+            border: 3px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            height: 56px;
+            background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            font-weight: 500;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.8);
+            box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.15), 0 6px 20px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+            background: #ffffff;
+        }
+
+        /* Checkbox Group Styles */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.0rem;
+            cursor: pointer;
+            user-select: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .checkmark {
+            display: none;
+        }
+
+        /* Select Container Styles */
+        .select-container {
+            position: relative;
+            margin-top: 0.3rem;
+        }
+
+        .select-container select {
+            width: 100%;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        /* Filter Group Specific Styles */
+        .filter-group.cap-rate-range,
+        .filter-group.lease-term-range {
+            min-width: 140px;
+        }
+
+        .filter-group.tenant-filter {
+            min-width: 200px;
+        }
+
+        .filter-group.rent-increases-filter {
+            min-width: 160px;
+        }
+
+        .range-inputs {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .range-inputs input {
+            width: 80px;
+            padding: 0.4rem;
+            font-size: 0.8rem;
+        }
+
+        .range-inputs span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Dual Range Slider Styles */
+        .slider-container {
+            margin-top: 0.5rem;
+        }
+
+        .slider-values {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .dual-range-slider {
+            position: relative;
+            height: 30px;
+            margin: 0.75rem 0;
+        }
+
+        .dual-range-slider input[type="range"] {
+            position: absolute;
+            width: 100%;
+            height: 8px;
+            background: none;
+            pointer-events: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+        .dual-range-slider input[type="range"]::-webkit-slider-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            -webkit-appearance: none;
+            pointer-events: all;
+            position: relative;
+            z-index: 2;
+        }
+
+        .dual-range-slider input[type="range"]::-moz-range-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            pointer-events: all;
+            position: relative;
+            z-index: 2;
+        }
+
+        .slider-track {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        .slider-range {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 8px;
+            background: var(--primary);
+            border-radius: 4px;
+            z-index: 1;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 1.2rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1.2rem 1.5rem 1.2rem 4rem;
+            border: 3px solid rgba(226, 232, 240, 0.8);
+            border-radius: 16px;
+            font-size: 1.1rem;
+            background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            height: 60px;
+            font-weight: 500;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.8);
+            box-shadow: 0 0 0 6px rgba(102, 126, 234, 0.15), 0 6px 20px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+            background: #ffffff;
+        }
+
+        .search-box input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+            font-size: 1.1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 150px;
+        }
+
+        .filter-group label {
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 1.1rem;
+        }
+
+        .range-inputs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .range-inputs input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .range-inputs span {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .controls-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 768px) {
+             .controls-actions {
+                 justify-content: center;
+                 flex-direction: column;
+                 gap: 0.75rem;
+             }
+         }
+
+        .filter-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            cursor: pointer;
+            transition: var(--transition);
+            height: 48px;
+            font-size: 1.1rem;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+        }
+
+        .view-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-option {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .view-option.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 3rem;
+            min-height: 300px;
+            border: 1px solid var(--border);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .results-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--dark);
+            letter-spacing: -0.02em;
+        }
+
+        .results-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.75rem;
+        }
+
+        .property-count {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .filter-indicators {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            max-width: 350px;
+            justify-content: flex-end;
+        }
+
+        .filter-tag {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .filter-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 0.25rem;
+            font-size: 1rem;
+        }
+
+        .filter-tag .remove:hover {
+            color: #ffcccc;
+        }
+
+        .property-count {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .property-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .property-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 1rem;
+            font-size: 1.2rem;
+        }
+
+        .property-table th {
+            text-align: left;
+            padding: 1.5rem;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1.4rem;
+        }
+
+        .property-table td {
+            padding: 1.5rem;
+            background: white;
+            border-bottom: 2px solid var(--border);
+            font-size: 1.3rem;
+        }
+
+        .property-table tr:hover {
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .property-table img {
+            max-width: 150px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .property-card {
+            background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 2px solid rgba(226, 232, 240, 0.6);
+            position: relative;
+        }
+
+        .property-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .property-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .property-card:hover::before {
+            opacity: 1;
+        }
+
+        .property-card.grid { display: flex; flex-direction: column; }
+        .property-card.list { display: flex; flex-direction: row; height: 220px; }
+        .property-image { overflow: hidden; background-color: #f0f0f0; }
+        .property-card.grid .property-image { height: 220px; }
+        .property-card.list .property-image { width: 320px; flex-shrink: 0; height: 100%; }
+        .property-image img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
+        .property-card:hover .property-image img { transform: scale(1.05); }
+        .property-details { padding: 2rem; display: flex; flex-direction: column; }
+        .property-card.list .property-details { flex: 1; justify-content: center; }
+        .property-price { font-size: 1.8rem; font-weight: 700; color: var(--primary); margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+        .property-address { 
+            font-weight: 600; 
+            margin-bottom: 0.75rem; 
+            color: var(--dark); 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            font-size: 1.1rem;
+            line-height: 1.4;
+        }
+        .property-description { color: var(--secondary); margin-bottom: 1.25rem; font-size: 1rem; flex-grow: 1; line-height: 1.6; }
+        .property-location { display: flex; align-items: center; gap: 8px; color: var(--secondary); font-size: 1rem; }
+        .property-location i { color: var(--primary); }
+
+        .empty-state { text-align: center; padding: 3rem; color: var(--secondary); }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; color: var(--border); }
+        footer { text-align: center; padding: 2rem 0; color: var(--secondary); font-size: 0.9rem; border-top: 1px solid var(--border); }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            background-color: var(--success);
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(120px);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            z-index: 1000;
+        }
+        .notification.error { background-color: var(--error); }
+        .notification.warning { background-color: var(--warning); }
+        .notification.show { transform: translateY(0); opacity: 1; }
+
+        .file-info { text-align: center; padding: 0.5rem; color: var(--secondary); font-size: 0.9rem; }
+        .export-options { display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal.show { display: flex; opacity: 1; }
+
+        .modal-content {
+            background-color: white; padding: 0; border-radius: 12px;
+            max-width: 900px; width: 95%; max-height: 90vh;
+            display: flex; flex-direction: column;
+            transform: scale(0.95); transition: transform 0.3s ease;
+            overflow: hidden;
+        }
+        .modal.show .modal-content { transform: scale(1); }
+
+        .modal-large {
+            max-width: 1200px;
+            width: 95%;
+        }
+
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .modal-header h2 { 
+            color: var(--primary); 
+            font-size: 1.15rem; 
+            font-weight: 700; 
+            margin: 0;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--secondary); line-height: 1; }
+
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            background: var(--bg);
+        }
+
+        .property-modal-new-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .property-modal-left {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .property-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .property-modal-right {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .property-modal-new-layout {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+        
+        .property-modal-image { 
+            border-radius: 12px; 
+            overflow: hidden; 
+            background-color: #f0f0f0; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .property-modal-image img { 
+            width: 100%; 
+            height: auto; 
+            display: block; 
+            aspect-ratio: 16/10;
+            object-fit: cover;
+        }
+
+        .property-modal-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .property-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .property-address-modal {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .property-address-modal i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .property-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .property-attributes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .property-attributes .attribute-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            background: var(--card-bg);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .property-attributes .attribute-row strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .property-attributes .attribute-row span {
+            color: var(--text-secondary);
+        }
+        .property-modal-details .property-price { font-size: 2rem; }
+        .property-modal-details .property-description { margin: 1rem 0; }
+        
+        .property-attributes { margin: 1rem 0; }
+        .property-attribute { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 0.5rem 0; 
+            border-bottom: 1px solid var(--border); 
+        }
+        .property-attribute:last-child { border-bottom: none; }
+        .attribute-label { 
+            font-weight: 600; 
+            color: var(--secondary); 
+            min-width: 100px; 
+        }
+        .attribute-value { 
+            color: var(--text); 
+            text-align: right; 
+            font-weight: 500; 
+        }
+        
+        #propertyMap {
+            height: 300px; 
+            width: 100%; 
+            background-color: #e0e0e0; 
+            border-radius: 8px; 
+            margin-top: 0; 
+            border: 1px solid var(--border);
+        }
+
+        /* View Options Styling */
+        .view-option {
+            background: transparent;
+            border: 1px solid #e5e7eb;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .view-option:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+        .view-option.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        /* Responsive adjustments for mobile */
+        @media (max-width: 1024px) {
+            .controls .flex.flex-col.lg\\:flex-row {
+                flex-direction: column;
+            }
+            .controls .flex.flex-col.lg\\:flex-row > div {
+                width: 100%;
+            }
+            .controls .grid.grid-cols-1.lg\\:grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Ensure consistent spacing */
+        .controls .bg-white.rounded-lg {
+            margin-bottom: 0;
+        }
+
+        .pagination { display: flex; justify-content: center; align-items: center; margin-top: 2rem; gap: 0.5rem; flex-wrap: wrap; }
+        .pagination-btn {
+            padding: 8px 16px; border: 1px solid var(--border); border-radius: 6px; background: white; cursor: pointer; transition: var(--transition);
+        }
+        .pagination-btn.active { background-color: var(--primary); color: white; border-color: var(--primary); }
+        .pagination-btn:hover:not(.active) { background-color: var(--light); }
+        .pagination-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+        .pagination-ellipsis { display: inline-flex; align-items: center; padding: 8px 12px; color: var(--secondary); }
+    </style>
+    
+    
+        <header>
+            <div class="container">
+                <h1>Net-Trade Property Matcher</h1>
+                <p class="subtitle">Match property images with listings for professional presentations</p>
+            </div>
+        </header>
+
+        <main class="container">
+            
+
+            
+
+            <div class="controls" id="controls" style="display: block;">
+                <!-- Unified Top Filter Bar -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-4">
+                    <div class="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
+                        <!-- Search Section -->
+                        <div class="flex-1 min-w-0">
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
+                                <input type="text" id="searchInput" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Search properties...">
+                            </div>
+                        </div>
+                        
+                        <!-- Sort Section -->
+                        <div class="flex-shrink-0">
+                            <div class="flex items-center gap-3">
+                                <label class="text-sm font-medium text-gray-700 whitespace-nowrap">Sort by:</label>
+                                <select id="sortSelect" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[180px]">
+                                    <option value="price-desc">Price: High to Low</option>
+                                    <option value="price-asc">Price: Low to High</option>
+                                    <option value="sqft-desc">Size: Large to Small</option>
+                                    <option value="sqft-asc">Size: Small to Large</option>
+                                    <option value="caprate-desc">Cap Rate: High to Low</option>
+                                    <option value="caprate-asc">Cap Rate: Low to High</option>
+                                    <option value="pricesqft-desc">Price/SqFt: High to Low</option>
+                                    <option value="pricesqft-asc">Price/SqFt: Low to High</option>
+                                    <option value="name-asc">Tenant: A to Z</option>
+                                    <option value="name-desc">Tenant: Z to A</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons Section -->
+                        <div class="flex flex-col sm:flex-row gap-2 flex-shrink-0">
+                            <button class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 shadow-sm hover:shadow-md whitespace-nowrap" id="applyFilters">
+                                <i class="fas fa-filter mr-2"></i>Apply Filters
+                            </button>
+                            <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 whitespace-nowrap" id="clearFilters">
+                                <i class="fas fa-times mr-2"></i>Clear All Filters
+                            </button>
+                        </div>
+                        
+                        <!-- View Options -->
+                        <div class="flex gap-1 flex-shrink-0 border-l border-gray-200 pl-4">
+                            <button class="view-option active px-3 py-2 text-sm rounded-md transition-colors" id="gridView">
+                                <i class="fas fa-th mr-1"></i>Grid
+                            </button>
+                            <button class="view-option px-3 py-2 text-sm rounded-md transition-colors" id="listView">
+                                <i class="fas fa-list mr-1"></i>List
+                            </button>
+                            <button class="view-option px-3 py-2 text-sm rounded-md transition-colors" id="tableView">
+                                <i class="fas fa-table mr-1"></i>Table
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filter Card Section -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 relative">
+                    <button id="filtersToggle" class="w-full flex items-center justify-between text-left text-lg font-semibold text-gray-900 mb-4">
+                        <span>Filters</span>
+                        <i class="fas fa-chevron-up" id="filtersToggleIcon"></i>
+                    </button>
+                    
+                    <!-- Filter Grid - Responsive layout for better space utilization -->
+                    <div id="filtersContent" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6" style="display: none;">
+                        <!-- Price Range Mini-Card -->
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                            <h4 class="text-sm font-medium text-gray-900 mb-3">Price Range</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between text-xs text-gray-600">
+                                    <span id="minPriceDisplay">$0</span>
+                                    <span id="maxPriceDisplay">$10M+</span>
+                                </div>
+                                <div class="relative">
+                                    <input type="range" id="minPrice" min="0" max="10000000" step="50000" value="0" class="absolute w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                                    <input type="range" id="maxPrice" min="0" max="10000000" step="50000" value="10000000" class="absolute w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Size Range Mini-Card -->
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                            <h4 class="text-sm font-medium text-gray-900 mb-3">Size Range (SqFt)</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between text-xs text-gray-600">
+                                    <span id="minSizeDisplay">0 SF</span>
+                                    <span id="maxSizeDisplay">1M+ SF</span>
+                                </div>
+                                <div class="relative">
+                                    <input type="range" id="minSize" min="0" max="1000000" step="1000" value="0" class="absolute w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                                    <input type="range" id="maxSize" min="0" max="1000000" step="1000" value="1000000" class="absolute w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cap Rate Range Mini-Card -->
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                            <h4 class="text-sm font-medium text-gray-900 mb-3">Cap Rate Range (%)</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between text-xs text-gray-600">
+                                    <span id="minCapRateDisplay">0.0%</span>
+                                    <span id="maxCapRateDisplay">15%+</span>
+                                </div>
+                                <div class="relative">
+                                    <input type="range" id="minCapRate" min="0" max="15" step="0.1" value="0" class="absolute w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                                    <input type="range" id="maxCapRate" min="0" max="15" step="0.1" value="15" class="absolute w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lease Term Range Mini-Card -->
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                            <h4 class="text-sm font-medium text-gray-900 mb-3">Remaining Lease Term (Years)</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between text-xs text-gray-600">
+                                    <span id="minLeaseTermDisplay">0 yrs</span>
+                                    <span id="maxLeaseTermDisplay">30+ yrs</span>
+                                </div>
+                                <div class="relative">
+                                    <input type="range" id="minLeaseTerm" min="0" max="30" step="1" value="0" class="absolute w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                                    <input type="range" id="maxLeaseTerm" min="0" max="30" step="1" value="30" class="absolute w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tenant Type Mini-Card -->
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                            <button id="tenantToggle" class="w-full flex items-center justify-between text-left text-sm font-medium text-gray-900 mb-3">
+                                <span>Tenant Type</span>
+                                <i class="fas fa-chevron-down" id="tenantToggleIcon"></i>
+                            </button>
+                            <div id="tenantContent" class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="tenantRetail" value="retail" checked="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-700">Retail</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="tenantRestaurant" value="restaurant" checked="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-700">Restaurant</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="tenantMedical" value="medical" checked="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-700">Medical</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="tenantOffice" value="office" checked="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-700">Office</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" id="tenantOther" value="other" checked="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-700">Other</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Rent Increases Mini-Card -->
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                            <h4 class="text-sm font-medium text-gray-900 mb-3">Rent Increases</h4>
+                            <select id="rentIncreasesFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="all">All Properties</option>
+                                <option value="with-increases">With Rent Increases</option>
+                                <option value="without-increases">No Rent Increases</option>
+                                <option value="annual">Annual Increases</option>
+                                <option value="periodic">Periodic Increases</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <section class="results-section" id="resultsSection" style="display: block;">
+                <div class="results-header">
+                    <h2 class="results-title">Matched Properties <span class="property-count" id="propertyCount">13 properties</span></h2>
+                </div>
+                
+                <div id="resultsContainer"><div class="property-grid">
+                <div class="property-card grid" data-property-id="0">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/sla1oQNdhWt32fLWefbf8I50WrnJhgFAVEvkuJvDtdw/116/2648-Coweeman-Park-Dr-Kelso-WA-Primary-Photo-1-LargeHighDefinition.jpg" alt="Tractor Supply Company" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$7,391,000</div>
+                        <h3 class="property-name">Tractor Supply Company</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>2648 Coweeman Park Drive, Kelso, WA 98626</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="1">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/sp74g8meiFLw46hm6dCai8uJbPdREhrOK17j9RlWqBE/116/2429-NW-Highway-101-Lincoln-City-OR-Building-Photo-1-LargeHighDefinition.jpg" alt="Grocery Outlet" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$6,499,000</div>
+                        <h3 class="property-name">Grocery Outlet</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>2429 Northwest U.S. 101, Lincoln City, OR 97367</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="2">
+                    <div class="property-image">
+                        <img src="https://ahprd1cdn.csgpimgs.com/i2/HL1J2Lz9Z5L8HrIc9JIJ6sUUUVE-3PGGsJLWYl9N1cg/116/image.jpg" alt="Hobby Lobby" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$6,418,077</div>
+                        <h3 class="property-name">Hobby Lobby</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>1871 Southwest 14th Avenue, Albany, OR 97322</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="3">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/XCFTXtC_v_7JI5fdDiM7c8mjTFVE4_vsbG-6PqTS1Dg/116/1213-E-Wishkah-St-Aberdeen-WA-Building-Photo-1-LargeHighDefinition.jpg" alt="Tractor Supply Company" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$6,255,000</div>
+                        <h3 class="property-name">Tractor Supply Company</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>1213 East Wishkah Street, Aberdeen, WA 98520</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="4">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/xEbrR3149uhNiNr-8uZ5bqy9-jOvTC8Ad7GiLH5-V70/117/image.png" alt="Walgreens" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$5,234,000</div>
+                        <h3 class="property-name">Walgreens</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>4325 Southeast 82nd Avenue, Portland, OR 97206</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="5">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/4kUd-YPGRMuaZzpsCTSPCEoVfUHWkrlGK5xxGfUTMn4/116/12848-Martin-Luther-King-Jr-Way-Seattle-WA-Building-Photo-1-LargeHighDefinition.jpg" alt="7-Eleven" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$4,936,800</div>
+                        <h3 class="property-name">7-Eleven</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>12848 Martin Luther King Jr Way S, Seattle, WA 98178</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="6">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/Av-xZ17Zp2ReBr5sY77avQF3KrbbOanYyeyuD-gI3qA/116/1080-SW-1st-Ave-Canby-OR-Building-Photo-1-LargeHighDefinition.jpg" alt="Walgreens" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$4,631,000</div>
+                        <h3 class="property-name">Walgreens</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>1080 Southwest 1st Avenue, Canby, OR 97013</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="7">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/vJRdqBgV3GvSohAJA_iQqwBEz4kLeYf_NpvGl8Pc2RA/116/1895-Franklin-Blvd-Eugene-OR-Building-Photo-1-LargeHighDefinition.png" alt="Starbucks" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$3,450,000</div>
+                        <h3 class="property-name">Starbucks</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>1895 Franklin Boulevard, Eugene, OR 97403</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="8">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/cqPgxvasn53vX0Jk8riL_XsTVqadIK2kBc-05yrs4xs/116/11606-Canyon-Rd-E-Puyallup-WA-Primary-Photo-1-LargeHighDefinition.jpg" alt="Quick Quack Car Wash (GL)" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$3,333,000</div>
+                        <h3 class="property-name">Quick Quack Car Wash (GL)</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>11606 Canyon Road East, Puyallup, WA 98373</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="9">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/E2slsZNiw0C452FY6aoJ1vgbnyQAx8RwyfNjodn4l_0/116/1530-Campbell-Street-Baker-City-OR-Building-Photo-1-LargeHighDefinition.jpg" alt="Taco Bell (GL)" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$2,615,000</div>
+                        <h3 class="property-name">Taco Bell (GL)</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>1530 Campbell Street, Baker City, OR 97814</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="10">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/RWIktdD6imnHRyzghiGIzdPT1lqrZ45rc9EIBraK0dw/116/615-Valley-Mall-Pky-East-Wenatchee-WA-Primary-Photo-1-LargeHighDefinition.jpg" alt="Olive Garden (GL)" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$2,525,217</div>
+                        <h3 class="property-name">Olive Garden (GL)</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>615 Valley Mall Parkway, East Wenatchee, WA 98802</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="11">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/higar9K3eP-t5-E_hOpYgVpbstX3bOt6nVscF5sdMxU/112/image.jpg" alt="McDonald's (GL)" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$2,207,800</div>
+                        <h3 class="property-name">McDonald's (GL)</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>105 Frontage Road, Wapato, WA 98951</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div>
+                <div class="property-card grid" data-property-id="12">
+                    <div class="property-image">
+                        <img src="https://images1.loopnet.com/i2/cPLIalwjVMsJ2DiSvI8Lgb5Q4HUQam3AMHkHn6kvB6A/116/389-SW-Birch-St-Pilot-Rock-OR-Primary-Photo-1-LargeHighDefinition.jpg" alt="Family Dollar | Dollar Tree (Dark)" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">$1,505,824</div>
+                        <h3 class="property-name">Family Dollar | Dollar Tree (Dark)</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>389 Southwest Birch Street, Pilot Rock, OR 97868</span>
+                        </div>
+                        <p class="property-description"></p>
+                    </div>
+                </div></div></div>
+                <div class="pagination" id="pagination" style="display: none;"></div>
+            </section>
+
+            
+        </main>
+
+        <div class="modal property-modal" id="propertyModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Tractor Supply Company</h2>
+                    <button class="modal-close" id="modalClose">×</button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <div class="property-modal-new-layout">
+                        <div class="property-modal-left">
+                            <div class="property-header">
+                                <div class="property-price">$7,391,000</div>
+                                <div class="property-address-modal"><i class="fas fa-map-marker-alt"></i><span>2648 Coweeman Park Drive, Kelso, WA 98626</span></div>
+                            </div>
+                            <div class="property-modal-image">
+                                <img src="https://images1.loopnet.com/i2/sla1oQNdhWt32fLWefbf8I50WrnJhgFAVEvkuJvDtdw/116/2648-Coweeman-Park-Dr-Kelso-WA-Primary-Photo-1-LargeHighDefinition.jpg" alt="Tractor Supply Company" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e0e0e0/777?text=Image+Missing';">
+                            </div>
+                        </div>
+                        <div class="property-modal-right">
+                            
+                            <div class="property-attributes">
+                        <div class="property-attribute">
+                            <span class="attribute-label">SqFt:</span>
+                            <span class="attribute-value">22,181</span>
+                        </div>
+                        <div class="property-attribute">
+                            <span class="attribute-label">Lot Size:</span>
+                            <span class="attribute-value">4.51 AC</span>
+                        </div>
+                        <div class="property-attribute">
+                            <span class="attribute-label">Cap Rate:</span>
+                            <span class="attribute-value">5.75%</span>
+                        </div>
+                        <div class="property-attribute">
+                            <span class="attribute-label">Type:</span>
+                            <span class="attribute-value">Double NN</span>
+                        </div>
+                        <div class="property-attribute">
+                            <span class="attribute-label">Lease Term:</span>
+                            <span class="attribute-value">13.9</span>
+                        </div>
+                        <div class="property-attribute">
+                            <span class="attribute-label">Price/SqFt:</span>
+                            <span class="attribute-value">$333</span>
+                        </div></div>
+                            <a href="https://www.net-trade.com/sale/-coweeman-park-drive-kelso/SJRTRTR/srchdet" target="_blank" class="btn">
+                                <i class="fas fa-external-link-alt"></i> View on Net-Trade
+                            </a>
+                        </div>
+                    </div>
+                    <div id="propertyMap"><iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1000!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s2648%20Coweeman%20Park%20Drive%2C%20Kelso%2C%20WA%2098626!5e1!3m2!1sen!2sus!4v1759045051784!5m1!1e4" frameborder="0" allowfullscreen="" style="width: 100%; height: 100%; border-radius: 8px;"></iframe></div></div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="container"><p>© 2024 Net-Trade Property Matcher | For professional property presentations</p></div>
+        </footer>
+
+        <div class="notification success" id="notification">
+            <i class="fas fa-check-circle"></i><span id="notificationText">Successfully processed 13 properties.</span>
+        </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- DOM Elements ---
+            const scrapedData = document.getElementById('scrapedData'),
+                  applyFiltersBtn = document.getElementById('applyFilters'),
+                  clearFiltersBtn = document.getElementById('clearFilters'),
+                  processBtn = document.getElementById('processBtn'),
+                  resetBtn = document.getElementById('resetBtn'),
+                  controls = document.getElementById('controls'),
+                  searchInput = document.getElementById('searchInput'),
+                  sortSelect = document.getElementById('sortSelect'),
+                  gridView = document.getElementById('gridView'),
+                  listView = document.getElementById('listView'),
+                  tableView = document.getElementById('tableView'),
+                  resultsSection = document.getElementById('resultsSection'),
+                  resultsContainer = document.getElementById('resultsContainer'),
+                  propertyCount = document.getElementById('propertyCount'),
+                  pagination = document.getElementById('pagination'),
+                  exportOptions = document.getElementById('exportOptions'),
+                  generateHtmlBtn = document.getElementById('generateHtmlBtn'),
+                  propertyModal = document.getElementById('propertyModal'),
+                  modalClose = document.getElementById('modalClose'),
+                  modalTitle = document.getElementById('modalTitle'),
+                  modalBody = document.getElementById('modalBody'),
+                  notification = document.getElementById('notification'),
+                  notificationText = document.getElementById('notificationText');
+
+            // --- State Variables ---
+            let matchedProperties = [], currentFilteredProperties = [], currentPage = 1, currentView = 'grid';
+            const propertiesPerPage = 100; // Show more properties per page
+
+            // --- Constants ---
+            const COLUMN_MAP = {
+                imageUrl: 'img-responsive src',
+                price: 'list-price-outer',
+                propertyName: 'Tenant',
+                address: 'Address',
+                sqft: 'Size SF',
+                lotSize: 'Lot/AC',
+                capRate: 'Cap Rate',
+                type: 'Lease Type',
+                leaseTerm: 'R. Term/Yrs',
+                pricePerSqft: 'Price/SF',
+                propertyLink: 'title-lst href'
+            };
+            
+            // --- Event Listeners ---
+            scrapedData.addEventListener('input', updateProcessButtonState);
+            if (applyFiltersBtn) applyFiltersBtn.addEventListener('click', filterAndSortProperties);
+            if (clearFiltersBtn) clearFiltersBtn.addEventListener('click', clearFilters);
+            if (processBtn) processBtn.addEventListener('click', processData);
+            if (resetBtn) resetBtn.addEventListener('click', resetApplication);
+            searchInput.addEventListener('input', filterAndSortProperties);
+            sortSelect.addEventListener('change', filterAndSortProperties);
+            gridView.addEventListener('click', () => setView('grid'));
+            listView.addEventListener('click', () => setView('list'));
+            tableView.addEventListener('click', () => setView('table'));
+            generateHtmlBtn.addEventListener('click', generateStandaloneHtml);
+            resultsContainer.addEventListener('click', handleResultsClick);
+            modalClose.addEventListener('click', () => propertyModal.classList.remove('show'));
+            propertyModal.addEventListener('click', (e) => { if (e.target === propertyModal) propertyModal.classList.remove('show'); });
+            pagination.addEventListener('click', handlePaginationClick);
+
+            // Toggle controls for Filters and Tenant sections
+            const filtersToggle = document.getElementById('filtersToggle');
+            const filtersContent = document.getElementById('filtersContent');
+            const filtersToggleIcon = document.getElementById('filtersToggleIcon');
+            if (filtersToggle && filtersContent && filtersToggleIcon) {
+                filtersToggle.addEventListener('click', () => {
+                    const isHidden = filtersContent.style.display === 'none';
+                    filtersContent.style.display = isHidden ? '' : 'none';
+                    filtersToggleIcon.classList.toggle('fa-chevron-down', isHidden);
+                    filtersToggleIcon.classList.toggle('fa-chevron-up', !isHidden);
+                });
+            }
+
+            const tenantToggle = document.getElementById('tenantToggle');
+            const tenantContent = document.getElementById('tenantContent');
+            const tenantToggleIcon = document.getElementById('tenantToggleIcon');
+            if (tenantToggle && tenantContent && tenantToggleIcon) {
+                tenantToggle.addEventListener('click', () => {
+                    const isHidden = tenantContent.style.display === 'none';
+                    tenantContent.style.display = isHidden ? '' : 'none';
+                    tenantToggleIcon.classList.toggle('fa-chevron-down', isHidden);
+                    tenantToggleIcon.classList.toggle('fa-chevron-up', !isHidden);
+                });
+            }
+
+            // New event listeners for filters
+            const clearFiltersEl = document.getElementById('clearFilters');
+            if (clearFiltersEl) clearFiltersEl.addEventListener('click', clearFilters);
+            document.getElementById('minPrice').addEventListener('input', updatePriceSlider);
+            document.getElementById('maxPrice').addEventListener('input', updatePriceSlider);
+            document.getElementById('minSize').addEventListener('input', updateSizeSlider);
+            document.getElementById('maxSize').addEventListener('input', updateSizeSlider);
+            document.getElementById('minCapRate').addEventListener('input', updateCapRateSlider);
+            document.getElementById('maxCapRate').addEventListener('input', updateCapRateSlider);
+            document.getElementById('minLeaseTerm').addEventListener('input', updateLeaseTermSlider);
+            document.getElementById('maxLeaseTerm').addEventListener('input', updateLeaseTermSlider);
+            
+            // Tenant filter checkboxes
+            document.getElementById('tenantRetail').addEventListener('change', filterAndSortProperties);
+            document.getElementById('tenantRestaurant').addEventListener('change', filterAndSortProperties);
+            document.getElementById('tenantMedical').addEventListener('change', filterAndSortProperties);
+            document.getElementById('tenantOffice').addEventListener('change', filterAndSortProperties);
+            document.getElementById('tenantOther').addEventListener('change', filterAndSortProperties);
+            
+            // Rent increases filter
+            document.getElementById('rentIncreasesFilter').addEventListener('change', filterAndSortProperties);
+            
+            // Initialize sliders
+            initializeSliders();
+
+            // --- Core Functions ---
+            function parseScrapedData(text) {
+                const lines = text.trim().split('\n');
+                if (lines.length < 2) return [];
+                const headers = lines[0].split('\t').map(h => h.trim());
+                return lines.slice(1).map(line => {
+                    if (line.trim() === '') return null;
+                    const row = {};
+                    line.split('\t').forEach((val, i) => { row[headers[i]] = val ? val.trim() : ''; });
+                    return row;
+                }).filter(Boolean);
+            }
+
+            function processData() {
+                try {
+                    const scrapedProperties = parseScrapedData(scrapedData.value);
+                    if (scrapedProperties.length === 0) { return showNotification('No valid scraped data found to process.', 'warning'); }
+                    matchedProperties = scrapedProperties;
+                    
+                    if (matchedProperties.length > 0) {
+                        controls.style.display = 'block'; exportOptions.style.display = 'flex'; resultsSection.style.display = 'block';
+                        showNotification(`Successfully processed ${matchedProperties.length} properties.`, 'success');
+                        filterAndSortProperties();
+                    } else {
+                        showNotification('No properties found. Please check your data.', 'warning');
+                        resultsContainer.innerHTML = `<div class="empty-state"><i class="fas fa-search-minus"></i><h3>No Properties Found</h3><p>Please check your data format.</p></div>`;
+                    }
+                } catch (error) { console.error('Error processing data:', error); showNotification('An error occurred during processing.', 'error'); }
+            }
+
+            function filterAndSortProperties() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const sortValue = sortSelect.value;
+                const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+                const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+                const minSize = parseFloat(document.getElementById('minSize').value) || 0;
+                const maxSize = parseFloat(document.getElementById('maxSize').value) || Infinity;
+                const minCapRate = parseFloat(document.getElementById('minCapRate').value) || 0;
+                const maxCapRate = parseFloat(document.getElementById('maxCapRate').value) || Infinity;
+                const minLeaseTerm = parseFloat(document.getElementById('minLeaseTerm').value) || 0;
+                const maxLeaseTerm = parseFloat(document.getElementById('maxLeaseTerm').value) || Infinity;
+                const rentIncreasesFilter = document.getElementById('rentIncreasesFilter').value;
+                
+                // Get selected tenant types
+                const selectedTenants = [];
+                if (document.getElementById('tenantRetail').checked) selectedTenants.push('retail');
+                if (document.getElementById('tenantRestaurant').checked) selectedTenants.push('restaurant');
+                if (document.getElementById('tenantMedical').checked) selectedTenants.push('medical');
+                if (document.getElementById('tenantOffice').checked) selectedTenants.push('office');
+                if (document.getElementById('tenantOther').checked) selectedTenants.push('other');
+                
+                currentFilteredProperties = matchedProperties.filter(p => {
+                    const fullAddress = getFullAddress(p, ', ').toLowerCase();
+                    const name = (p[COLUMN_MAP.propertyName] || '').toLowerCase();
+                    const searchMatch = name.includes(searchTerm) || fullAddress.includes(searchTerm);
+                    
+                    // Price filter
+                    const price = parsePrice(p[COLUMN_MAP.price]);
+                    const priceMatch = price >= minPrice && price <= maxPrice;
+                    
+                    // Size filter
+                    const size = parseFloat(p[COLUMN_MAP.sqft] || 0);
+                    const sizeMatch = size >= minSize && size <= maxSize;
+                    
+                    // Cap rate filter
+                    const capRate = parseFloat(p[COLUMN_MAP.capRate] || 0);
+                    const capRateMatch = capRate >= minCapRate && capRate <= maxCapRate;
+                    
+                    // Lease term filter
+                    const leaseTerm = parseFloat(p[COLUMN_MAP.leaseTerm] || 0);
+                    const leaseTermMatch = leaseTerm >= minLeaseTerm && leaseTerm <= maxLeaseTerm;
+                    
+                    // Tenant type filter
+                    const tenant = (p[COLUMN_MAP.tenant] || '').toLowerCase();
+                    let tenantMatch = false;
+                    if (selectedTenants.includes('retail') && (tenant.includes('retail') || tenant.includes('store') || tenant.includes('shop'))) tenantMatch = true;
+                    if (selectedTenants.includes('restaurant') && (tenant.includes('restaurant') || tenant.includes('food') || tenant.includes('dining'))) tenantMatch = true;
+                    if (selectedTenants.includes('medical') && (tenant.includes('medical') || tenant.includes('health') || tenant.includes('clinic') || tenant.includes('pharmacy'))) tenantMatch = true;
+                    if (selectedTenants.includes('office') && (tenant.includes('office') || tenant.includes('corporate') || tenant.includes('business'))) tenantMatch = true;
+                    if (selectedTenants.includes('other') && !tenant.match(/(retail|store|shop|restaurant|food|dining|medical|health|clinic|pharmacy|office|corporate|business)/)) tenantMatch = true;
+                    
+                    // Rent increases filter
+                    const rentIncreases = (p[COLUMN_MAP.rentIncreases] || '').toLowerCase();
+                    let rentIncreasesMatch = true;
+                    if (rentIncreasesFilter === 'with') {
+                        rentIncreasesMatch = rentIncreases.includes('yes') || rentIncreases.includes('annual') || rentIncreases.includes('periodic');
+                    } else if (rentIncreasesFilter === 'without') {
+                        rentIncreasesMatch = rentIncreases.includes('no') || rentIncreases === '';
+                    } else if (rentIncreasesFilter === 'annual') {
+                        rentIncreasesMatch = rentIncreases.includes('annual');
+                    } else if (rentIncreasesFilter === 'periodic') {
+                        rentIncreasesMatch = rentIncreases.includes('periodic');
+                    }
+                    
+                    return searchMatch && priceMatch && sizeMatch && capRateMatch && leaseTermMatch && tenantMatch && rentIncreasesMatch;
+                }).sort((a, b) => {
+                    switch (sortValue) {
+                        case 'price-asc': return parsePrice(a[COLUMN_MAP.price]) - parsePrice(b[COLUMN_MAP.price]);
+                        case 'price-desc': return parsePrice(b[COLUMN_MAP.price]) - parsePrice(a[COLUMN_MAP.price]);
+                        case 'name-asc': return (a[COLUMN_MAP.propertyName] || '').localeCompare(b[COLUMN_MAP.propertyName] || '');
+                        case 'name-desc': return (b[COLUMN_MAP.propertyName] || '').localeCompare(a[COLUMN_MAP.propertyName] || '');
+                        case 'sqft-asc': return parseFloat(a[COLUMN_MAP.sqft] || 0) - parseFloat(b[COLUMN_MAP.sqft] || 0);
+                        case 'sqft-desc': return parseFloat(b[COLUMN_MAP.sqft] || 0) - parseFloat(a[COLUMN_MAP.sqft] || 0);
+                        case 'caprate-asc': return parseFloat(a[COLUMN_MAP.capRate] || 0) - parseFloat(b[COLUMN_MAP.capRate] || 0);
+                        case 'caprate-desc': return parseFloat(b[COLUMN_MAP.capRate] || 0) - parseFloat(a[COLUMN_MAP.capRate] || 0);
+                        case 'pricesqft-asc': return parseFloat(a[COLUMN_MAP.pricePerSqft] || 0) - parseFloat(b[COLUMN_MAP.pricePerSqft] || 0);
+                        case 'pricesqft-desc': return parseFloat(b[COLUMN_MAP.pricePerSqft] || 0) - parseFloat(a[COLUMN_MAP.pricePerSqft] || 0);
+                        default: return 0;
+                    }
+                });
+
+                currentPage = 1;
+                displayProperties();
+            }
+
+            // --- UI Rendering ---
+            function displayProperties() {
+                propertyCount.textContent = `${currentFilteredProperties.length} propert${currentFilteredProperties.length === 1 ? 'y' : 'ies'}`;
+                updateFilterIndicators();
+                
+                if (currentFilteredProperties.length === 0) {
+                    resultsContainer.innerHTML = `<div class="empty-state"><i class="fas fa-filter"></i><h3>No properties match your criteria.</h3><p>Try adjusting your search or filters.</p></div>`;
+                    pagination.style.display = 'none'; return;
+                }
+                const pageProperties = currentFilteredProperties.slice((currentPage - 1) * propertiesPerPage, currentPage * propertiesPerPage);
+                let content;
+                if (currentView === 'table') {
+                    content = createPropertyTable(pageProperties, currentPage, propertiesPerPage);
+                } else if (currentView === 'list') {
+                    content = `<div class="property-list">${pageProperties.map(createPropertyCard).join('')}</div>`;
+                } else {
+                    content = `<div class="property-grid">${pageProperties.map(createPropertyCard).join('')}</div>`;
+                }
+                resultsContainer.innerHTML = content;
+                setupPagination();
+            }
+
+            function updateFilterIndicators() {
+                // If filterIndicators element is not present (UI change), safely no-op
+                const filterIndicators = document.getElementById('filterIndicators');
+                if (!filterIndicators) return;
+                const indicators = [];
+                
+                const searchTerm = searchInput.value.trim();
+                const minPrice = document.getElementById('minPrice').value;
+                const maxPrice = document.getElementById('maxPrice').value;
+                const minSize = document.getElementById('minSize').value;
+                const maxSize = document.getElementById('maxSize').value;
+                const minCapRate = document.getElementById('minCapRate').value;
+                const maxCapRate = document.getElementById('maxCapRate').value;
+                const minLeaseTerm = document.getElementById('minLeaseTerm').value;
+                const maxLeaseTerm = document.getElementById('maxLeaseTerm').value;
+                const rentIncreasesFilter = document.getElementById('rentIncreasesFilter').value;
+                
+                if (searchTerm) {
+                    indicators.push(`<span class="filter-tag">Search: "${searchTerm}" <span class="remove" onclick="clearSearchFilter()">×</span></span>`);
+                }
+                
+                if (minPrice || maxPrice) {
+                    const priceRange = `${minPrice ? '$' + parseInt(minPrice).toLocaleString() : '0'} - ${maxPrice ? '$' + parseInt(maxPrice).toLocaleString() : '∞'}`;
+                    indicators.push(`<span class="filter-tag">Price: ${priceRange} <span class="remove" onclick="clearPriceFilter()">×</span></span>`);
+                }
+                
+                if (minSize || maxSize) {
+                    const sizeRange = `${minSize ? parseInt(minSize).toLocaleString() : '0'} - ${maxSize ? parseInt(maxSize).toLocaleString() : '∞'} sqft`;
+                    indicators.push(`<span class="filter-tag">Size: ${sizeRange} <span class="remove" onclick="clearSizeFilter()">×</span></span>`);
+                }
+                
+                if (minCapRate || maxCapRate) {
+                    const capRateRange = `${minCapRate || '0'}% - ${maxCapRate || '∞'}%`;
+                    indicators.push(`<span class="filter-tag">Cap Rate: ${capRateRange} <span class="remove" onclick="clearCapRateFilter()">×</span></span>`);
+                }
+                
+                if (minLeaseTerm || maxLeaseTerm) {
+                    const leaseTermRange = `${minLeaseTerm || '0'} - ${maxLeaseTerm || '∞'} years`;
+                    indicators.push(`<span class="filter-tag">Lease Term: ${leaseTermRange} <span class="remove" onclick="clearLeaseTermFilter()">×</span></span>`);
+                }
+                
+                // Check tenant filters
+                const tenantFilters = [];
+                if (!document.getElementById('tenantRetail').checked) tenantFilters.push('Retail');
+                if (!document.getElementById('tenantRestaurant').checked) tenantFilters.push('Restaurant');
+                if (!document.getElementById('tenantMedical').checked) tenantFilters.push('Medical');
+                if (!document.getElementById('tenantOffice').checked) tenantFilters.push('Office');
+                if (!document.getElementById('tenantOther').checked) tenantFilters.push('Other');
+                
+                if (tenantFilters.length > 0 && tenantFilters.length < 5) {
+                    indicators.push(`<span class="filter-tag">Excluding: ${tenantFilters.join(', ')} <span class="remove" onclick="clearTenantFilter()">×</span></span>`);
+                }
+                
+                if (rentIncreasesFilter !== 'all') {
+                    const rentFilterText = {
+                        'with': 'With Rent Increases',
+                        'without': 'No Rent Increases',
+                        'annual': 'Annual Increases',
+                        'periodic': 'Periodic Increases'
+                    }[rentIncreasesFilter];
+                    indicators.push(`<span class="filter-tag">${rentFilterText} <span class="remove" onclick="clearRentIncreasesFilter()">×</span></span>`);
+                }
+                
+                filterIndicators.innerHTML = indicators.join('');
+            }
+            
+            function createPropertyCard(property) {
+                const imageUrl = property[COLUMN_MAP.imageUrl] || '';
+                const name = property[COLUMN_MAP.propertyName] || 'Property';
+                const fullAddress = getFullAddress(property, ', ');
+                return `
+                <div class="property-card ${currentView}" data-property-id="${getIndexFromProperty(property)}">
+                    <div class="property-image">
+                        <img src="${imageUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">${formatPrice(property[COLUMN_MAP.price])}</div>
+                        <h3 class="property-name">${name}</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>${fullAddress || 'Address not available'}</span>
+                        </div>
+                        <p class="property-description">${property[COLUMN_MAP.scrapedDescription] || ''}</p>
+                    </div>
+                </div>`;
+            }
+
+            function createPropertyTable(properties, currentPage, propertiesPerPage) {
+                let html = '<table class="property-table">';
+                html += '<thead><tr>';
+                const headers = ['Image', 'Price', 'Tenant', 'Address', 'Size SF', 'Lot/AC', 'Cap Rate', 'Lease Type', 'R. Term/Yrs', 'Price/SF'];
+                headers.forEach(h => html += `<th>${h}</th>`);
+                html += '</tr></thead><tbody>';
+                properties.forEach((p, index) => {
+                    const propertyIndex = (currentPage - 1) * propertiesPerPage + index;
+                    html += `<tr data-property-id="${propertyIndex}">`;
+                    html += `<td><img src="${p[COLUMN_MAP.imageUrl] || ''}" alt="${p[COLUMN_MAP.propertyName] || ''}" style="max-width:80px; max-height:50px; object-fit:cover;"></td>`;
+                    html += `<td>${formatPrice(p[COLUMN_MAP.price])}</td>`;
+                    html += `<td>${p[COLUMN_MAP.propertyName] || ''}</td>`;
+                    html += `<td>${getFullAddress(p, ', ')}</td>`;
+                    html += `<td>${p[COLUMN_MAP.sqft] || ''}</td>`;
+                    html += `<td>${p[COLUMN_MAP.lotSize] || ''}</td>`;
+                    html += `<td>${p[COLUMN_MAP.capRate] || ''}</td>`;
+                    html += `<td>${p[COLUMN_MAP.type] || ''}</td>`;
+                    html += `<td>${p[COLUMN_MAP.leaseTerm] || ''}</td>`;
+                    html += `<td>${p[COLUMN_MAP.pricePerSqft] || ''}</td>`;
+                    html += '</tr>';
+                });
+                html += '</tbody></table>';
+                return html;
+            }
+
+            function setupPagination() {
+                const totalPages = Math.ceil(currentFilteredProperties.length / propertiesPerPage);
+                pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+                if (totalPages <= 1) { pagination.innerHTML = ''; return; }
+                
+                const getBtn = (p) => `<button class="pagination-btn page-btn ${p === currentPage ? 'active' : ''}" data-page="${p}">${p}</button>`;
+                const pages = new Set([1, totalPages, currentPage, currentPage - 1, currentPage + 1]);
+                const sorted = [...pages].filter(p => p > 0 && p <= totalPages).sort((a,b)=>a-b);
+                
+                let html = `<button class="pagination-btn" id="prevBtn" ${currentPage === 1 ? 'disabled' : ''}>&laquo; Prev</button>`;
+                let last = 0;
+                sorted.forEach(p => {
+                    if (p > last + 1) html += `<span class="pagination-ellipsis">...</span>`;
+                    html += getBtn(p);
+                    last = p;
+                });
+                html += `<button class="pagination-btn" id="nextBtn" ${currentPage === totalPages ? 'disabled' : ''}>Next &raquo;</button>`;
+                pagination.innerHTML = html;
+            }
+
+            function openPropertyModal(property) {
+                const name = property[COLUMN_MAP.propertyName] || 'Property Details';
+                const address = getFullAddress(property, ', ');
+                
+                // Set a more descriptive modal title (only name, avoid duplicate address)
+                modalTitle.textContent = name && name !== 'Property' ? name : 'Property Details';
+                
+                // Helper function to create attribute row if value exists
+                function createAttributeRow(label, value) {
+                    if (!value || value.toString().trim() === '') return '';
+                    
+                    // Format values based on label
+                    let formattedValue = value;
+                    if (label === 'SqFt') {
+                        // Format SqFt with commas
+                        const numValue = parseFloat(value.toString().replace(/[^\d.]/g, ''));
+                        if (!isNaN(numValue)) {
+                            formattedValue = numValue.toLocaleString();
+                        }
+                    } else if (label === 'Lot Size') {
+                        // Add AC suffix to Lot Size
+                        formattedValue = value.toString().includes('AC') ? value : `${value} AC`;
+                    } else if (label === 'Price/SqFt') {
+                        // Add $ prefix to Price/SqFt and format to 2 decimal places
+                        const numValue = parseFloat(value);
+                        if (!isNaN(numValue)) {
+                            formattedValue = `$${numValue.toFixed(2)}`;
+                        } else {
+                            formattedValue = value.toString().startsWith('$') ? value : `$${value}`;
+                        }
+                    } else if (label === 'Cap Rate') {
+                        // Add % suffix to Cap Rate
+                        formattedValue = value.toString().includes('%') ? value : `${value}%`;
+                    }
+                    
+                    return `
+                        <div class="property-attribute">
+                            <span class="attribute-label">${label}:</span>
+                            <span class="attribute-value">${formattedValue}</span>
+                        </div>`;
+                }
+                
+                // Build attributes section
+                let attributesHtml = '';
+                attributesHtml += createAttributeRow('SqFt', property[COLUMN_MAP.sqft]);
+                attributesHtml += createAttributeRow('Lot Size', property[COLUMN_MAP.lotSize]);
+                attributesHtml += createAttributeRow('Cap Rate', property[COLUMN_MAP.capRate]);
+                attributesHtml += createAttributeRow('Type', property[COLUMN_MAP.type]);
+                attributesHtml += createAttributeRow('Lease Term', property[COLUMN_MAP.leaseTerm]);
+                attributesHtml += createAttributeRow('Price/SqFt', property[COLUMN_MAP.pricePerSqft]);
+                
+                const fullAddress = address && address.trim() ? address : '';
+                const priceHtml = property[COLUMN_MAP.price] ? `<div class="property-price">${formatFullPrice(property[COLUMN_MAP.price])}</div>` : '';
+                const addressChipHtml = fullAddress ? `<div class="property-address-modal"><i class="fas fa-map-marker-alt"></i><span>${fullAddress}</span></div>` : '';
+                const descText = (property[COLUMN_MAP.scrapedDescription] || '').toString().trim();
+                const descriptionHtml = descText ? `<p class="property-description">${descText}</p>` : '';
+
+                modalBody.innerHTML = `
+                    <div class="property-modal-new-layout">
+                        <div class="property-modal-left">
+                            <div class="property-header">
+                                ${priceHtml}
+                                ${addressChipHtml}
+                            </div>
+                            <div class="property-modal-image">
+                                <img src="${property[COLUMN_MAP.imageUrl] || ''}" alt="${name}" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e0e0e0/777?text=Image+Missing';">
+                            </div>
+                        </div>
+                        <div class="property-modal-right">
+                            ${descriptionHtml}
+                            ${attributesHtml ? `<div class="property-attributes">${attributesHtml}</div>` : ''}
+                            <a href="${property[COLUMN_MAP.propertyLink]}" target="_blank" class="btn">
+                                <i class="fas fa-external-link-alt"></i> View on Net-Trade
+                            </a>
+                        </div>
+                    </div>
+                    <div id="propertyMap"></div>`;
+                propertyModal.classList.add('show');
+                loadMap(property);
+            }
+            
+            function loadMap(property) {
+                const address = property[COLUMN_MAP.address] || '';
+                const mapEl = document.getElementById('propertyMap');
+                if (!mapEl) return;
+                
+                if (address) {
+                    // Create Google Maps embed iframe using the address
+                    const encodedAddress = encodeURIComponent(address);
+                    const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1000!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s${encodedAddress}!5e1!3m2!1sen!2sus!4v${Date.now()}!5m1!1e4`;
+                    mapEl.innerHTML = `<iframe class="map" src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%; border-radius: 8px;"></iframe>`;
+                } else {
+                    mapEl.innerHTML = '<p style="text-align:center; padding: 2rem;">Map data not available for this property.</p>';
+                }
+            }
+            
+            // --- Event Handlers ---
+            function handleResultsClick(e) {
+                const element = e.target.closest('.property-card[data-property-id], tr[data-property-id]');
+                if (element) {
+                    const propertyIndex = parseInt(element.dataset.propertyId);
+                    const property = currentFilteredProperties[propertyIndex];
+                    if (property) openPropertyModal(property);
+                }
+            }
+            
+            function handlePaginationClick(e) {
+                const target = e.target.closest('.pagination-btn');
+                if (!target || target.disabled) return;
+
+                const totalPages = Math.ceil(currentFilteredProperties.length / propertiesPerPage);
+                let newPage = currentPage;
+
+                if (target.id === 'prevBtn') newPage--;
+                else if (target.id === 'nextBtn') newPage++;
+                else if (target.dataset.page) newPage = parseInt(target.dataset.page, 10);
+                
+                if (newPage !== currentPage && newPage > 0 && newPage <= totalPages) {
+                    currentPage = newPage;
+                    displayProperties();
+                }
+            }
+
+            // --- Utility Functions ---
+            function getFullAddress(p, sep = ', ') { 
+                const addressParts = [
+                    p[COLUMN_MAP.address], 
+                    p[COLUMN_MAP.city], 
+                    p[COLUMN_MAP.state], 
+                    p[COLUMN_MAP.zip]
+                ].filter(Boolean).map(part => part.toString().trim());
+                
+                // Clean up extra spaces and commas
+                let fullAddress = addressParts.join(sep);
+                // Remove double spaces and fix spacing around commas
+                fullAddress = fullAddress.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ', ').trim();
+                // Remove trailing comma if exists
+                fullAddress = fullAddress.replace(/,\s*$/, '');
+                
+                return fullAddress;
+            }
+            
+            function updateProcessButtonState() { 
+                if (typeof processBtn !== 'undefined' && processBtn) {
+                    processBtn.disabled = !scrapedData.value.trim();
+                }
+                if (typeof applyFiltersBtn !== 'undefined' && applyFiltersBtn) {
+                    applyFiltersBtn.disabled = !scrapedData.value.trim();
+                }
+            }
+            
+            function resetApplication() {
+                matchedProperties = []; 
+                currentFilteredProperties = [];
+                scrapedData.value = '';
+                controls.style.display = 'none'; 
+                exportOptions.style.display = 'none'; 
+                resultsSection.style.display = 'none';
+                resultsContainer.innerHTML = ''; 
+                updateProcessButtonState();
+                showNotification('Application has been reset.', 'success');
+            }
+            
+            function setView(view) { 
+                currentView = view; 
+                gridView.classList.toggle('active', view === 'grid'); 
+                listView.classList.toggle('active', view === 'list');
+                tableView.classList.toggle('active', view === 'table');
+                displayProperties(); 
+            }
+            
+            function formatPrice(priceVal) {
+                if (priceVal === undefined || priceVal === null || priceVal === '') return 'Unpriced';
+                if (typeof priceVal === 'string' && priceVal.trim().toLowerCase() === 'unpriced') return 'Unpriced';
+                
+                // Handle price strings like "$2,892,000"
+                const num = typeof priceVal === 'number' ? priceVal : parseFloat(String(priceVal).replace(/[^0-9.-]+/g,"")) || 0;
+                
+                if (num > 0) {
+                    return new Intl.NumberFormat('en-US', { 
+                        style: 'currency', 
+                        currency: 'USD', 
+                        minimumFractionDigits: 0, 
+                        maximumFractionDigits: 0 
+                    }).format(num);
+                }
+                return typeof priceVal === 'string' && isNaN(num) ? priceVal : 'Unpriced';
+            }
+            
+            function parsePrice(price) { 
+                return typeof price === 'number' ? price : parseFloat(String(price).replace(/[^0-9.-]+/g,"")) || 0; 
+            }
+            
+            function showNotification(message, type = 'success') {
+                notificationText.textContent = message;
+                notification.className = 'notification';
+                notification.classList.add(type);
+                const icon = notification.querySelector('i');
+                if (type === 'error') icon.className = 'fas fa-exclamation-circle';
+                else if (type === 'warning') icon.className = 'fas fa-exclamation-triangle';
+                else icon.className = 'fas fa-check-circle';
+                notification.classList.add('show');
+                setTimeout(() => notification.classList.remove('show'), 3000);
+            }
+
+            function clearFilters() {
+                document.getElementById('minPrice').value = '';
+                document.getElementById('maxPrice').value = '';
+                document.getElementById('minSize').value = '';
+                document.getElementById('maxSize').value = '';
+                filterAndSortProperties();
+            }
+
+            // Individual filter clearing functions
+            function clearSearchFilter() {
+                searchInput.value = '';
+                filterAndSortProperties();
+            }
+
+            function clearPriceFilter() {
+                document.getElementById('minPrice').value = '';
+                document.getElementById('maxPrice').value = '';
+                filterAndSortProperties();
+            }
+
+            function clearSizeFilter() {
+                document.getElementById('minSize').value = '';
+                document.getElementById('maxSize').value = '';
+                filterAndSortProperties();
+            }
+
+            function clearCapRateFilter() {
+                document.getElementById('minCapRate').value = '';
+                document.getElementById('maxCapRate').value = '';
+                filterAndSortProperties();
+            }
+
+            function clearLeaseTermFilter() {
+                document.getElementById('minLeaseTerm').value = '';
+                document.getElementById('maxLeaseTerm').value = '';
+                filterAndSortProperties();
+            }
+
+            function clearTenantFilter() {
+                document.getElementById('tenantRetail').checked = true;
+                document.getElementById('tenantRestaurant').checked = true;
+                document.getElementById('tenantMedical').checked = true;
+                document.getElementById('tenantOffice').checked = true;
+                document.getElementById('tenantOther').checked = true;
+                filterAndSortProperties();
+            }
+
+            function clearRentIncreasesFilter() {
+                document.getElementById('rentIncreasesFilter').value = 'all';
+                filterAndSortProperties();
+            }
+
+            // Dual Range Slider Functions
+            function initializeSliders() {
+                updatePriceSlider();
+                updateSizeSlider();
+                updateCapRateSlider();
+                updateLeaseTermSlider();
+            }
+
+            function formatPriceValue(value) {
+                if (value >= 1000000) {
+                    return '$' + (value / 1000000).toFixed(1) + 'M';
+                } else if (value >= 1000) {
+                    return '$' + (value / 1000).toFixed(0) + 'K';
+                } else if (value == 0) {
+                    return '$0';
+                } else {
+                    return '$' + value.toLocaleString();
+                }
+            }
+
+            function formatFullPrice(priceVal) {
+                if (priceVal === undefined || priceVal === null || priceVal === '') return 'Unpriced';
+                if (typeof priceVal === 'string' && priceVal.trim().toLowerCase() === 'unpriced') return 'Unpriced';
+                const num = parsePrice(priceVal);
+                if (num > 0) {
+                    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
+                }
+                return typeof priceVal === 'string' && isNaN(num) ? priceVal : 'Unpriced';
+            }
+
+            function formatSize(value) {
+                if (value >= 1000000) {
+                    return (value / 1000000).toFixed(1) + 'M SF';
+                } else if (value >= 1000) {
+                    return (value / 1000).toFixed(0) + 'K SF';
+                } else if (value == 0) {
+                    return '0 SF';
+                } else {
+                    return value.toLocaleString() + ' SF';
+                }
+            }
+
+            function updatePriceSlider() {
+                const minPrice = document.getElementById('minPrice');
+                const maxPrice = document.getElementById('maxPrice');
+                const minPriceDisplay = document.getElementById('minPriceDisplay');
+                const maxPriceDisplay = document.getElementById('maxPriceDisplay');
+                
+                // Ensure min doesn't exceed max
+                if (parseInt(minPrice.value) > parseInt(maxPrice.value)) {
+                    minPrice.value = maxPrice.value;
+                }
+                
+                // Update display values
+                minPriceDisplay.textContent = formatPriceValue(parseInt(minPrice.value));
+                maxPriceDisplay.textContent = parseInt(maxPrice.value) >= 10000000 ? '$10M+' : formatPriceValue(parseInt(maxPrice.value));
+                
+                // Update slider range visual
+                updateSliderRange('price');
+                
+                // Filter properties
+                filterAndSortProperties();
+            }
+
+            function updateSizeSlider() {
+                const minSize = document.getElementById('minSize');
+                const maxSize = document.getElementById('maxSize');
+                const minSizeDisplay = document.getElementById('minSizeDisplay');
+                const maxSizeDisplay = document.getElementById('maxSizeDisplay');
+                
+                // Ensure min doesn't exceed max
+                if (parseInt(minSize.value) > parseInt(maxSize.value)) {
+                    minSize.value = maxSize.value;
+                }
+                
+                // Update display values
+                minSizeDisplay.textContent = formatSize(parseInt(minSize.value));
+                maxSizeDisplay.textContent = parseInt(maxSize.value) >= 1000000 ? '1M+ SF' : formatSize(parseInt(maxSize.value));
+                
+                // Update slider range visual
+                updateSliderRange('size');
+                
+                // Filter properties
+                filterAndSortProperties();
+            }
+
+            function updateCapRateSlider() {
+                const minCapRate = document.getElementById('minCapRate');
+                const maxCapRate = document.getElementById('maxCapRate');
+                const minCapRateDisplay = document.getElementById('minCapRateDisplay');
+                const maxCapRateDisplay = document.getElementById('maxCapRateDisplay');
+                
+                // Ensure min doesn't exceed max
+                if (parseFloat(minCapRate.value) > parseFloat(maxCapRate.value)) {
+                    minCapRate.value = maxCapRate.value;
+                }
+                
+                // Update display values
+                minCapRateDisplay.textContent = parseFloat(minCapRate.value).toFixed(1) + '%';
+                maxCapRateDisplay.textContent = parseFloat(maxCapRate.value) >= 15 ? '15%+' : parseFloat(maxCapRate.value).toFixed(1) + '%';
+                
+                // Update slider range visual
+                updateSliderRange('capRate');
+                
+                // Filter properties
+                filterAndSortProperties();
+            }
+
+            function updateLeaseTermSlider() {
+                const minLeaseTerm = document.getElementById('minLeaseTerm');
+                const maxLeaseTerm = document.getElementById('maxLeaseTerm');
+                const minLeaseTermDisplay = document.getElementById('minLeaseTermDisplay');
+                const maxLeaseTermDisplay = document.getElementById('maxLeaseTermDisplay');
+                
+                // Ensure min doesn't exceed max
+                if (parseInt(minLeaseTerm.value) > parseInt(maxLeaseTerm.value)) {
+                    minLeaseTerm.value = maxLeaseTerm.value;
+                }
+                
+                // Update display values
+                const minYears = parseInt(minLeaseTerm.value);
+                const maxYears = parseInt(maxLeaseTerm.value);
+                minLeaseTermDisplay.textContent = minYears + (minYears === 1 ? ' yr' : ' yrs');
+                maxLeaseTermDisplay.textContent = maxYears >= 30 ? '30+ yrs' : maxYears + (maxYears === 1 ? ' yr' : ' yrs');
+                
+                // Update slider range visual
+                updateSliderRange('leaseTerm');
+                
+                // Filter properties
+                filterAndSortProperties();
+            }
+
+            function updateSliderRange(type) {
+                let prefix, min, max;
+                
+                if (type === 'price') {
+                    prefix = 'Price';
+                } else if (type === 'size') {
+                    prefix = 'Size';
+                } else if (type === 'capRate') {
+                    prefix = 'CapRate';
+                } else if (type === 'leaseTerm') {
+                    prefix = 'LeaseTerm';
+                }
+                
+                min = document.getElementById(`min${prefix}`);
+                max = document.getElementById(`max${prefix}`);
+                
+                // Check if elements exist before proceeding
+                if (!min || !max) return;
+                
+                const sliderRange = min.parentElement.querySelector('.slider-range');
+                
+                // If slider-range element doesn't exist, skip visual update
+                if (!sliderRange) return;
+                
+                const minVal = parseFloat(min.value);
+                const maxVal = parseFloat(max.value);
+                const minRange = parseFloat(min.min);
+                const maxRange = parseFloat(min.max);
+                
+                const leftPercent = ((minVal - minRange) / (maxRange - minRange)) * 100;
+                const rightPercent = ((maxVal - minRange) / (maxRange - minRange)) * 100;
+                
+                sliderRange.style.left = leftPercent + '%';
+                sliderRange.style.width = (rightPercent - leftPercent) + '%';
+            }
+
+            function clearFilters() {
+                // Reset search
+                document.getElementById('searchInput').value = '';
+                
+                // Reset price slider
+                document.getElementById('minPrice').value = 0;
+                document.getElementById('maxPrice').value = 10000000;
+                updatePriceSlider();
+                
+                // Reset size slider
+                document.getElementById('minSize').value = 0;
+                document.getElementById('maxSize').value = 1000000;
+                updateSizeSlider();
+                
+                // Reset cap rate slider
+                document.getElementById('minCapRate').value = 0;
+                document.getElementById('maxCapRate').value = 15;
+                updateCapRateSlider();
+                
+                // Reset lease term slider
+                document.getElementById('minLeaseTerm').value = 0;
+                document.getElementById('maxLeaseTerm').value = 30;
+                updateLeaseTermSlider();
+                
+                // Reset tenant checkboxes
+                document.getElementById('tenantRetail').checked = true;
+                document.getElementById('tenantRestaurant').checked = true;
+                document.getElementById('tenantMedical').checked = true;
+                document.getElementById('tenantOffice').checked = true;
+                document.getElementById('tenantOther').checked = true;
+                
+                // Reset rent increases filter
+                document.getElementById('rentIncreasesFilter').value = 'all';
+                
+                // Trigger filter update
+                filterAndSortProperties();
+            }
+
+            function generateStandaloneHtml() {
+                const css = document.querySelector('style').innerHTML;
+                let bodyContent = document.body.cloneNode(true);
+                bodyContent.querySelector('script').remove();
+                bodyContent.querySelector('.upload-section').remove();
+                bodyContent.querySelector('.actions').remove();
+                bodyContent.querySelector('.export-options').remove();
+                
+                const functionStrs = [ 
+                    parsePrice, 
+                    formatPrice, 
+                    formatPriceValue, 
+                    formatFullPrice,
+                    formatSize,
+                    getFullAddress, 
+                    createPropertyCard, 
+                    setupPagination, 
+                    openPropertyModal, 
+                    loadMap, 
+                    setView, 
+                    displayProperties, 
+                    filterAndSortProperties, 
+                    updateFilterIndicators, 
+                    clearSearchFilter, 
+                    clearPriceFilter, 
+                    clearSizeFilter,
+                    clearCapRateFilter,
+                    clearLeaseTermFilter,
+                    clearTenantFilter,
+                    clearRentIncreasesFilter,
+                    showNotification, 
+                    getIndexFromProperty 
+                ].map(fn => fn.toString()).join('\n\n');
+                const scriptContent = `
+                document.addEventListener('DOMContentLoaded', function() {
+                    const matchedProperties = ${JSON.stringify(matchedProperties)};
+                    const COLUMN_MAP = ${JSON.stringify(COLUMN_MAP)};
+                    let currentFilteredProperties = [], currentPage = 1, currentView = 'grid';
+                    const propertiesPerPage = ${propertiesPerPage};
+                    
+                    // DOM element references with null checks
+                    const searchInput = document.getElementById('searchInput');
+                    const sortSelect = document.getElementById('sortSelect');
+                    const gridView = document.getElementById('gridView');
+                    const listView = document.getElementById('listView');
+                    const resultsContainer = document.getElementById('resultsContainer');
+                    const propertyCount = document.getElementById('propertyCount');
+                    const pagination = document.getElementById('pagination');
+                    const propertyModal = document.getElementById('propertyModal');
+                    const modalClose = document.getElementById('modalClose');
+                    const modalTitle = document.getElementById('modalTitle');
+                    const modalBody = document.getElementById('modalBody');
+                    const notification = document.getElementById('notification');
+                    const notificationText = document.getElementById('notificationText');
+                    
+                    ${functionStrs}
+                    
+                    function handleResultsClick(e){ 
+                        const c=e.target.closest('.property-card[data-property-id]'); 
+                        if(c){
+                            const propertyIndex=parseInt(c.dataset.propertyId); 
+                            const p=currentFilteredProperties[propertyIndex]; 
+                            if(p) openPropertyModal(p);
+                        } 
+                    }
+                    
+                    function handlePaginationClick(e){ 
+                        const t=e.target.closest('.pagination-btn'); 
+                        if(!t||t.disabled) return; 
+                        const T=Math.ceil(currentFilteredProperties.length/propertiesPerPage); 
+                        let n=currentPage; 
+                        if(t.id==='prevBtn') n--; 
+                        else if(t.id==='nextBtn') n++; 
+                        else if(t.dataset.page) n=parseInt(t.dataset.page,10); 
+                        if(n!==currentPage&&n>0&&n<=T){
+                            currentPage=n;
+                            displayProperties();
+                        } 
+                    }
+                    
+                    // Event listeners with null checks
+                    if(searchInput) searchInput.addEventListener('input', filterAndSortProperties);
+                    if(sortSelect) sortSelect.addEventListener('change', filterAndSortProperties);
+                    if(gridView) gridView.addEventListener('click', () => setView('grid'));
+                    if(listView) listView.addEventListener('click', () => setView('list'));
+                    if(modalClose) modalClose.addEventListener('click', () => propertyModal.classList.remove('show'));
+                    if(propertyModal) propertyModal.addEventListener('click', (e) => { 
+                        if (e.target === propertyModal) propertyModal.classList.remove('show'); 
+                    });
+                    if(resultsContainer) resultsContainer.addEventListener('click', handleResultsClick);
+                    if(pagination) pagination.addEventListener('click', handlePaginationClick);
+                    
+                    filterAndSortProperties();
+                });`;
+
+                const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Property Catalog</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><style>${css}</style></head><body>${bodyContent.innerHTML}<script>${scriptContent.replace(/<\/script>/g, '<\\/script>')}<\/script></body></html>`;
+
+                const blob = new Blob([html], { type: 'text/html' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'property-catalog.html';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                URL.revokeObjectURL(a.href);
+                showNotification('Standalone HTML file generated.', 'success');
+            }
+
+            // Helper function to get index from property
+            function getIndexFromProperty(property) {
+                return currentFilteredProperties.indexOf(property);
+            }
+        });
+        </script>
+    
+
+<script>
+
+</script>
+
+<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const matchedProperties = [{"img-responsive src":"https://images1.loopnet.com/i2/4kUd-YPGRMuaZzpsCTSPCEoVfUHWkrlGK5xxGfUTMn4/116/12848-Martin-Luther-King-Jr-Way-Seattle-WA-Building-Photo-1-LargeHighDefinition.jpg","title-lst href":"https://www.net-trade.com/sale/-martin-luther-king-junior-way-south-seattle/92MAB9N/srchdet","Tenant":"7-Eleven","Address":"12848 Martin Luther King Jr Way S, Seattle, WA 98178","Size SF":"2,428","Built/Renov":"1982","Price/SF":"$2,033","Lease Start":"01-04-2021","Rent/SF":"$101.66","Lease Type":"Abs NNN","Lot/AC":"0.47","Pop 5MI":"308,343","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"4,936,800","Cap Rate":"5.00%","R. Term/Yrs":"10.5","Guarantor":"Corp T + R","# Units":"83,282"},{"img-responsive src":"https://images1.loopnet.com/i2/higar9K3eP-t5-E_hOpYgVpbstX3bOt6nVscF5sdMxU/112/image.jpg","title-lst href":"https://www.net-trade.com/sale/-frontage-road-wapato/JY5QBFA/srchdet","Tenant":"McDonald's (GL)","Address":"105 Frontage Road, Wapato, WA 98951","Size SF":"4,584","Built/Renov":"2025","Price/SF":"$482","Lease Start":"10-01-2025","Rent/SF":"$18.54","Lease Type":"Abs NNN","Lot/AC":"1.48","Pop 5MI":"12,518","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"2,207,800","Cap Rate":"3.85%","R. Term/Yrs":"20","Guarantor":"Corp T + R","# Units":"43,000"},{"img-responsive src":"https://images1.loopnet.com/i2/cqPgxvasn53vX0Jk8riL_XsTVqadIK2kBc-05yrs4xs/116/11606-Canyon-Rd-E-Puyallup-WA-Primary-Photo-1-LargeHighDefinition.jpg","title-lst href":"https://www.net-trade.com/sale/-canyon-road-east-puyallup/WG7HQ3D/srchdet","Tenant":"Quick Quack Car Wash (GL)","Address":"11606 Canyon Road East, Puyallup, WA 98373","Size SF":"3,588","Built/Renov":"2024","Price/SF":"$929","Lease Start":"10-29-2024","Rent/SF":"$54.35","Lease Type":"Abs NNN","Lot/AC":"1.73","Pop 5MI":"237,317","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"3,333,000","Cap Rate":"5.85%","R. Term/Yrs":"19.1","Guarantor":"Corporate","# Units":"230"},{"img-responsive src":"https://images1.loopnet.com/i2/sp74g8meiFLw46hm6dCai8uJbPdREhrOK17j9RlWqBE/116/2429-NW-Highway-101-Lincoln-City-OR-Building-Photo-1-LargeHighDefinition.jpg","title-lst href":"https://www.net-trade.com/sale/-northwest-u-s-101-lincoln-city/68OQHZC/srchdet","Tenant":"Grocery Outlet","Address":"2429 Northwest U.S. 101, Lincoln City, OR 97367","Size SF":"14,855","Built/Renov":"1961/2023","Price/SF":"$438","Lease Start":"08-09-2023","Rent/SF":"$26.25","Lease Type":"Abs NNN","Lot/AC":"0.96","Pop 5MI":"12,286","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"6,499,000","Cap Rate":"6.00%","R. Term/Yrs":"12.11","Guarantor":"Corp T + R","# Units":"524"},{"img-responsive src":"https://images1.loopnet.com/i2/vJRdqBgV3GvSohAJA_iQqwBEz4kLeYf_NpvGl8Pc2RA/116/1895-Franklin-Blvd-Eugene-OR-Building-Photo-1-LargeHighDefinition.png","title-lst href":"https://www.net-trade.com/sale/-franklin-boulevard-eugene/NYBCYU2/srchdet","Tenant":"Starbucks","Address":"1895 Franklin Boulevard, Eugene, OR 97403","Size SF":"2,565","Built/Renov":"2016","Price/SF":"$1,345","Lease Start":"04-09-2016","Rent/SF":"$44.91","Lease Type":"NN+","Lot/AC":"0.97","Pop 5MI":"204,838","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"3,450,000","Cap Rate":"3.34%","R. Term/Yrs":"5.7","Guarantor":"Corp T + R","# Units":"38,038"},{"img-responsive src":"https://images1.loopnet.com/i2/RWIktdD6imnHRyzghiGIzdPT1lqrZ45rc9EIBraK0dw/116/615-Valley-Mall-Pky-East-Wenatchee-WA-Primary-Photo-1-LargeHighDefinition.jpg","title-lst href":"https://www.net-trade.com/sale/-valley-mall-parkway-east-wenatchee/FNWTV2N/srchdet","Tenant":"Olive Garden (GL)","Address":"615 Valley Mall Parkway, East Wenatchee, WA 98802","Size SF":"7,507","Built/Renov":"2010","Price/SF":"$336","Lease Start":"04-01-2010","Rent/SF":"$19.34","Lease Type":"Abs NNN","Lot/AC":"0.41","Pop 5MI":"76,125","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"2,525,217","Cap Rate":"5.75%","R. Term/Yrs":"6.6","Guarantor":"Corp T + R","# Units":"949"},{"img-responsive src":"https://images1.loopnet.com/i2/cPLIalwjVMsJ2DiSvI8Lgb5Q4HUQam3AMHkHn6kvB6A/116/389-SW-Birch-St-Pilot-Rock-OR-Primary-Photo-1-LargeHighDefinition.jpg","title-lst href":"https://www.net-trade.com/sale/-southwest_birch_street-pilot_rock/8ZRSI4U/srchdet","Tenant":"Family Dollar | Dollar Tree (Dark)","Address":"389 Southwest Birch Street, Pilot Rock, OR 97868","Size SF":"10,500","Built/Renov":"2022","Price/SF":"$143","Lease Start":"07-01-2022","Rent/SF":"$12.19","Lease Type":"NN+","Lot/AC":"1.7","Pop 5MI":"1,435","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"1,505,824","Cap Rate":"8.50%","R. Term/Yrs":"6.9","Guarantor":"Corp T + R","# Units":"1,200"},{"img-responsive src":"https://images1.loopnet.com/i2/xEbrR3149uhNiNr-8uZ5bqy9-jOvTC8Ad7GiLH5-V70/117/image.png","title-lst href":"https://www.net-trade.com/sale/-foster-powell-portland/FSH4U9S/srchdet","Tenant":"Walgreens","Address":"4325 Southeast 82nd Avenue, Portland, OR 97206","Size SF":"13,905","Built/Renov":"1997","Price/SF":"$376","Lease Start":"05-02-1997","Rent/SF":"$25.41","Lease Type":"NN+","Lot/AC":"1.4","Pop 5MI":"465,078","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"5,234,000","Cap Rate":"6.75%","R. Term/Yrs":"8.7","Guarantor":"Corp T + R","# Units":"13,532"},{"img-responsive src":"https://images1.loopnet.com/i2/sla1oQNdhWt32fLWefbf8I50WrnJhgFAVEvkuJvDtdw/116/2648-Coweeman-Park-Dr-Kelso-WA-Primary-Photo-1-LargeHighDefinition.jpg","title-lst href":"https://www.net-trade.com/sale/-coweeman-park-drive-kelso/SJRTRTR/srchdet","Tenant":"Tractor Supply Company","Address":"2648 Coweeman Park Drive, Kelso, WA 98626","Size SF":"22,181","Built/Renov":"2017","Price/SF":"$333","Lease Start":"07-01-2024","Rent/SF":"$19.16","Lease Type":"Double NN","Lot/AC":"4.51","Pop 5MI":"52,698","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"7,391,000","Cap Rate":"5.75%","R. Term/Yrs":"13.9","Guarantor":"Corp T + R","# Units":"2,414"},{"img-responsive src":"https://images1.loopnet.com/i2/XCFTXtC_v_7JI5fdDiM7c8mjTFVE4_vsbG-6PqTS1Dg/116/1213-E-Wishkah-St-Aberdeen-WA-Building-Photo-1-LargeHighDefinition.jpg","title-lst href":"https://www.net-trade.com/sale/-east-wishkah-street-aberdeen/WBJBPXM/srchdet","Tenant":"Tractor Supply Company","Address":"1213 East Wishkah Street, Aberdeen, WA 98520","Size SF":"38,196","Built/Renov":"1994","Price/SF":"$164","Lease Start":"06-01-2023","Rent/SF":"$9.01","Lease Type":"Double NN","Lot/AC":"1.27","Pop 5MI":"30,220","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"6,255,000","Cap Rate":"5.50%","R. Term/Yrs":"10.1","Guarantor":"Corp T + R","# Units":"2,414"},{"img-responsive src":"https://images1.loopnet.com/i2/E2slsZNiw0C452FY6aoJ1vgbnyQAx8RwyfNjodn4l_0/116/1530-Campbell-Street-Baker-City-OR-Building-Photo-1-LargeHighDefinition.jpg","title-lst href":"https://www.net-trade.com/sale/-campbell-street-baker_city/HSTZMIF/srchdet","Tenant":"Taco Bell (GL)","Address":"1530 Campbell Street, Baker City, OR 97814","Size SF":"2,400","Built/Renov":"2023","Price/SF":"$1,090","Lease Start":"12-01-2024","Rent/SF":"$65.38","Lease Type":"Abs NNN","Lot/AC":"0.36","Pop 5MI":"10,823","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"2,615,000","Cap Rate":"6.00%","R. Term/Yrs":"19.2","Guarantor":"Franchisee","# Units":"250"},{"img-responsive src":"https://ahprd1cdn.csgpimgs.com/i2/HL1J2Lz9Z5L8HrIc9JIJ6sUUUVE-3PGGsJLWYl9N1cg/116/image.jpg","title-lst href":"https://www.net-trade.com/sale/-southwest-14th-avenue-albany/OKGU5KQ/srchdet","Tenant":"Hobby Lobby","Address":"1871 Southwest 14th Avenue, Albany, OR 97322","Size SF":"62,100","Built/Renov":"1988","Price/SF":"$103","Lease Start":"07-01-2014","Rent/SF":"$6.72","Lease Type":"Double NN","Lot/AC":"1.62","Pop 5MI":"65,992","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"6,418,077","Cap Rate":"6.50%","R. Term/Yrs":"8.9","Guarantor":"Corporate","# Units":"994"},{"img-responsive src":"https://images1.loopnet.com/i2/Av-xZ17Zp2ReBr5sY77avQF3KrbbOanYyeyuD-gI3qA/116/1080-SW-1st-Ave-Canby-OR-Building-Photo-1-LargeHighDefinition.jpg","title-lst href":"https://www.net-trade.com/sale/-southwest-1st-avenue-canby/MMQBTJA/srchdet","Tenant":"Walgreens","Address":"1080 Southwest 1st Avenue, Canby, OR 97013","Size SF":"14,820","Built/Renov":"2007","Price/SF":"$312","Lease Start":"02-01-2023","Rent/SF":"$20.00","Lease Type":"Abs NNN","Lot/AC":"1.39","Pop 5MI":"43,154","contactPopUp href":"https://www.net-trade.com/buy.htm?srchp&tenantType=Big%20Box%20Retail&lotAttr20=&locAttr22=&areaLocAttr24=&tenantAttr26=&investmentAttr28=&tabSort=1&status=active%3Acontract#","om":"Download OM","flt-rgt":"Show More","list-price-outer":"4,631,000","Cap Rate":"6.40%","R. Term/Yrs":"12.4","Guarantor":"Corp T + R","# Units":"13,532"}];
+                    const COLUMN_MAP = {"imageUrl":"img-responsive src","price":"list-price-outer","propertyName":"Tenant","address":"Address","sqft":"Size SF","lotSize":"Lot/AC","capRate":"Cap Rate","type":"Lease Type","leaseTerm":"R. Term/Yrs","pricePerSqft":"Price/SF","propertyLink":"title-lst href"};
+                    let currentFilteredProperties = [], currentPage = 1, currentView = 'grid';
+                    const propertiesPerPage = 100;
+                    
+                    // DOM element references with null checks
+                    const searchInput = document.getElementById('searchInput');
+                    const sortSelect = document.getElementById('sortSelect');
+                    const gridView = document.getElementById('gridView');
+                    const listView = document.getElementById('listView');
+                    const resultsContainer = document.getElementById('resultsContainer');
+                    const propertyCount = document.getElementById('propertyCount');
+                    const pagination = document.getElementById('pagination');
+                    const propertyModal = document.getElementById('propertyModal');
+                    const modalClose = document.getElementById('modalClose');
+                    const modalTitle = document.getElementById('modalTitle');
+                    const modalBody = document.getElementById('modalBody');
+                    const notification = document.getElementById('notification');
+                    const notificationText = document.getElementById('notificationText');
+                    
+                    function parsePrice(price) { 
+                return typeof price === 'number' ? price : parseFloat(String(price).replace(/[^0-9.-]+/g,"")) || 0; 
+            }
+
+function formatPrice(priceVal) {
+                if (priceVal === undefined || priceVal === null || priceVal === '') return 'Unpriced';
+                if (typeof priceVal === 'string' && priceVal.trim().toLowerCase() === 'unpriced') return 'Unpriced';
+                
+                // Handle price strings like "$2,892,000"
+                const num = typeof priceVal === 'number' ? priceVal : parseFloat(String(priceVal).replace(/[^0-9.-]+/g,"")) || 0;
+                
+                if (num > 0) {
+                    return new Intl.NumberFormat('en-US', { 
+                        style: 'currency', 
+                        currency: 'USD', 
+                        minimumFractionDigits: 0, 
+                        maximumFractionDigits: 0 
+                    }).format(num);
+                }
+                return typeof priceVal === 'string' && isNaN(num) ? priceVal : 'Unpriced';
+            }
+
+function formatPriceValue(value) {
+                if (value >= 1000000) {
+                    return '$' + (value / 1000000).toFixed(1) + 'M';
+                } else if (value >= 1000) {
+                    return '$' + (value / 1000).toFixed(0) + 'K';
+                } else if (value == 0) {
+                    return '$0';
+                } else {
+                    return '$' + value.toLocaleString();
+                }
+            }
+
+function formatFullPrice(priceVal) {
+                if (priceVal === undefined || priceVal === null || priceVal === '') return 'Unpriced';
+                if (typeof priceVal === 'string' && priceVal.trim().toLowerCase() === 'unpriced') return 'Unpriced';
+                const num = parsePrice(priceVal);
+                if (num > 0) {
+                    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(num);
+                }
+                return typeof priceVal === 'string' && isNaN(num) ? priceVal : 'Unpriced';
+            }
+
+function formatSize(value) {
+                if (value >= 1000000) {
+                    return (value / 1000000).toFixed(1) + 'M SF';
+                } else if (value >= 1000) {
+                    return (value / 1000).toFixed(0) + 'K SF';
+                } else if (value == 0) {
+                    return '0 SF';
+                } else {
+                    return value.toLocaleString() + ' SF';
+                }
+            }
+
+function getFullAddress(p, sep = ', ') { 
+                const addressParts = [
+                    p[COLUMN_MAP.address], 
+                    p[COLUMN_MAP.city], 
+                    p[COLUMN_MAP.state], 
+                    p[COLUMN_MAP.zip]
+                ].filter(Boolean).map(part => part.toString().trim());
+                
+                // Clean up extra spaces and commas
+                let fullAddress = addressParts.join(sep);
+                // Remove double spaces and fix spacing around commas
+                fullAddress = fullAddress.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ', ').trim();
+                // Remove trailing comma if exists
+                fullAddress = fullAddress.replace(/,\s*$/, '');
+                
+                return fullAddress;
+            }
+
+function createPropertyCard(property) {
+                const imageUrl = property[COLUMN_MAP.imageUrl] || '';
+                const name = property[COLUMN_MAP.propertyName] || 'Property';
+                const fullAddress = getFullAddress(property, ', ');
+                return `
+                <div class="property-card ${currentView}" data-property-id="${getIndexFromProperty(property)}">
+                    <div class="property-image">
+                        <img src="${imageUrl}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x220/e0e0e0/777?text=Image+Missing';">
+                    </div>
+                    <div class="property-details">
+                        <div class="property-price">${formatPrice(property[COLUMN_MAP.price])}</div>
+                        <h3 class="property-name">${name}</h3>
+                        <div class="property-address">
+                            <i class="fas fa-map-marker-alt"></i><span>${fullAddress || 'Address not available'}</span>
+                        </div>
+                        <p class="property-description">${property[COLUMN_MAP.scrapedDescription] || ''}</p>
+                    </div>
+                </div>`;
+            }
+
+function setupPagination() {
+                const totalPages = Math.ceil(currentFilteredProperties.length / propertiesPerPage);
+                pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+                if (totalPages <= 1) { pagination.innerHTML = ''; return; }
+                
+                const getBtn = (p) => `<button class="pagination-btn page-btn ${p === currentPage ? 'active' : ''}" data-page="${p}">${p}</button>`;
+                const pages = new Set([1, totalPages, currentPage, currentPage - 1, currentPage + 1]);
+                const sorted = [...pages].filter(p => p > 0 && p <= totalPages).sort((a,b)=>a-b);
+                
+                let html = `<button class="pagination-btn" id="prevBtn" ${currentPage === 1 ? 'disabled' : ''}>&laquo; Prev</button>`;
+                let last = 0;
+                sorted.forEach(p => {
+                    if (p > last + 1) html += `<span class="pagination-ellipsis">...</span>`;
+                    html += getBtn(p);
+                    last = p;
+                });
+                html += `<button class="pagination-btn" id="nextBtn" ${currentPage === totalPages ? 'disabled' : ''}>Next &raquo;</button>`;
+                pagination.innerHTML = html;
+            }
+
+function openPropertyModal(property) {
+                const name = property[COLUMN_MAP.propertyName] || 'Property Details';
+                const address = getFullAddress(property, ', ');
+                
+                // Set a more descriptive modal title (only name, avoid duplicate address)
+                modalTitle.textContent = name && name !== 'Property' ? name : 'Property Details';
+                
+                // Helper function to create attribute row if value exists
+                function createAttributeRow(label, value) {
+                    if (!value || value.toString().trim() === '') return '';
+                    
+                    // Format values based on label
+                    let formattedValue = value;
+                    if (label === 'SqFt') {
+                        // Format SqFt with commas
+                        const numValue = parseFloat(value.toString().replace(/[^\d.]/g, ''));
+                        if (!isNaN(numValue)) {
+                            formattedValue = numValue.toLocaleString();
+                        }
+                    } else if (label === 'Lot Size') {
+                        // Add AC suffix to Lot Size
+                        formattedValue = value.toString().includes('AC') ? value : `${value} AC`;
+                    } else if (label === 'Price/SqFt') {
+                        // Add $ prefix to Price/SqFt and format to 2 decimal places
+                        const numValue = parseFloat(value);
+                        if (!isNaN(numValue)) {
+                            formattedValue = `$${numValue.toFixed(2)}`;
+                        } else {
+                            formattedValue = value.toString().startsWith('$') ? value : `$${value}`;
+                        }
+                    } else if (label === 'Cap Rate') {
+                        // Add % suffix to Cap Rate
+                        formattedValue = value.toString().includes('%') ? value : `${value}%`;
+                    }
+                    
+                    return `
+                        <div class="property-attribute">
+                            <span class="attribute-label">${label}:</span>
+                            <span class="attribute-value">${formattedValue}</span>
+                        </div>`;
+                }
+                
+                // Build attributes section
+                let attributesHtml = '';
+                attributesHtml += createAttributeRow('SqFt', property[COLUMN_MAP.sqft]);
+                attributesHtml += createAttributeRow('Lot Size', property[COLUMN_MAP.lotSize]);
+                attributesHtml += createAttributeRow('Cap Rate', property[COLUMN_MAP.capRate]);
+                attributesHtml += createAttributeRow('Type', property[COLUMN_MAP.type]);
+                attributesHtml += createAttributeRow('Lease Term', property[COLUMN_MAP.leaseTerm]);
+                attributesHtml += createAttributeRow('Price/SqFt', property[COLUMN_MAP.pricePerSqft]);
+                
+                const fullAddress = address && address.trim() ? address : '';
+                const priceHtml = property[COLUMN_MAP.price] ? `<div class="property-price">${formatFullPrice(property[COLUMN_MAP.price])}</div>` : '';
+                const addressChipHtml = fullAddress ? `<div class="property-address-modal"><i class="fas fa-map-marker-alt"></i><span>${fullAddress}</span></div>` : '';
+                const descText = (property[COLUMN_MAP.scrapedDescription] || '').toString().trim();
+                const descriptionHtml = descText ? `<p class="property-description">${descText}</p>` : '';
+
+                modalBody.innerHTML = `
+                    <div class="property-modal-new-layout">
+                        <div class="property-modal-left">
+                            <div class="property-header">
+                                ${priceHtml}
+                                ${addressChipHtml}
+                            </div>
+                            <div class="property-modal-image">
+                                <img src="${property[COLUMN_MAP.imageUrl] || ''}" alt="${name}" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e0e0e0/777?text=Image+Missing';">
+                            </div>
+                        </div>
+                        <div class="property-modal-right">
+                            ${descriptionHtml}
+                            ${attributesHtml ? `<div class="property-attributes">${attributesHtml}</div>` : ''}
+                            <a href="${property[COLUMN_MAP.propertyLink]}" target="_blank" class="btn">
+                                <i class="fas fa-external-link-alt"></i> View on Net-Trade
+                            </a>
+                        </div>
+                    </div>
+                    <div id="propertyMap"></div>`;
+                propertyModal.classList.add('show');
+                loadMap(property);
+            }
+
+function loadMap(property) {
+                const address = property[COLUMN_MAP.address] || '';
+                const mapEl = document.getElementById('propertyMap');
+                if (!mapEl) return;
+                
+                if (address) {
+                    // Create Google Maps embed iframe using the address
+                    const encodedAddress = encodeURIComponent(address);
+                    const embedUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1000!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s${encodedAddress}!5e1!3m2!1sen!2sus!4v${Date.now()}!5m1!1e4`;
+                    mapEl.innerHTML = `<iframe class="map" src="${embedUrl}" frameborder="0" allowfullscreen style="width: 100%; height: 100%; border-radius: 8px;"></iframe>`;
+                } else {
+                    mapEl.innerHTML = '<p style="text-align:center; padding: 2rem;">Map data not available for this property.</p>';
+                }
+            }
+
+function setView(view) { 
+                currentView = view; 
+                gridView.classList.toggle('active', view === 'grid'); 
+                listView.classList.toggle('active', view === 'list');
+                tableView.classList.toggle('active', view === 'table');
+                displayProperties(); 
+            }
+
+function displayProperties() {
+                propertyCount.textContent = `${currentFilteredProperties.length} propert${currentFilteredProperties.length === 1 ? 'y' : 'ies'}`;
+                updateFilterIndicators();
+                
+                if (currentFilteredProperties.length === 0) {
+                    resultsContainer.innerHTML = `<div class="empty-state"><i class="fas fa-filter"></i><h3>No properties match your criteria.</h3><p>Try adjusting your search or filters.</p></div>`;
+                    pagination.style.display = 'none'; return;
+                }
+                const pageProperties = currentFilteredProperties.slice((currentPage - 1) * propertiesPerPage, currentPage * propertiesPerPage);
+                let content;
+                if (currentView === 'table') {
+                    content = createPropertyTable(pageProperties, currentPage, propertiesPerPage);
+                } else if (currentView === 'list') {
+                    content = `<div class="property-list">${pageProperties.map(createPropertyCard).join('')}</div>`;
+                } else {
+                    content = `<div class="property-grid">${pageProperties.map(createPropertyCard).join('')}</div>`;
+                }
+                resultsContainer.innerHTML = content;
+                setupPagination();
+            }
+
+function filterAndSortProperties() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const sortValue = sortSelect.value;
+                const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+                const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+                const minSize = parseFloat(document.getElementById('minSize').value) || 0;
+                const maxSize = parseFloat(document.getElementById('maxSize').value) || Infinity;
+                const minCapRate = parseFloat(document.getElementById('minCapRate').value) || 0;
+                const maxCapRate = parseFloat(document.getElementById('maxCapRate').value) || Infinity;
+                const minLeaseTerm = parseFloat(document.getElementById('minLeaseTerm').value) || 0;
+                const maxLeaseTerm = parseFloat(document.getElementById('maxLeaseTerm').value) || Infinity;
+                const rentIncreasesFilter = document.getElementById('rentIncreasesFilter').value;
+                
+                // Get selected tenant types
+                const selectedTenants = [];
+                if (document.getElementById('tenantRetail').checked) selectedTenants.push('retail');
+                if (document.getElementById('tenantRestaurant').checked) selectedTenants.push('restaurant');
+                if (document.getElementById('tenantMedical').checked) selectedTenants.push('medical');
+                if (document.getElementById('tenantOffice').checked) selectedTenants.push('office');
+                if (document.getElementById('tenantOther').checked) selectedTenants.push('other');
+                
+                currentFilteredProperties = matchedProperties.filter(p => {
+                    const fullAddress = getFullAddress(p, ', ').toLowerCase();
+                    const name = (p[COLUMN_MAP.propertyName] || '').toLowerCase();
+                    const searchMatch = name.includes(searchTerm) || fullAddress.includes(searchTerm);
+                    
+                    // Price filter
+                    const price = parsePrice(p[COLUMN_MAP.price]);
+                    const priceMatch = price >= minPrice && price <= maxPrice;
+                    
+                    // Size filter
+                    const size = parseFloat(p[COLUMN_MAP.sqft] || 0);
+                    const sizeMatch = size >= minSize && size <= maxSize;
+                    
+                    // Cap rate filter
+                    const capRate = parseFloat(p[COLUMN_MAP.capRate] || 0);
+                    const capRateMatch = capRate >= minCapRate && capRate <= maxCapRate;
+                    
+                    // Lease term filter
+                    const leaseTerm = parseFloat(p[COLUMN_MAP.leaseTerm] || 0);
+                    const leaseTermMatch = leaseTerm >= minLeaseTerm && leaseTerm <= maxLeaseTerm;
+                    
+                    // Tenant type filter
+                    const tenant = (p[COLUMN_MAP.tenant] || '').toLowerCase();
+                    let tenantMatch = false;
+                    if (selectedTenants.includes('retail') && (tenant.includes('retail') || tenant.includes('store') || tenant.includes('shop'))) tenantMatch = true;
+                    if (selectedTenants.includes('restaurant') && (tenant.includes('restaurant') || tenant.includes('food') || tenant.includes('dining'))) tenantMatch = true;
+                    if (selectedTenants.includes('medical') && (tenant.includes('medical') || tenant.includes('health') || tenant.includes('clinic') || tenant.includes('pharmacy'))) tenantMatch = true;
+                    if (selectedTenants.includes('office') && (tenant.includes('office') || tenant.includes('corporate') || tenant.includes('business'))) tenantMatch = true;
+                    if (selectedTenants.includes('other') && !tenant.match(/(retail|store|shop|restaurant|food|dining|medical|health|clinic|pharmacy|office|corporate|business)/)) tenantMatch = true;
+                    
+                    // Rent increases filter
+                    const rentIncreases = (p[COLUMN_MAP.rentIncreases] || '').toLowerCase();
+                    let rentIncreasesMatch = true;
+                    if (rentIncreasesFilter === 'with') {
+                        rentIncreasesMatch = rentIncreases.includes('yes') || rentIncreases.includes('annual') || rentIncreases.includes('periodic');
+                    } else if (rentIncreasesFilter === 'without') {
+                        rentIncreasesMatch = rentIncreases.includes('no') || rentIncreases === '';
+                    } else if (rentIncreasesFilter === 'annual') {
+                        rentIncreasesMatch = rentIncreases.includes('annual');
+                    } else if (rentIncreasesFilter === 'periodic') {
+                        rentIncreasesMatch = rentIncreases.includes('periodic');
+                    }
+                    
+                    return searchMatch && priceMatch && sizeMatch && capRateMatch && leaseTermMatch && tenantMatch && rentIncreasesMatch;
+                }).sort((a, b) => {
+                    switch (sortValue) {
+                        case 'price-asc': return parsePrice(a[COLUMN_MAP.price]) - parsePrice(b[COLUMN_MAP.price]);
+                        case 'price-desc': return parsePrice(b[COLUMN_MAP.price]) - parsePrice(a[COLUMN_MAP.price]);
+                        case 'name-asc': return (a[COLUMN_MAP.propertyName] || '').localeCompare(b[COLUMN_MAP.propertyName] || '');
+                        case 'name-desc': return (b[COLUMN_MAP.propertyName] || '').localeCompare(a[COLUMN_MAP.propertyName] || '');
+                        case 'sqft-asc': return parseFloat(a[COLUMN_MAP.sqft] || 0) - parseFloat(b[COLUMN_MAP.sqft] || 0);
+                        case 'sqft-desc': return parseFloat(b[COLUMN_MAP.sqft] || 0) - parseFloat(a[COLUMN_MAP.sqft] || 0);
+                        case 'caprate-asc': return parseFloat(a[COLUMN_MAP.capRate] || 0) - parseFloat(b[COLUMN_MAP.capRate] || 0);
+                        case 'caprate-desc': return parseFloat(b[COLUMN_MAP.capRate] || 0) - parseFloat(a[COLUMN_MAP.capRate] || 0);
+                        case 'pricesqft-asc': return parseFloat(a[COLUMN_MAP.pricePerSqft] || 0) - parseFloat(b[COLUMN_MAP.pricePerSqft] || 0);
+                        case 'pricesqft-desc': return parseFloat(b[COLUMN_MAP.pricePerSqft] || 0) - parseFloat(a[COLUMN_MAP.pricePerSqft] || 0);
+                        default: return 0;
+                    }
+                });
+
+                currentPage = 1;
+                displayProperties();
+            }
+
+function updateFilterIndicators() {
+                // If filterIndicators element is not present (UI change), safely no-op
+                const filterIndicators = document.getElementById('filterIndicators');
+                if (!filterIndicators) return;
+                const indicators = [];
+                
+                const searchTerm = searchInput.value.trim();
+                const minPrice = document.getElementById('minPrice').value;
+                const maxPrice = document.getElementById('maxPrice').value;
+                const minSize = document.getElementById('minSize').value;
+                const maxSize = document.getElementById('maxSize').value;
+                const minCapRate = document.getElementById('minCapRate').value;
+                const maxCapRate = document.getElementById('maxCapRate').value;
+                const minLeaseTerm = document.getElementById('minLeaseTerm').value;
+                const maxLeaseTerm = document.getElementById('maxLeaseTerm').value;
+                const rentIncreasesFilter = document.getElementById('rentIncreasesFilter').value;
+                
+                if (searchTerm) {
+                    indicators.push(`<span class="filter-tag">Search: "${searchTerm}" <span class="remove" onclick="clearSearchFilter()">×</span></span>`);
+                }
+                
+                if (minPrice || maxPrice) {
+                    const priceRange = `${minPrice ? '$' + parseInt(minPrice).toLocaleString() : '0'} - ${maxPrice ? '$' + parseInt(maxPrice).toLocaleString() : '∞'}`;
+                    indicators.push(`<span class="filter-tag">Price: ${priceRange} <span class="remove" onclick="clearPriceFilter()">×</span></span>`);
+                }
+                
+                if (minSize || maxSize) {
+                    const sizeRange = `${minSize ? parseInt(minSize).toLocaleString() : '0'} - ${maxSize ? parseInt(maxSize).toLocaleString() : '∞'} sqft`;
+                    indicators.push(`<span class="filter-tag">Size: ${sizeRange} <span class="remove" onclick="clearSizeFilter()">×</span></span>`);
+                }
+                
+                if (minCapRate || maxCapRate) {
+                    const capRateRange = `${minCapRate || '0'}% - ${maxCapRate || '∞'}%`;
+                    indicators.push(`<span class="filter-tag">Cap Rate: ${capRateRange} <span class="remove" onclick="clearCapRateFilter()">×</span></span>`);
+                }
+                
+                if (minLeaseTerm || maxLeaseTerm) {
+                    const leaseTermRange = `${minLeaseTerm || '0'} - ${maxLeaseTerm || '∞'} years`;
+                    indicators.push(`<span class="filter-tag">Lease Term: ${leaseTermRange} <span class="remove" onclick="clearLeaseTermFilter()">×</span></span>`);
+                }
+                
+                // Check tenant filters
+                const tenantFilters = [];
+                if (!document.getElementById('tenantRetail').checked) tenantFilters.push('Retail');
+                if (!document.getElementById('tenantRestaurant').checked) tenantFilters.push('Restaurant');
+                if (!document.getElementById('tenantMedical').checked) tenantFilters.push('Medical');
+                if (!document.getElementById('tenantOffice').checked) tenantFilters.push('Office');
+                if (!document.getElementById('tenantOther').checked) tenantFilters.push('Other');
+                
+                if (tenantFilters.length > 0 && tenantFilters.length < 5) {
+                    indicators.push(`<span class="filter-tag">Excluding: ${tenantFilters.join(', ')} <span class="remove" onclick="clearTenantFilter()">×</span></span>`);
+                }
+                
+                if (rentIncreasesFilter !== 'all') {
+                    const rentFilterText = {
+                        'with': 'With Rent Increases',
+                        'without': 'No Rent Increases',
+                        'annual': 'Annual Increases',
+                        'periodic': 'Periodic Increases'
+                    }[rentIncreasesFilter];
+                    indicators.push(`<span class="filter-tag">${rentFilterText} <span class="remove" onclick="clearRentIncreasesFilter()">×</span></span>`);
+                }
+                
+                filterIndicators.innerHTML = indicators.join('');
+            }
+
+function clearSearchFilter() {
+                searchInput.value = '';
+                filterAndSortProperties();
+            }
+
+function clearPriceFilter() {
+                document.getElementById('minPrice').value = '';
+                document.getElementById('maxPrice').value = '';
+                filterAndSortProperties();
+            }
+
+function clearSizeFilter() {
+                document.getElementById('minSize').value = '';
+                document.getElementById('maxSize').value = '';
+                filterAndSortProperties();
+            }
+
+function clearCapRateFilter() {
+                document.getElementById('minCapRate').value = '';
+                document.getElementById('maxCapRate').value = '';
+                filterAndSortProperties();
+            }
+
+function clearLeaseTermFilter() {
+                document.getElementById('minLeaseTerm').value = '';
+                document.getElementById('maxLeaseTerm').value = '';
+                filterAndSortProperties();
+            }
+
+function clearTenantFilter() {
+                document.getElementById('tenantRetail').checked = true;
+                document.getElementById('tenantRestaurant').checked = true;
+                document.getElementById('tenantMedical').checked = true;
+                document.getElementById('tenantOffice').checked = true;
+                document.getElementById('tenantOther').checked = true;
+                filterAndSortProperties();
+            }
+
+function clearRentIncreasesFilter() {
+                document.getElementById('rentIncreasesFilter').value = 'all';
+                filterAndSortProperties();
+            }
+
+function showNotification(message, type = 'success') {
+                notificationText.textContent = message;
+                notification.className = 'notification';
+                notification.classList.add(type);
+                const icon = notification.querySelector('i');
+                if (type === 'error') icon.className = 'fas fa-exclamation-circle';
+                else if (type === 'warning') icon.className = 'fas fa-exclamation-triangle';
+                else icon.className = 'fas fa-check-circle';
+                notification.classList.add('show');
+                setTimeout(() => notification.classList.remove('show'), 3000);
+            }
+
+function getIndexFromProperty(property) {
+                return currentFilteredProperties.indexOf(property);
+            }
+                    
+                    function handleResultsClick(e){ 
+                        const c=e.target.closest('.property-card[data-property-id]'); 
+                        if(c){
+                            const propertyIndex=parseInt(c.dataset.propertyId); 
+                            const p=currentFilteredProperties[propertyIndex]; 
+                            if(p) openPropertyModal(p);
+                        } 
+                    }
+                    
+                    function handlePaginationClick(e){ 
+                        const t=e.target.closest('.pagination-btn'); 
+                        if(!t||t.disabled) return; 
+                        const T=Math.ceil(currentFilteredProperties.length/propertiesPerPage); 
+                        let n=currentPage; 
+                        if(t.id==='prevBtn') n--; 
+                        else if(t.id==='nextBtn') n++; 
+                        else if(t.dataset.page) n=parseInt(t.dataset.page,10); 
+                        if(n!==currentPage&&n>0&&n<=T){
+                            currentPage=n;
+                            displayProperties();
+                        } 
+                    }
+                    
+                    // Event listeners with null checks
+                    if(searchInput) searchInput.addEventListener('input', filterAndSortProperties);
+                    if(sortSelect) sortSelect.addEventListener('change', filterAndSortProperties);
+                    if(gridView) gridView.addEventListener('click', () => setView('grid'));
+                    if(listView) listView.addEventListener('click', () => setView('list'));
+                    if(modalClose) modalClose.addEventListener('click', () => propertyModal.classList.remove('show'));
+                    if(propertyModal) propertyModal.addEventListener('click', (e) => { 
+                        if (e.target === propertyModal) propertyModal.classList.remove('show'); 
+                    });
+                    if(resultsContainer) resultsContainer.addEventListener('click', handleResultsClick);
+                    if(pagination) pagination.addEventListener('click', handlePaginationClick);
+                    
+                    filterAndSortProperties();
+                });</script></body></html>
