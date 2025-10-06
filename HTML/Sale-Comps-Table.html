@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wilco Property Valuation - Sale Comps</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Source Sans Pro', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #2c3e50;
+        }
+        .slide {
+            width: 1280px;
+            min-height: 720px;
+            position: relative;
+            background-color: #f5f7fa;
+            display: flex;
+            flex-direction: column;
+        }
+        .comps-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            padding: 40px 50px 30px;
+        }
+        .comps-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            flex-grow: 1;
+        }
+        .comps-table thead {
+            background: #1a365d;
+            color: white;
+        }
+        .comps-table th {
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+        .comps-table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+        .comps-table tbody tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .comps-table tbody tr:hover {
+            background-color: #e6f2ff;
+        }
+        .comps-table td {
+            padding: 8px 12px;
+            font-size: 14px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+        .property-address {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+        }
+        .property-location {
+            display: flex;
+            align-items: center;
+            color: #4a5568;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+        .property-location .material-icons {
+            font-size: 14px;
+            margin-right: 4px;
+            color: #3182ce;
+        }
+        .price-value {
+            font-weight: 700;
+            color: #3182ce;
+            font-size: 18px;
+        }
+        .region-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .west-coast {
+            background: #e6f2ff;
+            color: #3182ce;
+        }
+        .regional {
+            background: #e6fffa;
+            color: #047481;
+        }
+        .premium-badge {
+            background: #fbbf24;
+            color: #78350f;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+        .data-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .lease-type {
+            display: flex;
+            align-items: center;
+        }
+        .lease-type .material-icons {
+            font-size: 16px;
+            margin-right: 4px;
+            color: #3182ce;
+        }
+        .image-thumbnail {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .image-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .property-cell {
+            display: flex;
+            align-items: center;
+        }
+        .property-info {
+            margin-left: 12px;
+        }
+        .property-type {
+            background: #e6f2ff;
+            color: #3182ce;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 20px;
+            margin-top: 3px;
+            display: inline-block;
+        }
+        .data-group {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .data-row {
+            display: flex;
+            align-items: center;
+        }
+        .data-label {
+            font-size: 11px;
+            color: #718096;
+            margin-right: 4px;
+        }
+        .data-icon {
+            color: #3182ce;
+            font-size: 14px;
+            margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="comps-container">
+            <table class="comps-table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Location</th>
+                        <th>Sale Price</th>
+                        <th>Sale Date</th>
+                        <th>Property Details</th>
+                        <th>Lease Information</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="property-cell">
+                                <div class="image-thumbnail">
+                                    <img src="https://sfile.chatglm.cn/images-ppt/b1f9a57a9349.jpg" alt="Commercial Property">
+                                </div>
+                                <div class="property-info">
+                                    <div class="property-address">31130 Cascade Highway</div>
+                                    <span class="property-type">Retail</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="property-location">
+                                <i class="material-icons">place</i>Molalla, OR
+                            </div>
+                            <span class="region-tag west-coast">West Coast</span>
+                        </td>
+                        <td class="price-value">$4.8M</td>
+                        <td>Q2 2023</td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">business</i>
+                                    <span class="data-label">RBA:</span>
+                                    <span class="data-value">12,500 sq ft</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Cap Rate:</span>
+                                    <span class="data-value">6.5%</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">landscape</i>
+                                    <span class="data-label">Land Value:</span>
+                                    <span class="data-value">$2.4M</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">event</i>
+                                    <span class="data-label">Year Built:</span>
+                                    <span class="data-value">2018</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">schedule</i>
+                                    <span class="data-label">Lease Term:</span>
+                                    <span class="data-value">7 Years</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">description</i>
+                                    <span class="data-label">Lease Type:</span>
+                                    <span class="data-value">NNN</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Rental Bumps:</span>
+                                    <span class="data-value">3% Annually</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="property-cell">
+                                <div class="image-thumbnail">
+                                    <img src="https://sfile.chatglm.cn/images-ppt/6aaeb1498755.jpg" alt="Commercial Property">
+                                </div>
+                                <div class="property-info">
+                                    <div class="property-address">2648 Coweeman Park Drive</div>
+                                    <span class="property-type">Retail</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="property-location">
+                                <i class="material-icons">place</i>Kelso, WA
+                            </div>
+                            <span class="region-tag west-coast">West Coast</span>
+                        </td>
+                        <td class="price-value">$4.2M</td>
+                        <td>Q3 2023</td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">business</i>
+                                    <span class="data-label">RBA:</span>
+                                    <span class="data-value">10,800 sq ft</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Cap Rate:</span>
+                                    <span class="data-value">6.8%</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">landscape</i>
+                                    <span class="data-label">Land Value:</span>
+                                    <span class="data-value">$2.1M</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">event</i>
+                                    <span class="data-label">Year Built:</span>
+                                    <span class="data-value">2016</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">schedule</i>
+                                    <span class="data-label">Lease Term:</span>
+                                    <span class="data-value">5 Years</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">description</i>
+                                    <span class="data-label">Lease Type:</span>
+                                    <span class="data-value">Modified Gross</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Rental Bumps:</span>
+                                    <span class="data-value">2.5% Annually</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="property-cell">
+                                <div class="image-thumbnail">
+                                    <img src="https://sfile.chatglm.cn/images-ppt/1e615f8080e7.jpg" alt="Commercial Property">
+                                </div>
+                                <div class="property-info">
+                                    <div class="property-address">1213 E Wishkah St</div>
+                                    <span class="property-type">Retail</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="property-location">
+                                <i class="material-icons">place</i>Aberdeen, WA
+                            </div>
+                            <span class="region-tag west-coast">West Coast</span>
+                        </td>
+                        <td class="price-value">$3.6M</td>
+                        <td>Q1 2023</td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">business</i>
+                                    <span class="data-label">RBA:</span>
+                                    <span class="data-value">9,200 sq ft</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Cap Rate:</span>
+                                    <span class="data-value">7.2%</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">landscape</i>
+                                    <span class="data-label">Land Value:</span>
+                                    <span class="data-value">$1.8M</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">event</i>
+                                    <span class="data-label">Year Built:</span>
+                                    <span class="data-value">2015</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">schedule</i>
+                                    <span class="data-label">Lease Term:</span>
+                                    <span class="data-value">4 Years</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">description</i>
+                                    <span class="data-label">Lease Type:</span>
+                                    <span class="data-value">Triple Net (NNN)</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Rental Bumps:</span>
+                                    <span class="data-value">3.5% Annually</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="property-cell">
+                                <div class="image-thumbnail">
+                                    <img src="https://sfile.chatglm.cn/images-ppt/b584d4894e39.jpg" alt="Commercial Property">
+                                </div>
+                                <div class="property-info">
+                                    <div class="property-address">75 North Abrego Drive</div>
+                                    <span class="property-type">Premium Retail</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="property-location">
+                                <i class="material-icons">place</i>Green Valley, AZ
+                            </div>
+                            <span class="region-tag regional">Regional</span>
+                        </td>
+                        <td class="price-value">$5.6M</td>
+                        <td>Q4 2023</td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">business</i>
+                                    <span class="data-label">RBA:</span>
+                                    <span class="data-value">14,300 sq ft</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Cap Rate:</span>
+                                    <span class="data-value">6.3%</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">landscape</i>
+                                    <span class="data-label">Land Value:</span>
+                                    <span class="data-value">$2.8M</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">event</i>
+                                    <span class="data-label">Year Built:</span>
+                                    <span class="data-value">2019</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">schedule</i>
+                                    <span class="data-label">Lease Term:</span>
+                                    <span class="data-value">10 Years</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">description</i>
+                                    <span class="data-label">Lease Type:</span>
+                                    <span class="data-value">Modified Gross</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Rental Bumps:</span>
+                                    <span class="data-value">2% Annually</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="property-cell">
+                                <div class="image-thumbnail">
+                                    <img src="https://sfile.chatglm.cn/images-ppt/9361cc7de80d.jpg" alt="Commercial Property">
+                                </div>
+                                <div class="property-info">
+                                    <div class="property-address">1026 S Challis Street</div>
+                                    <span class="property-type">Retail</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="property-location">
+                                <i class="material-icons">place</i>Salmon, ID
+                            </div>
+                            <span class="region-tag regional">Regional</span>
+                        </td>
+                        <td class="price-value">$3.2M</td>
+                        <td>Q2 2023</td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">business</i>
+                                    <span class="data-label">RBA:</span>
+                                    <span class="data-value">8,500 sq ft</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Cap Rate:</span>
+                                    <span class="data-value">7.5%</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">landscape</i>
+                                    <span class="data-label">Land Value:</span>
+                                    <span class="data-value">$1.6M</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">event</i>
+                                    <span class="data-label">Year Built:</span>
+                                    <span class="data-value">2014</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">schedule</i>
+                                    <span class="data-label">Lease Term:</span>
+                                    <span class="data-value">3 Years</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">description</i>
+                                    <span class="data-label">Lease Type:</span>
+                                    <span class="data-value">Triple Net (NNN)</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Rental Bumps:</span>
+                                    <span class="data-value">4% Annually</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="property-cell">
+                                <div class="image-thumbnail">
+                                    <img src="https://sfile.chatglm.cn/images-ppt/1c639d55f639.jpg" alt="Commercial Property">
+                                </div>
+                                <div class="property-info">
+                                    <div class="property-address">1002 W Expy 83</div>
+                                    <span class="property-type">Retail</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="property-location">
+                                <i class="material-icons">place</i>Weslaco, TX
+                            </div>
+                            <span class="region-tag regional">Regional</span>
+                        </td>
+                        <td class="price-value">$4.4M</td>
+                        <td>Q3 2023</td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">business</i>
+                                    <span class="data-label">RBA:</span>
+                                    <span class="data-value">11,200 sq ft</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Cap Rate:</span>
+                                    <span class="data-value">6.9%</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">landscape</i>
+                                    <span class="data-label">Land Value:</span>
+                                    <span class="data-value">$2.2M</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">event</i>
+                                    <span class="data-label">Year Built:</span>
+                                    <span class="data-value">2017</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="data-group">
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">schedule</i>
+                                    <span class="data-label">Lease Term:</span>
+                                    <span class="data-value">6 Years</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">description</i>
+                                    <span class="data-label">Lease Type:</span>
+                                    <span class="data-value">Modified Gross</span>
+                                </div>
+                                <div class="data-row">
+                                    <i class="material-icons data-icon">trending_up</i>
+                                    <span class="data-label">Rental Bumps:</span>
+                                    <span class="data-value">2.5% Annually</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
