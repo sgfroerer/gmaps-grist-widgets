@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logo Color Changer</title>
+    <title>Logo Color Changer with Color Extraction</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +22,7 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             width: 100%;
             background: white;
             border-radius: 16px;
@@ -60,10 +60,16 @@
             min-width: 300px;
         }
 
+        .color-extraction-section {
+            flex: 1;
+            min-width: 300px;
+            margin-top: 20px;
+        }
+
         .upload-area {
             border: 2px dashed #c3cfe2;
             border-radius: 12px;
-            padding: 40px 20px;
+            padding: 30px 20px;
             text-align: center;
             transition: all 0.3s;
             cursor: pointer;
@@ -77,14 +83,15 @@
         }
 
         .upload-icon {
-            font-size: 48px;
+            font-size: 36px;
             color: #5c7cfa;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .upload-text {
             color: #555;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
         }
 
         .file-input {
@@ -95,10 +102,10 @@
             background: #5c7cfa;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: background 0.3s;
         }
 
@@ -263,6 +270,83 @@
             margin-bottom: 8px;
         }
 
+        .color-extraction-area {
+            border: 2px dashed #c3cfe2;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            margin-bottom: 20px;
+            background: #f9fbff;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .color-extraction-area:hover, .color-extraction-area.dragover {
+            border-color: #5c7cfa;
+            background: #f0f4ff;
+        }
+
+        .extraction-canvas {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            cursor: crosshair;
+            display: none;
+        }
+
+        .extracted-color-preview {
+            width: 60px;
+            height: 40px;
+            border-radius: 6px;
+            margin: 10px auto;
+            border: 1px solid #ddd;
+        }
+
+        .extracted-color-info {
+            text-align: center;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+
+        .use-color-btn {
+            background: #5c7cfa;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .use-color-btn:hover {
+            background: #4c6ef5;
+        }
+
+        .mac-instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f5ff;
+            border-radius: 8px;
+            border-left: 4px solid #4dabf7;
+        }
+
+        .mac-instructions h4 {
+            color: #1971c2;
+            margin-bottom: 8px;
+        }
+
+        .mac-instructions p {
+            color: #1864ab;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
         @media (max-width: 768px) {
             .app-container {
                 flex-direction: column;
@@ -272,8 +356,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>Logo Color Changer</h1>
-        <p class="subtitle">Upload your PNG logo and change its color with ease</p>
+        <h1>Logo Color Changer with Color Extraction</h1>
+        <p class="subtitle">Upload your PNG logo, change its color, or extract colors from screenshots</p>
         
         <div class="app-container">
             <div class="upload-section">
@@ -334,12 +418,43 @@
             </div>
         </div>
         
+        <div class="color-extraction-section">
+            <h3>Extract Color from Screenshot</h3>
+            <div class="color-extraction-area" id="colorExtractionArea">
+                <div class="upload-icon">🎨</div>
+                <p class="upload-text">Drag & drop a screenshot or image here to extract colors</p>
+                <button class="upload-btn" id="extractionUploadBtn">Select Image</button>
+                <input type="file" id="extractionFileInput" class="file-input" accept="image/*">
+                
+                <canvas id="extractionCanvas" class="extraction-canvas"></canvas>
+                
+                <div id="extractedColorInfo" style="display: none;">
+                    <div class="extracted-color-preview" id="extractedColorPreview"></div>
+                    <div class="extracted-color-info">
+                        <div>Hex: <span id="extractedColorHex"></span></div>
+                        <div>RGB: <span id="extractedColorRgb"></span></div>
+                    </div>
+                    <button class="use-color-btn" id="useColorBtn">Use This Color</button>
+                </div>
+            </div>
+            
+            <div class="mac-instructions">
+                <h4>How to find colors on Mac:</h4>
+                <p>1. Press Command + Space to open Spotlight</p>
+                <p>2. Type "Digital Color Meter" and open the application</p>
+                <p>3. Hover your mouse over any color on your screen</p>
+                <p>4. Press Command + Shift + C to copy the color as hex</p>
+                <p>5. Paste the hex value in the color input above</p>
+            </div>
+        </div>
+        
         <div class="instructions">
             <h3>How to use:</h3>
             <ul>
                 <li>Upload a PNG logo with transparent background</li>
                 <li>Use the color picker, type a hex code (like #FF5733), or use RGB format (like rgb(255, 87, 51))</li>
                 <li>You can also click on the color presets for quick selection</li>
+                <li>Extract colors from screenshots by uploading an image and clicking on any color</li>
                 <li>The modified logo will update automatically</li>
                 <li>Click the download button to save your new logo</li>
             </ul>
@@ -360,16 +475,31 @@
             const downloadBtn = document.getElementById('downloadBtn');
             const colorPresets = document.querySelectorAll('.color-preset');
             
+            // Color extraction elements
+            const extractionFileInput = document.getElementById('extractionFileInput');
+            const extractionUploadBtn = document.getElementById('extractionUploadBtn');
+            const colorExtractionArea = document.getElementById('colorExtractionArea');
+            const extractionCanvas = document.getElementById('extractionCanvas');
+            const extractedColorInfo = document.getElementById('extractedColorInfo');
+            const extractedColorPreview = document.getElementById('extractedColorPreview');
+            const extractedColorHex = document.getElementById('extractedColorHex');
+            const extractedColorRgb = document.getElementById('extractedColorRgb');
+            const useColorBtn = document.getElementById('useColorBtn');
+            
             // Variables to store the uploaded image and canvas
             let originalImage = null;
             let canvas = document.createElement('canvas');
             let ctx = canvas.getContext('2d');
             
+            // Variables for color extraction
+            let extractionImage = null;
+            let extractionCtx = extractionCanvas.getContext('2d');
+            
             // Event listeners for file upload
             uploadBtn.addEventListener('click', () => fileInput.click());
             fileInput.addEventListener('change', handleFileSelect);
             
-            // Drag and drop events
+            // Drag and drop events for logo
             dropArea.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 dropArea.classList.add('dragover');
@@ -409,7 +539,37 @@
             // Download button event
             downloadBtn.addEventListener('click', downloadImage);
             
-            // Handle file selection
+            // Color extraction events
+            extractionUploadBtn.addEventListener('click', () => extractionFileInput.click());
+            extractionFileInput.addEventListener('change', handleExtractionFileSelect);
+            
+            // Drag and drop events for color extraction
+            colorExtractionArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                colorExtractionArea.classList.add('dragover');
+            });
+            
+            colorExtractionArea.addEventListener('dragleave', () => {
+                colorExtractionArea.classList.remove('dragover');
+            });
+            
+            colorExtractionArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                colorExtractionArea.classList.remove('dragover');
+                
+                if (e.dataTransfer.files.length) {
+                    extractionFileInput.files = e.dataTransfer.files;
+                    handleExtractionFileSelect();
+                }
+            });
+            
+            // Canvas click event for color extraction
+            extractionCanvas.addEventListener('click', extractColorFromCanvas);
+            
+            // Use color button event
+            useColorBtn.addEventListener('click', useExtractedColor);
+            
+            // Handle file selection for logo
             function handleFileSelect() {
                 const file = fileInput.files[0];
                 
@@ -439,6 +599,85 @@
                 };
                 
                 reader.readAsDataURL(file);
+            }
+            
+            // Handle file selection for color extraction
+            function handleExtractionFileSelect() {
+                const file = extractionFileInput.files[0];
+                
+                if (!file) return;
+                
+                // Check if file is an image
+                if (!file.type.match('image.*')) {
+                    alert('Please upload an image file.');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    extractionImage = new Image();
+                    extractionImage.onload = function() {
+                        // Set canvas dimensions
+                        const maxWidth = 500;
+                        const maxHeight = 300;
+                        let width = extractionImage.width;
+                        let height = extractionImage.height;
+                        
+                        // Scale image if too large
+                        if (width > maxWidth || height > maxHeight) {
+                            const ratio = Math.min(maxWidth / width, maxHeight / height);
+                            width *= ratio;
+                            height *= ratio;
+                        }
+                        
+                        extractionCanvas.width = width;
+                        extractionCanvas.height = height;
+                        
+                        // Draw image on canvas
+                        extractionCtx.drawImage(extractionImage, 0, 0, width, height);
+                        
+                        // Show canvas and hide upload area text
+                        extractionCanvas.style.display = 'block';
+                        colorExtractionArea.querySelector('.upload-text').style.display = 'none';
+                        colorExtractionArea.querySelector('.upload-btn').style.display = 'none';
+                        colorExtractionArea.querySelector('.upload-icon').style.display = 'none';
+                        
+                        // Show instructions
+                        extractedColorInfo.style.display = 'block';
+                    };
+                    extractionImage.src = e.target.result;
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            // Extract color from canvas on click
+            function extractColorFromCanvas(e) {
+                const rect = extractionCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Get pixel data
+                const pixel = extractionCtx.getImageData(x, y, 1, 1).data;
+                
+                // Convert to hex
+                const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+                const rgb = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+                
+                // Update extracted color info
+                extractedColorPreview.style.backgroundColor = hex;
+                extractedColorHex.textContent = hex;
+                extractedColorRgb.textContent = rgb;
+                
+                // Show use color button
+                useColorBtn.style.display = 'block';
+            }
+            
+            // Use the extracted color for the logo
+            function useExtractedColor() {
+                const hex = extractedColorHex.textContent;
+                setColor(hex);
             }
             
             // Update color from picker
@@ -484,7 +723,7 @@
             function setColor(color) {
                 colorPicker.value = color;
                 colorHex.value = color;
-                colorRgb.value = hexToRgb(color);
+                colorRgb.value = hexToRgbString(color);
                 
                 // Update active preset
                 colorPresets.forEach(preset => {
