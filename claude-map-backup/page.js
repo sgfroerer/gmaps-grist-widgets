@@ -25,21 +25,74 @@ const GIS = "GIS";
 const Geocode = "Geocode";
 const Address = "Property_Address";
 const GeocodedAddress = "GeocodedAddress";
+const Classify_Color = "Classify_Color";
+const PrimaryOwner = "PrimaryOwner";
 
 let lastRecord;
 let lastRecords;
+let ownersMap = new Map();
 
-const selectedIcon = new L.Icon({
-    iconUrl: 'marker-icon-green.png',
-    iconRetinaUrl: 'marker-icon-green-2x.png',
-    shadowUrl: 'marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+// Define classification colors
+const classificationColors = {
+    "Not Interested/DNC": "#FF5252", // red
+    "IPA": "#9C27B0",                // violet
+    "Eric": "#FF9800",               // orange
+    "Broker/Eh": "#9E9E9E",          // grey
+    "Never": "#2196F3",              // blue
+    "Call Relationship": "#FFEB3B",  // yellow
+    "Contact": "#4CAF50",            // green
+    "Call Again": "#92d694"          // Lgreen
+};
 
-const defaultIcon = new L.Icon.Default();
+// Helper function to get the appropriate color based on classification
+function getClassificationColor(classification) {
+    if (!classification) return "#757575";
+    return classificationColors[classification] || classification;
+}
+
+function createColoredIcon(color, isSelected) {
+    const svg = `
+<svg width="30" height="42" viewBox="0 0 30 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 42L15 42C15 42 30 25.4545 30 15C30 6.71573 23.2843 0 15 0C6.71573 0 0 6.71573 0 15C0 25.4545 15 42 15 42Z"
+          fill="${color}" stroke="${isSelected ? 'black' : 'white'}" stroke-width="2"/>
+    <circle cx="15" cy="15" r="5" fill="white"/>
+</svg>`;
+
+    return L.divIcon({
+        className: 'custom-marker',
+        html: svg,
+        iconSize: [30, 42],
+        iconAnchor: [15, 42],
+        popupAnchor: [0, -40],
+    });
+}
+
+function getOwnerColor(record) {
+    const primaryOwner = parseValue(record[PrimaryOwner]);
+    if (primaryOwner && ownersMap.has(primaryOwner)) {
+        return ownersMap.get(primaryOwner);
+    }
+    return null;
+}
+
+async function updateOwnersTable() {
+    try {
+        // Attempt to fetch the Owners_ table to support automatic coloring by PrimaryOwner
+        const table = await grist.docApi.fetchTable('Owners_');
+        if (table && table.Name && table.Classify_Color) {
+            ownersMap.clear();
+            for (let i = 0; i < table.id.length; i++) {
+                ownersMap.set(table.Name[i], table.Classify_Color[i]);
+            }
+            console.log(`Loaded ${ownersMap.size} owners from Owners_ table`);
+            if (lastRecords) {
+                updateMap(lastRecords);
+            }
+        }
+    } catch (e) {
+        console.warn("Could not fetch Owners_ table directly. Map will rely on 'Classify_Color' column mapping.", e);
+    }
+}
 
 const baseLayers = {
     "Google Hybrid": L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}', {
@@ -160,9 +213,13 @@ function createPopupContent(record) {
 }
 
 function createMarker(record) {
+    const colorVal = record[Classify_Color] || getOwnerColor(record);
+    const color = getClassificationColor(colorVal);
+    const isSelected = record.id === selectedRowId;
+
     const marker = L.marker([record[Latitude], record[Longitude]], {
         title: parseValue(record[Name]),
-        icon: record.id === selectedRowId ? selectedIcon : defaultIcon
+        icon: createColoredIcon(color, isSelected)
     });
 
     marker.record = record;
@@ -293,12 +350,16 @@ let markers = [];
 function selectMaker(id) {
     const previouslyClicked = popups[selectedRowId];
     if (previouslyClicked) {
-        previouslyClicked.setIcon(defaultIcon);
+        const prevColorVal = previouslyClicked.record[Classify_Color] || getOwnerColor(previouslyClicked.record);
+        const prevColor = getClassificationColor(prevColorVal);
+        previouslyClicked.setIcon(createColoredIcon(prevColor, false));
     }
     const marker = popups[id];
     if (!marker) { return null; }
     selectedRowId = id;
-    marker.setIcon(selectedIcon);
+    const colorVal = marker.record[Classify_Color] || getOwnerColor(marker.record);
+    const color = getClassificationColor(colorVal);
+    marker.setIcon(createColoredIcon(color, true));
     grist.setCursorPos?.({rowId: id}).catch(() => {});
     return marker;
 }
@@ -325,6 +386,8 @@ function defaultMapping(record, mappings) {
             [Geocode]: hasCol(Geocode, record) ? Geocode : null,
             [Address]: hasCol(Address, record) ? Address : null,
             [GeocodedAddress]: hasCol(GeocodedAddress, record) ? GeocodedAddress : null,
+            [Classify_Color]: hasCol(Classify_Color, record) ? Classify_Color : null,
+            [PrimaryOwner]: hasCol(PrimaryOwner, record) ? PrimaryOwner : null,
         };
     }
     return mappings;
@@ -431,6 +494,8 @@ document.addEventListener("DOMContentLoaded", function () {
             { name: "GIS", type: "Text", optional: true },
             { name: "Geocode", type: "Bool", title: "Geocode", optional: true },
             { name: "GeocodedAddress", type: "Text", title: "Geocoded Address", optional: true },
+            { name: "Classify_Color", type: "Text", optional: true },
+            { name: "PrimaryOwner", type: "Text", optional: true },
         ],
         allowSelectBy: true,
         onEditOptions
@@ -438,6 +503,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Initialize map
     initializeMap();
+
+    // Fetch owners table data
+    updateOwnersTable();
 
     // Setup minimap toggle (optional element)
     const minimapContainer = document.getElementById('minimap-container');
