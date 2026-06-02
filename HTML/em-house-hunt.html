@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Search - Modern Property Gallery</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (No DaisyUI - Pure Tailwind for reliable rendering) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -30,13 +30,13 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #fafafa; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         
         /* Strict Swiper Image Handling */
         .swiper-slide { overflow: hidden; }
@@ -44,11 +44,10 @@
         
         .swiper-button-next, .swiper-button-prev { 
             color: #fff; background: rgba(15, 23, 42, 0.5); width: 36px; height: 36px; border-radius: 50%; 
-            transition: background 0.2s; z-index: 20;
+            transition: background 0.2s;
         }
         .swiper-button-next::after, .swiper-button-prev::after { font-size: 14px; font-weight: bold; }
         .swiper-button-next:hover, .swiper-button-prev:hover { background: rgba(15, 23, 42, 0.8); }
-        .swiper-pagination { z-index: 20; }
         .swiper-pagination-bullet-active { background: #fff; }
         
         /* Leaflet popup custom styling */
@@ -56,7 +55,6 @@
         .leaflet-popup-content { margin: 0; min-width: 220px; }
         .leaflet-popup-tip { background: #fff; }
         
-        /* Line Clamp Fallback */
         .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         
         /* Custom Scrollbar */
@@ -71,8 +69,8 @@
     <nav class="bg-white border-b border-brand-200 sticky top-0 z-40 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="bg-brand-800 text-white p-2 rounded-lg shadow-sm">
-                    <i class="fa-solid fa-house-chimney"></i>
+                <div class="bg-brand-800 text-white p-2.5 rounded-lg shadow-sm">
+                    <i class="fa-solid fa-house-chimney text-sm"></i>
                 </div>
                 <div>
                     <h1 class="text-lg font-bold tracking-tight text-brand-900">Home Search</h1>
@@ -86,7 +84,6 @@
                     <span>Assumable Loans Available</span>
                 </div>
                 
-                <!-- Custom Toggle Buttons (Replaces DaisyUI join) -->
                 <div class="flex items-center bg-brand-100 rounded-lg p-1 gap-1 border border-brand-200">
                     <button onclick="switchView('gallery')" id="btn-gallery" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5 bg-brand-800 text-white shadow-sm">
                         <i class="fa-solid fa-grip"></i> <span class="hidden sm:inline">Gallery</span>
@@ -109,16 +106,20 @@
         <div id="leaflet-map" class="w-full h-full"></div>
     </main>
 
-    <!-- Detail Modal -->
-    <dialog id="detail-modal" class="modal bg-black/40 backdrop-blur-sm">
-        <div class="modal-box max-w-5xl p-0 overflow-hidden rounded-xl shadow-2xl border border-brand-200 bg-white">
-            <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute top-3 right-3 z-50 bg-white/80 hover:bg-white text-brand-700 shadow-sm">✕</button>
-            </form>
-            <div id="modal-body" class="flex flex-col lg:flex-row max-h-[85vh] overflow-y-auto"></div>
+    <!-- Detail Modal (Standard HTML Structure for maximum compatibility) -->
+    <div id="detail-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 z-50 bg-white/80 hover:bg-white text-brand-700 shadow-sm w-8 h-8 rounded-full flex items-center justify-center focus:outline-none">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="modal-body">
+                <!-- Content injected by JS -->
+            </div>
         </div>
-        <form method="dialog" class="modal-backdrop"><button>close</button></form>
-    </dialog>
+    </div>
 
     <script>
         const properties = [
@@ -322,29 +323,18 @@
                 const isAssumable = p.assumable && p.assumable.length > 0;
                 return `
                 <div class="bg-white rounded-xl border border-brand-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 flex flex-col">
-                    
-                    <!-- Image Area Container -->
                     <div class="relative w-full h-60 bg-brand-100 overflow-hidden">
-                        
-                        <!-- Swiper positioned absolutely to prevent layout interference -->
                         <div class="absolute inset-0 z-0 swiper swiper-card" id="swiper-card-${index}">
                             <div class="swiper-wrapper">
-                                ${p.imgs.map(img => `
-                                <div class="swiper-slide">
-                                    <img src="${img}" alt="${p.address}" loading="lazy">
-                                </div>`).join('')}
+                                ${p.imgs.map(img => `<div class="swiper-slide"><img src="${img}" alt="${p.address}" loading="lazy"></div>`).join('')}
                             </div>
                             <div class="swiper-button-next"></div>
                             <div class="swiper-button-prev"></div>
                             <div class="swiper-pagination"></div>
                         </div>
-                        
-                        <!-- Gradient Overlay -->
                         <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/50 to-transparent z-10 pointer-events-none"></div>
-
-                        <!-- Badges placed at high z-index so they never fall behind Swiper -->
                         <div class="absolute top-3 left-3 z-30 flex gap-2">
-                            <div class="px-3 py-1 rounded-md shadow-sm text-sm font-bold bg-white/90 text-brand-800 backdrop-blur-sm">
+                            <div class="px-3 py-1 rounded-md shadow-sm text-sm font-bold bg-white/90 text-brand-800 backdrop-blur-sm backdrop-filter">
                                 ${formatCurrency(p.price)}
                             </div>
                             ${isAssumable ? `
@@ -354,7 +344,6 @@
                         </div>
                     </div>
                     
-                    <!-- Card Body -->
                     <div class="p-5 flex flex-col flex-1 bg-white relative z-10">
                         <h3 class="font-bold text-brand-900 mb-2 leading-tight">${p.address}</h3>
                         <div class="flex flex-wrap gap-2 text-xs text-brand-600 mb-3 font-medium">
@@ -489,53 +478,53 @@
             }
 
             body.innerHTML = `
-                <div class="lg:w-1/2 flex flex-col bg-brand-900 relative overflow-hidden">
-                    <div class="relative w-full h-72 lg:h-full lg:min-h-[500px]">
-                        
-                        <!-- Modal Swiper -->
-                        <div class="absolute inset-0 z-0 swiper swiper-modal" id="swiper-modal">
-                            <div class="swiper-wrapper">
-                                ${p.imgs.map(img => `<div class="swiper-slide"><img src="${img}" alt="${p.address}"></div>`).join('')}
-                            </div>
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
-                            <div class="swiper-pagination"></div>
+                <!-- Image Section at the Top (Strict Aspect Ratio) -->
+                <div class="relative w-full h-72 md:h-[450px] bg-brand-900 overflow-hidden">
+                    <div class="absolute inset-0 z-0 swiper swiper-modal" id="swiper-modal">
+                        <div class="swiper-wrapper">
+                            ${p.imgs.map(img => `<div class="swiper-slide"><img src="${img}" alt="${p.address}"></div>`).join('')}
                         </div>
-                        
-                        ${isAssumable ? `
-                        <div class="absolute top-4 right-4 z-30">
-                            <div class="px-4 py-1.5 rounded-md shadow-lg font-bold text-sm bg-accent-600 text-white flex items-center gap-2">
-                                <i class="fa-solid fa-bolt"></i> ASSUMABLE AT ${p.assumable}
-                            </div>
-                        </div>` : ''}
+                        <div class="swiper-button-next"></div>
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                    
+                    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/60 to-transparent z-10 pointer-events-none"></div>
+
+                    ${isAssumable ? `
+                    <div class="absolute top-4 right-4 z-30">
+                        <div class="px-4 py-1.5 rounded-md shadow-lg font-bold text-sm bg-accent-600 text-white flex items-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> ASSUMABLE AT ${p.assumable}
+                        </div>
+                    </div>` : ''}
+                    
+                    <div class="absolute bottom-4 left-4 z-30">
+                        <h2 class="text-2xl font-extrabold text-white leading-tight drop-shadow-md">${p.address}</h2>
+                        <p class="text-xl font-black text-white mt-1 drop-shadow-md">${formatCurrency(p.price)}</p>
                     </div>
                 </div>
                 
-                <div class="lg:w-1/2 p-6 lg:p-8 overflow-y-auto flex flex-col gap-6 bg-white">
-                    <div>
-                        <h2 class="text-xl font-extrabold text-brand-900 leading-tight mb-2">${p.address}</h2>
-                        <p class="text-2xl font-black text-brand-800 mb-4">${formatCurrency(p.price)}</p>
-                        
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="flex items-center gap-1.5 text-xs bg-brand-100 text-brand-700 px-2.5 py-1.5 rounded font-semibold">
-                                <i class="fa-solid fa-bed text-brand-400"></i>${p.bedsBaths.split(' - ')[0]}
-                            </span>
-                            <span class="flex items-center gap-1.5 text-xs bg-brand-100 text-brand-700 px-2.5 py-1.5 rounded font-semibold">
-                                <i class="fa-solid fa-bath text-brand-400"></i>${p.bedsBaths.split(' - ')[1]}
-                            </span>
-                            <span class="flex items-center gap-1.5 text-xs bg-brand-100 text-brand-700 px-2.5 py-1.5 rounded font-semibold">
-                                <i class="fa-solid fa-ruler-combined text-brand-400"></i>${p.sqft.toLocaleString()} sqft
-                            </span>
-                            <span class="flex items-center gap-1.5 text-xs bg-brand-100 text-brand-700 px-2.5 py-1.5 rounded font-semibold">
-                                <i class="fa-solid fa-calendar text-brand-400"></i>${p.year}
-                            </span>
-                        </div>
-                        
-                        <p class="text-sm text-brand-600 leading-relaxed border-b border-brand-100 pb-4">${p.note}</p>
+                <!-- Content Section Below Image -->
+                <div class="p-6 md:p-8">
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="flex items-center gap-1.5 text-xs bg-brand-100 text-brand-700 px-2.5 py-1.5 rounded font-semibold">
+                            <i class="fa-solid fa-bed text-brand-400"></i>${p.bedsBaths.split(' - ')[0]}
+                        </span>
+                        <span class="flex items-center gap-1.5 text-xs bg-brand-100 text-brand-700 px-2.5 py-1.5 rounded font-semibold">
+                            <i class="fa-solid fa-bath text-brand-400"></i>${p.bedsBaths.split(' - ')[1]}
+                        </span>
+                        <span class="flex items-center gap-1.5 text-xs bg-brand-100 text-brand-700 px-2.5 py-1.5 rounded font-semibold">
+                            <i class="fa-solid fa-ruler-combined text-brand-400"></i>${p.sqft.toLocaleString()} sqft
+                        </span>
+                        <span class="flex items-center gap-1.5 text-xs bg-brand-100 text-brand-700 px-2.5 py-1.5 rounded font-semibold">
+                            <i class="fa-solid fa-calendar text-brand-400"></i>${p.year}
+                        </span>
                     </div>
+                    
+                    <p class="text-sm text-brand-600 leading-relaxed border-b border-brand-100 pb-4 mb-4">${p.note}</p>
 
                     <!-- Calculator Component -->
-                    <div class="bg-brand-50 rounded-xl p-5 border border-brand-100">
+                    <div class="bg-brand-50 rounded-xl p-5 border border-brand-100 mb-4">
                         <h3 class="text-sm font-bold mb-4 flex items-center gap-2 text-brand-800 uppercase tracking-wide">
                             <i class="fa-solid fa-calculator text-brand-500"></i> Mortgage Estimate
                         </h3>
@@ -577,7 +566,7 @@
                     </div>
 
                     <!-- Google Maps Hybrid Iframe -->
-                    <div class="overflow-hidden rounded-xl border border-brand-200 h-48 bg-brand-100">
+                    <div class="overflow-hidden rounded-xl border border-brand-200 h-56 bg-brand-100 mb-4 relative">
                         <iframe 
                             width="100%" 
                             height="100%" 
@@ -585,17 +574,19 @@
                             style="border:0" 
                             loading="lazy" 
                             referrerpolicy="no-referrer-when-downgrade"
-                            src="https://maps.google.com/maps?q=${mapQuery}&t=k&z=15&output=embed">
+                            allowfullscreen
+                            src="https://maps.google.com/maps?q=${mapQuery}&t=k&z=15&ie=UTF8&output=embed">
                         </iframe>
                     </div>
                     
-                    <a href="${p.url}" target="_blank" class="btn bg-brand-800 hover:bg-brand-900 text-white border-none w-full mt-2 shadow-sm">
-                        <i class="fa-solid fa-up-right-from-square"></i> View Original Listing
+                    <a href="${p.url}" target="_blank" class="inline-flex items-center justify-center w-full px-4 py-3 bg-brand-800 text-white font-semibold rounded-lg shadow-sm hover:bg-brand-900 transition-colors">
+                        <i class="fa-solid fa-up-right-from-square mr-2"></i> View Original Listing
                     </a>
                 </div>
             `;
 
-            modal.showModal();
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
 
             setTimeout(() => {
                 if (swipers['swiper-modal']) {
@@ -609,6 +600,17 @@
                 });
             }, 100);
         };
+
+        const closeModal = () => {
+            const modal = document.getElementById('detail-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('detail-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
 
         renderCards();
     </script>
