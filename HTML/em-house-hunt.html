@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Search - Modern Property Gallery</title>
+    
+    <!-- Tailwind & DaisyUI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    
+    <!-- Swiper.js for Carousels -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    <!-- Leaflet.js for Interactive Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .assumable-glow { 
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4), 0 0 30px rgba(16, 185, 129, 0.1); 
+            border: 2px solid #10b981; 
+        }
+        .swiper { width: 100%; height: 100%; }
+        .swiper-button-next, .swiper-button-prev { color: #fff; background: rgba(0,0,0,0.4); width: 32px; height: 32px; border-radius: 50%; }
+        .swiper-button-next::after, .swiper-button-prev::after { font-size: 14px; }
+        .swiper-pagination-bullet-active { background: #fff; }
+        .card-img-container { height: 240px; }
+        @media(min-width: 1024px) { .card-img-container { height: 280px; } }
+        
+        /* Leaflet popup custom styling */
+        .leaflet-popup-content-wrapper { border-radius: 12px; padding: 0; overflow: hidden; }
+        .leaflet-popup-content { margin: 0; min-width: 250px; }
+        .leaflet-popup-tip { background: #fff; }
+    </style>
+</head>
+<body class="bg-base-200 text-base-content">
+
+    <!-- Navigation & View Toggle -->
+    <nav class="bg-base-100 border-b border-base-300 sticky top-0 z-40 backdrop-blur-lg bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary text-primary-content p-2 rounded-lg">
+                    <i class="fa-solid fa-house-chimney"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight">Home Search</h1>
+                    <p class="text-xs text-base-content/60">Curated properties for your sister</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="badge badge-success badge-outline gap-2 py-3 px-4 font-semibold hidden md:flex">
+                    <i class="fa-solid fa-bolt"></i> Assumable Loans Available
+                </div>
+                <div class="join shadow-sm">
+                    <button onclick="switchView('gallery')" id="btn-gallery" class="btn join-item btn-sm btn-active">
+                        <i class="fa-solid fa-grip"></i> Gallery
+                    </button>
+                    <button onclick="switchView('map')" id="btn-map" class="btn join-item btn-sm">
+                        <i class="fa-solid fa-map-location-dot"></i> Map
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Gallery View -->
+    <main id="view-gallery" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div id="property-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Cards injected by JS -->
+        </div>
+    </main>
+
+    <!-- Map View -->
+    <main id="view-map" class="hidden" style="height: calc(100vh - 68px);">
+        <div id="leaflet-map" class="w-full h-full"></div>
+    </main>
+
+    <!-- Detail Modal -->
+    <dialog id="detail-modal" class="modal">
+        <div class="modal-box max-w-5xl p-0 lg:p-0 overflow-hidden rounded-2xl">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute top-4 right-4 z-50 bg-base-300/70 hover:bg-base-300 text-base-content">✕</button>
+            </form>
+            <div id="modal-body" class="flex flex-col lg:flex-row max-h-[85vh] overflow-y-auto">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop"><button>close</button></form>
+    </dialog>
+
+    <script>
+        const properties = [
+            {
+                imgs: ["https://photos.rmlsweb.com/webphotos/66200000/00000/2000/662026158-1.jpg", "https://photos.rmlsweb.com/webphotos/66200000/00000/2000/662026158-2.jpg", "https://photos.rmlsweb.com/webphotos/66200000/00000/2000/662026158-3.jpg", "https://photos.rmlsweb.com/webphotos/66200000/00000/2000/662026158-4.jpg"],
+                url: "https://eleeterealestate.com/home-search/listings/2466229547333059246-12408-SW-14TH-ST",
+                address: "12408 SW 14th St, Beaverton, OR 97005",
+                title: "4-Plex Investment",
+                price: 899900,
+                assumable: "2.75%",
+                note: "Nice 4-plex in central Beaverton. A potentially assumable VA loan at 2.75% is available for qualified buyers. Each unit is approximately 850 SF with 2 bedrooms, 1 full bath, and in-unit laundry. Major improvements include a new roof in 2022 and updated electrical panels in 2017.",
+                hoa: 0, sqft: 3264, bedsBaths: "8 Beds - 4 Baths", year: 1977
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/a92e1aafa69818d1015b3aa2cd6ef69f-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/4528a1abaaef0cc4a14ef4e07b516ca9-cc_ft_384.webp", "https://photos.zillowstatic.com/fp/d9e87e0913b7053c2e4538a3e0844a78-cc_ft_384.webp"],
+                url: "https://www.zillow.com/homedetails/19240-SW-Rosedale-Ct-Beaverton-OR-97007/60056754_zpid/",
+                address: "19240 SW Rosedale Ct, Beaverton, OR 97007",
+                title: "Rosedale Ct Residence",
+                price: 525000,
+                assumable: "LOW", 
+                note: "Nestled in a peaceful neighborhood, this impeccably maintained 4-bedroom, 3-bath residence blends modern technology with timeless comfort. Featuring hardwood floors, smart home enhancements, updated baths, and a beautifully appointed kitchen. Home may have an assumable LOW interest rate with a qualified buyer.",
+                hoa: 0, sqft: 1684, bedsBaths: "4 Beds - 3 Baths", year: 2002
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/7ec7da7f8d4b4ce8f87bebdbbedbdc06-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/7b614652fddadd525e3e205c3849d38c-cc_ft_384.webp"],
+                url: "https://www.zillow.com/homedetails/4535-SW-Laurelwood-Ave-Portland-OR-97225/2090309288_zpid/",
+                address: "4535 SW Laurelwood Ave, Portland, OR 97225",
+                title: "Raleigh Hills CG Opportunity",
+                price: 724900,
+                assumable: "4.05%",
+                note: "RARE Commercial General (CG) opportunity! This property features an assumable VA loan at just 4.05%—and buyers do NOT need to be veterans to potentially assume the loan! Situated on a spacious .32-acre lot, this charming bungalow-style property features 3 bedrooms, 2 bathrooms, and a versatile floor plan.",
+                hoa: 0, sqft: 3177, bedsBaths: "3 Beds - 2 Baths", year: 1942
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/67566b66c9a3b61703748ce8938542cb-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/42105d0ef74fed3fd4c16689af533d82-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/8914d061c3ce7aa3851ad96af2479fd3-cc_ft_768.webp"],
+                url: "https://www.zillow.com/homedetails/11085-SW-Polsky-Rd-Beaverton-OR-97005/48617007_zpid/",
+                address: "11085 SW Polsky Rd, Beaverton, OR 97005",
+                title: "Polsky Rd Beauty",
+                price: 550000,
+                assumable: "2.88%",
+                note: "Assumable Loan at 2.875% available. Beautifully maintained home offering the perfect blend of comfort, convenience, and modern updates. Bright and inviting floor plan with generous living spaces. Freshly finished landscaping with new sod, trees, plants. Crawlspace certified and inspected along with siding maintenance and new HVAC system installed.",
+                hoa: 0, sqft: 1680, bedsBaths: "4 Beds - 2 Baths", year: 1940
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/bb39b951f9ff3e61b87c3ebbf440e2be-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/b2f8c6d13acadcae13f26950693391ee-cc_ft_768.webp"],
+                url: "https://www.zillow.com/homedetails/12920-SW-Douglas-St-Portland-OR-97225/48608491_zpid/",
+                address: "12920 SW Douglas St, Portland, OR 97225",
+                title: "Cedar Hills Ranch",
+                price: 469900,
+                assumable: "",
+                note: "Beautifully refreshed, move-in-ready Cedar Hills ranch on an oversized, fully fenced lot. Tile floors run through the main living areas. Kitchen features updated stainless appliances. Major updates provide peace of mind, including a NEW roof and gutters (2021), updated electrical panel. Unbeatable location—just blocks to Commonwealth Park.",
+                hoa: 18, sqft: 984, bedsBaths: "3 Beds - 1 Bath", year: 1949
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/d302e7cdae2603ce3a73576382e41be7-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/5d1873f03fe7f894257be494c99b3cce-cc_ft_768.webp"],
+                url: "https://www.zillow.com/homedetails/13190-SW-Hidden-Creek-Pl-Tigard-OR-97223/48582051_zpid/",
+                address: "13190 SW Hidden Creek Pl, Tigard, OR 97223",
+                title: "Progress Ridge Townhome",
+                price: 479900,
+                assumable: "",
+                note: "Renovated end-unit townhome with no HOA backing to greenspace! 20 foot vaulted living room ceiling, remodeled kitchen with quartz countertops and brand new stainless steel appliances. New roof installed in 2025 along with some new windows. 2 car garage.",
+                hoa: 0, sqft: 1607, bedsBaths: "3 Beds - 2 Baths", year: 1999
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/82e6e0b0f28ef9211384498643cb0e25-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/a47a4cddd59c40956486b80ba9d8810b-cc_ft_384.webp"],
+                url: "https://www.zillow.com/homedetails/11072-SW-61st-Ave-2-Portland-OR-97219/460553183_zpid/",
+                address: "11072 SW 61st Ave #2, Portland, OR 97219",
+                title: "Ashcreek-Crestwood Townhome",
+                price: 319900,
+                assumable: "",
+                note: "Efficiently designed five unit community, 3 bedroom, 2.5 bathroom home. 9 foot ceilings, seamless flow between living, dining, and kitchen spaces. Private, fenced deck extends living space outdoors. Energy efficient mini splits provide year round heating and cooling. Multnomah Village is 1.5 miles away.",
+                hoa: 70, sqft: 1047, bedsBaths: "3 Beds - 3 Baths", year: 2026
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/be2cfd5659ef525c31c4472a7df953de-cc_ft_768.webp"],
+                url: "https://www.zillow.com/homedetails/18653-Cascade-Dr-Beaverton-OR-97003/462612568_zpid/",
+                address: "18653 Cascade Dr, Beaverton, OR 97003",
+                title: "Cascade Dr Corner Unit",
+                price: 359000,
+                assumable: "",
+                note: "Beautiful corner-unit townhouse with an oversized private backyard and mature shade tree. Numerous recent upgrades including new carpet throughout (2026), new exterior paint, new upstairs interior paint (2026), new fence, new roof, new water heater (2021). Low HOA makes this home an exceptional value!",
+                hoa: 220, sqft: 1219, bedsBaths: "3 Beds - 3 Baths", year: 1999
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/2f55c47db4d8d72267278690775a4893-cc_ft_768.webp"],
+                url: "https://www.zillow.com/homedetails/17264-SW-Marty-Ln-Beaverton-OR-97003/72626430_zpid/",
+                address: "17264 SW Marty Ln, Beaverton, OR 97003",
+                title: "Arbor Station Townhome",
+                price: 359900,
+                assumable: "",
+                note: "Best price in the neighborhood! 2-bedroom, 2.5-bath townhome in desirable Arbor Station. Open-concept main level with granite countertops. Versatile loft-style family room with vaulted ceilings. HOA covers pool, gym, clubhouse. Brand-new roof installed March, 2026, assessment paid in full.",
+                hoa: 297, sqft: 1523, bedsBaths: "2 Beds - 3 Baths", year: 2005
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/d9b411ced3658facb2a48003abd47f41-cc_ft_768.webp"],
+                url: "https://www.zillow.com/homedetails/7905-SW-184th-Ave-Beaverton-OR-97007/48547333_zpid/",
+                address: "7905 SW 184th Ave, Beaverton, OR 97007",
+                title: "Cooper Mountain Cul-de-sac",
+                price: 489000,
+                assumable: "",
+                note: "Great opportunity on Cooper Mountain. Priced far below comparable homes! 3 bed 2.5 bath with attached 2 car garage. Huge front room, perfect for home office. Vaulted ceilings, wood fire place, real wood accents. New Roof 2026 and Carpet in 2022. PRICE Reflects condition.",
+                hoa: 27, sqft: 1910, bedsBaths: "3 Beds - 3 Baths", year: 1978
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/40ede23c4ba405915d730449fee04eb6-cc_ft_768.webp"],
+                url: "https://www.zillow.com/homedetails/14155-SW-27th-St-Beaverton-OR-97008/48548986_zpid/",
+                address: "14155 SW 27th St, Beaverton, OR 97008",
+                title: "Hyland Hills Single-Level",
+                price: 485000,
+                assumable: "",
+                note: "Great opportunity to build equity in a spacious one-level home in Beaverton's Hyland Hills. 3 bedroom, 2 bathroom home offers a versatile layout with multiple living spaces. Situated on a .20 acre lot. Sold as-is, functionally livable and ready for cosmetic updates. Newer roof.",
+                hoa: 0, sqft: 1550, bedsBaths: "3 Beds - 2 Baths", year: 1971
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/236692d94dd97059b7423846189677d4-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/fba88d1b4fc3d7de1379447e146c5599-cc_ft_384.webp"],
+                url: "https://www.zillow.com/homedetails/11820-SW-Tiedeman-Ave-Tigard-OR-97223/48589917_zpid/",
+                address: "11820 SW Tiedeman Ave, Tigard, OR 97223",
+                title: "Tigard Refreshed Home",
+                price: 485000,
+                assumable: "",
+                note: "Move in ready single level home in a great Tigard location. Refreshed four bedroom home with updated flooring, modern lighting, and fresh interior paint. Kitchen updated with new stainless steel appliances. Level, fully fenced backyard on nearly one third of an acre. Detached garage and convenient RV parking.",
+                hoa: 0, sqft: 1404, bedsBaths: "4 Beds - 2 Baths", year: 1951
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/4698f7b318c1043073e678fdaccfb55e-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/4220b9b4c1334e1aa328f3e8eaf53665-cc_ft_768.webp"],
+                url: "https://www.zillow.com/homedetails/17723-SW-Falling-Leaf-Ct-Beaverton-OR-97003/440419415_zpid/",
+                address: "17723 SW Falling Leaf Ct, Beaverton, OR 97003",
+                title: "Falling Leaf Craftsman",
+                price: 489900,
+                assumable: "",
+                note: "Light + Bright Craftsman on Cul-de-sac! Brand New Carpet Upstairs! Spacious Living Room w/Soaring 20' Ceilings. Cozy Family Room w/Gas Fireplace. Fenced Backyard w/Beautiful Covered Deck. 1 Car Attached Garage. Central Air. Minutes to Nike HQ, Intel, MAX!",
+                hoa: 47, sqft: 1732, bedsBaths: "3 Beds - 3 Baths", year: 2002
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/eedba07d7b0a9f5bfdb4c6385eea2205-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/adcd2ddde3885d5c8e994711041f494f-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/f5db15d7e4594a389c3c9bb6a99e6bec-cc_ft_384.webp", "https://photos.zillowstatic.com/fp/c2ee4293b5966657cd4eccb4f43ac9ff-cc_ft_768.webp"],
+                url: "https://www.zillow.com/homedetails/18811-Bonnie-Meadow-Ln-Beaverton-OR-97003/462387670_zpid/",
+                address: "18811 Bonnie Meadow Ln, Beaverton, OR 97003",
+                title: "Pio Pio Park Facing Home",
+                price: 500000,
+                assumable: "",
+                note: "No HOA and directly facing Pio Pio Park! 4 bedrooms, 2.5 baths, open concept kitchen and dining area. Central AC and heat, brand new gas water heater, roof replaced in 2024, gas fireplace, permitted electrical hookups for a hot tub. Two car garage and private dead end street.",
+                hoa: 0, sqft: 1776, bedsBaths: "4 Beds - 3 Baths", year: 2000
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/72d476196e69d31ba0ac29bf919acb69-cc_ft_768.webp"],
+                url: "https://www.zillow.com/homedetails/2855-SW-118th-Ave-Beaverton-OR-97005/48615368_zpid/",
+                address: "2855 SW 118th Ave, Beaverton, OR 97005",
+                title: "Lynnwood Split-Level",
+                price: 525000,
+                assumable: "",
+                note: "Amazing home and location in Lynnwood / Cedar Hills! Versatile 4BR / 3BA floorplan. Fresh interior paint, gleaming hardwood floors on most of the main level, and central A/C. The 0.19 acre lot and spacious deck are perfect for relaxing or entertaining. Estate sale, sold AS-IS.",
+                hoa: 18, sqft: 1935, bedsBaths: "4 Beds - 3 Baths", year: 1965
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/460cd57c48a43334d39e84b93d8989cd-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/85c8c303a82a6cf59195a0c9967fc0bb-cc_ft_384.webp", "https://photos.zillowstatic.com/fp/8cbf65503b29156a0da0dea9550d503f-cc_ft_384.webp"],
+                url: "https://www.zillow.com/homedetails/18735-SW-Rosa-Rd-Beaverton-OR-97078/48598594_zpid/",
+                address: "18735 SW Rosa Rd, Beaverton, OR 97078",
+                title: "Rosa Rd Single Level",
+                price: 529000,
+                assumable: "",
+                note: "Single level on .57 acres! First time on the market for this well-loved home. 3 bedrooms, 2 bathrooms, Dimeo-built home. Major updates include a new roof, exterior paint, newer furnace and hot water tank. Original hardwood floors, retro-groove kitchen, 2 beautiful fireplaces. Potential for an ADU.",
+                hoa: 0, sqft: 1404, bedsBaths: "3 Beds - 2 Baths", year: 1963
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/fd29093ec6e12b372ca3fbe631e308a9-cc_ft_768.webp"],
+                url: "https://www.zillow.com/homedetails/5627-SW-186th-Pl-Aloha-OR-97078/96377097_zpid/",
+                address: "5627 SW 186th Pl, Aloha, OR 97078",
+                title: "Aloha Private Home",
+                price: 529000,
+                assumable: "",
+                note: "Priced to sell! Highly private and desirable location. Durable laminate flooring, spacious bedrooms, modern kitchen equipped with stainless steel appliances. Excellent school district, convenient access to local shopping centers, medical facilities, and major freeway routes. Brand new wood fence.",
+                hoa: 10, sqft: 1974, bedsBaths: "4 Beds - 3 Baths", year: 2010
+            },
+            {
+                imgs: ["https://photos.zillowstatic.com/fp/9c94b4a3d979671d4a68f51c0627352c-cc_ft_768.webp", "https://photos.zillowstatic.com/fp/fac1b089bff3875b8cb6f20f8fd72d1f-cc_ft_384.webp", "https://photos.zillowstatic.com/fp/ab461264478036ace09f8d65c773f06c-cc_ft_384.webp"],
+                url: "https://www.zillow.com/homedetails/5390-SW-192nd-Ave-Beaverton-OR-97078/48598672_zpid/",
+                address: "5390 SW 192nd Ave, Beaverton, OR 97078",
+                title: "Fully Renovated in Aloha",
+                price: 529900,
+                assumable: "",
+                note: "Fully renovated near Hazeldale Park! Top to bottom remodel on a generous ~0.33 acre lot. Welcoming living room with coved ceiling, wood burning fireplace. Renovated kitchen with custom cabinetry. Two car garage. Oversized yard with RV and boat parking. Excellent Aloha location near amenities.",
+                hoa: 0, sqft: 1578, bedsBaths: "3 Beds - 2 Baths", year: 1965
+            }
+        ];
+
+        // Format Helpers
+        const formatCurrency = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(num);
+        
+        const calculateMortgage = (principal, annualRate, years) => {
+            if (principal <= 0) return 0;
+            const monthlyRate = (annualRate / 100) / 12;
+            const n = years * 12;
+            if (monthlyRate === 0) return principal / n;
+            return principal * (monthlyRate * Math.pow(1 + monthlyRate, n)) / (Math.pow(1 + monthlyRate, n) - 1);
+        };
+
+        // Swiper Instances Storage
+        const swipers = {};
+
+        // Render Gallery Cards
+        const renderCards = () => {
+            const grid = document.getElementById('property-grid');
+            grid.innerHTML = properties.map((p, index) => {
+                const isAssumable = p.assumable && p.assumable.length > 0;
+                return `
+                <div class="card bg-base-100 shadow-xl overflow-hidden transition-all duration-300 hover:-translate-y-2 ${isAssumable ? 'assumable-glow' : ''}">
+                    <div class="relative card-img-container">
+                        <div class="swiper swiper-card" id="swiper-card-${index}">
+                            <div class="swiper-wrapper">
+                                ${p.imgs.map(img => `
+                                <div class="swiper-slide">
+                                    <img src="${img}" class="w-full h-full object-cover" alt="${p.address}">
+                                </div>`).join('')}
+                            </div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-pagination"></div>
+                        </div>
+                        <!-- Overlays -->
+                        <div class="absolute top-3 left-3 z-10">
+                            <div class="badge badge-lg shadow-lg font-bold ${isAssumable ? 'badge-success gap-1' : 'badge-primary'}">
+                                ${isAssumable ? '<i class="fa-solid fa-bolt"></i>' : ''} ${formatCurrency(p.price)}
+                            </div>
+                        </div>
+                        ${isAssumable ? `
+                        <div class="absolute top-3 right-3 z-10">
+                            <div class="badge badge-success shadow-lg gap-1 font-bold py-3 animate-pulse">
+                                <i class="fa-solid fa-percent"></i> Assumable ${p.assumable}
+                            </div>
+                        </div>` : ''}
+                        <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
+                    </div>
+                    
+                    <div class="card-body p-5">
+                        <h3 class="card-title text-base font-extrabold leading-tight">${p.address}</h3>
+                        <div class="flex gap-2 text-xs text-base-content/70 my-2 font-medium">
+                            <span class="bg-base-200 px-2 py-1 rounded-md">${p.bedsBaths}</span>
+                            <span class="bg-base-200 px-2 py-1 rounded-md">${p.sqft.toLocaleString()} sqft</span>
+                            <span class="bg-base-200 px-2 py-1 rounded-md">Built ${p.year}</span>
+                        </div>
+                        <p class="text-sm text-base-content/80 line-clamp-3">${p.note}</p>
+                        <div class="card-actions justify-end mt-4 border-t border-base-200 pt-4">
+                            <button onclick="openModal(${index})" class="btn btn-primary btn-sm w-full">
+                                <i class="fa-solid fa-magnifying-glass-plus"></i> View Details & Calculator
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            // Initialize Swipers for Cards
+            document.querySelectorAll('.swiper-card').forEach(el => {
+                const id = el.id;
+                if (!swipers[id]) {
+                    swipers[id] = new Swiper(`#${id}`, {
+                        loop: true,
+                        spaceBetween: 0,
+                        grabCursor: true,
+                        pagination: { el: `#${id} .swiper-pagination`, clickable: true },
+                        navigation: { nextEl: `#${id} .swiper-button-next`, prevEl: `#${id} .swiper-button-prev` },
+                    });
+                }
+            });
+        };
+
+        // Map View Logic
+        let map;
+        let markers = [];
+        const initMap = async () => {
+            if (map) return; // Already initialized
+            
+            map = L.map('leaflet-map').setView([45.4850, -122.8050], 11);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Geocode and add markers
+            const geocodeUrl = (address) => `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+            
+            for (let i = 0; i < properties.length; i++) {
+                const p = properties[i];
+                try {
+                    // Small delay to respect Nominatim rate limits
+                    await new Promise(resolve => setTimeout(resolve, 150));
+                    const res = await fetch(geocodeUrl(p.address));
+                    const data = await res.json();
+                    
+                    if (data && data.length > 0) {
+                        const lat = data[0].lat;
+                        const lon = data[0].lon;
+                        
+                        const iconColor = p.assumable ? '#10b981' : '#6366f1';
+                        const customIcon = L.divIcon({
+                            html: `<div style="background-color: ${iconColor}; color: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 2px solid white;">
+                                ${p.assumable ? '<i class="fa-solid fa-bolt" style="font-size: 14px;"></i>' : '<i class="fa-solid fa-house" style="font-size: 12px;"></i>'}
+                            </div>`,
+                            className: '',
+                            iconSize: [32, 32],
+                            iconAnchor: [16, 16]
+                        });
+
+                        const marker = L.marker([lat, lon], { icon: customIcon }).addTo(map);
+                        
+                        const popupContent = `
+                            <div class="p-2 font-sans" style="width: 250px;">
+                                <img src="${p.imgs[0]}" alt="${p.address}" style="width:100%; height:120px; object-fit:cover; border-radius:8px; margin-bottom:8px;">
+                                <h3 class="font-bold text-sm text-gray-900">${p.address}</h3>
+                                <p class="text-indigo-600 font-extrabold my-1">${formatCurrency(p.price)} ${p.assumable ? '<span class="text-emerald-600 text-xs font-bold">(Assumable)</span>' : ''}</p>
+                                <div class="text-xs text-gray-500 mb-3">${p.bedsBaths} • ${p.sqft.toLocaleString()} sqft</div>
+                                <button onclick="openModal(${i})" class="w-full text-center bg-indigo-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-indigo-700 transition">View Details</button>
+                            </div>
+                        `;
+                        
+                        marker.bindPopup(popupContent, { className: 'custom-popup' });
+                        markers.push(marker);
+                    }
+                } catch (e) {
+                    console.error("Geocoding failed for", p.address, e);
+                }
+            }
+        };
+
+        // View Switching
+        let currentView = 'gallery';
+        const switchView = (view) => {
+            currentView = view;
+            const galleryBtn = document.getElementById('btn-gallery');
+            const mapBtn = document.getElementById('btn-map');
+            const galleryView = document.getElementById('view-gallery');
+            const mapView = document.getElementById('view-map');
+
+            if (view === 'map') {
+                galleryView.classList.add('hidden');
+                mapView.classList.remove('hidden');
+                galleryBtn.classList.remove('btn-active');
+                mapBtn.classList.add('btn-active');
+                
+                // Initialize or invalidate map size
+                if (!map) {
+                    initMap();
+                } else {
+                    setTimeout(() => map.invalidateSize(), 100);
+                }
+            } else {
+                galleryView.classList.remove('hidden');
+                mapView.classList.add('hidden');
+                galleryBtn.classList.add('btn-active');
+                mapBtn.classList.remove('btn-active');
+            }
+        };
+
+        // Modal Logic
+        const openModal = (index) => {
+            const p = properties[index];
+            const modal = document.getElementById('detail-modal');
+            const body = document.getElementById('modal-body');
+            
+            const isAssumable = p.assumable && p.assumable.length > 0;
+            const mapQuery = encodeURIComponent(p.address);
+            
+            // Calculations
+            const fhaDownPercent = 3.5;
+            const fhaDownAmount = p.price * (fhaDownPercent / 100);
+            const fhaPrincipal = p.price - fhaDownAmount;
+            const fhaRate = 6.5;
+            const fhaMonthly = calculateMortgage(fhaPrincipal, fhaRate, 30);
+
+            let assumableMonthly = 0;
+            let assumableRateNum = 0;
+            if (isAssumable) {
+                assumableRateNum = p.assumable === 'LOW' ? 3.0 : parseFloat(p.assumable.replace('%', ''));
+                assumableMonthly = calculateMortgage(fhaPrincipal, assumableRateNum, 30);
+            }
+
+            body.innerHTML = `
+                <div class="lg:w-1/2 flex flex-col bg-base-100">
+                    <div class="relative h-64 lg:h-auto lg:flex-1">
+                        <div class="swiper swiper-modal" id="swiper-modal">
+                            <div class="swiper-wrapper">
+                                ${p.imgs.map(img => `
+                                <div class="swiper-slide">
+                                    <img src="${img}" class="w-full h-64 lg:h-full object-cover" alt="${p.address}">
+                                </div>`).join('')}
+                            </div>
+                            <div class="swiper-button-next"></div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-pagination"></div>
+                        </div>
+                        <!-- Assumable Badge on Modal Image -->
+                        ${isAssumable ? `
+                        <div class="absolute top-4 right-4 z-20">
+                            <div class="badge badge-success gap-2 font-bold py-3 px-4 shadow-lg text-white bg-success">
+                                <i class="fa-solid fa-bolt"></i> ASSUMABLE AT ${p.assumable}
+                            </div>
+                        </div>` : ''}
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/2 p-6 lg:p-8 overflow-y-auto flex flex-col gap-6">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h2 class="text-2xl font-extrabold text-base-content leading-tight">${p.address}</h2>
+                        </div>
+                        <p class="text-3xl font-black text-primary mb-4">${formatCurrency(p.price)}</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <div class="badge badge-outline badge-lg py-3"><i class="fa-solid fa-bed mr-2 text-primary"></i>${p.bedsBaths.split(' - ')[0]}</div>
+                            <div class="badge badge-outline badge-lg py-3"><i class="fa-solid fa-bath mr-2 text-primary"></i>${p.bedsBaths.split(' - ')[1]}</div>
+                            <div class="badge badge-outline badge-lg py-3"><i class="fa-solid fa-ruler-combined mr-2 text-primary"></i>${p.sqft.toLocaleString()} sqft</div>
+                            <div class="badge badge-outline badge-lg py-3"><i class="fa-solid fa-calendar mr-2 text-primary"></i>Built ${p.year}</div>
+                        </div>
+                        
+                        <p class="text-base-content/80 text-sm leading-relaxed border-b border-base-200 pb-4">${p.note}</p>
+                    </div>
+
+                    <!-- Calculator Component -->
+                    <div class="bg-base-200 rounded-xl p-5">
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-calculator text-primary"></i> Mortgage Comparison
+                        </h3>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+                            <div>
+                                <p class="text-base-content/60">Purchase Price</p>
+                                <p class="font-bold">${formatCurrency(p.price)}</p>
+                            </div>
+                            <div>
+                                <p class="text-base-content/60">Down Payment (3.5%)</p>
+                                <p class="font-bold">${formatCurrency(fhaDownAmount)}</p>
+                            </div>
+                            <div>
+                                <p class="text-base-content/60">Loan Amount</p>
+                                <p class="font-bold">${formatCurrency(fhaPrincipal)}</p>
+                            </div>
+                            <div>
+                                <p class="text-base-content/60">Loan Term</p>
+                                <p class="font-bold">30 Years Fixed</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-lg mb-3">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-semibold text-indigo-800">Standard FHA</span>
+                                <span class="text-xs bg-indigo-200 text-indigo-800 px-2 py-0.5 rounded-full font-bold">6.5% Rate</span>
+                            </div>
+                            <p class="text-2xl font-extrabold text-indigo-700">${formatCurrency(fhaMonthly)}<span class="text-sm font-medium">/mo</span></p>
+                            <p class="text-xs text-indigo-600/70 mt-1">Principal & Interest Only</p>
+                        </div>
+
+                        ${isAssumable ? `
+                        <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-lg relative overflow-hidden">
+                            <div class="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">💡 HUGE SAVINGS</div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-semibold text-emerald-800">Assumable Loan</span>
+                                <span class="text-xs bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full font-bold">${assumableRateNum}% Rate</span>
+                            </div>
+                            <p class="text-2xl font-extrabold text-emerald-700">${formatCurrency(assumableMonthly)}<span class="text-sm font-medium">/mo</span></p>
+                            <p class="text-xs text-emerald-600/70 mt-1">Principal & Interest Only</p>
+                            
+                            <div class="mt-3 pt-3 border-t border-emerald-200 flex justify-between items-center bg-emerald-100 -m-4 p-3 mt-4">
+                                <span class="text-xs font-bold text-emerald-900">Your Monthly Savings:</span>
+                                <span class="text-lg font-extrabold text-emerald-900">${formatCurrency(fhaMonthly - assumableMonthly)}</span>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        ${p.hoa > 0 ? `<p class="text-xs text-base-content/50 mt-3 text-center">+ ${formatCurrency(p.hoa)}/mo HOA (Not included in estimate)</p>` : ''}
+                    </div>
+
+                    <!-- Google Maps Hybrid Iframe -->
+                    <div class="overflow-hidden rounded-xl border border-base-300 h-48">
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            style="border:0" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            src="https://maps.google.com/maps?q=${mapQuery}&t=k&z=15&output=embed">
+                        </iframe>
+                    </div>
+                    
+                    <a href="${p.url}" target="_blank" class="btn btn-primary btn-block mt-2">
+                        <i class="fa-solid fa-up-right-from-square"></i> View Original Listing
+                    </a>
+                </div>
+            `;
+
+            modal.showModal();
+
+            // Initialize Modal Swiper
+            setTimeout(() => {
+                if (swipers['swiper-modal']) {
+                    swipers['swiper-modal'].destroy(true, true);
+                }
+                swipers['swiper-modal'] = new Swiper('#swiper-modal', {
+                    loop: true,
+                    spaceBetween: 0,
+                    grabCursor: true,
+                    pagination: { el: '#swiper-modal .swiper-pagination', clickable: true },
+                    navigation: { nextEl: '#swiper-modal .swiper-button-next', prevEl: '#swiper-modal .swiper-button-prev' },
+                });
+            }, 100);
+        };
+
+        // Initial Render
+        renderCards();
+    </script>
+</body>
+</html>
