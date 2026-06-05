@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>DG 1031 Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',system-ui,sans-serif;background:#F5F4F0;color:#1A1D23;font-size:17px;line-height:1.5}
+
+/* Header */
+.hdr{position:sticky;top:0;z-index:50;background:#F5F4F0;padding:16px 20px 20px;border-bottom:1px solid #E0DED8}
+.hdr-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-dot{width:10px;height:10px;border-radius:50%;background:#16A34A}
+.hdr-title{font-size:18px;font-weight:800}
+.hdr-sub{font-size:13px;color:#888;font-weight:500}
+.clear-btn{font-size:14px;color:#C0392B;font-weight:600;padding:6px 0;background:none;border:none;cursor:pointer;font-family:inherit}
+
+/* Progress */
+.prog-lbl{display:flex;justify-content:space-between;font-size:15px;font-weight:700;margin-bottom:6px}
+.prog-lbl .cur{color:#1A1D23}
+.prog-lbl .tgt{color:#16A34A}
+.prog-track{height:14px;background:#E0DED8;border-radius:7px;position:relative;overflow:hidden}
+.prog-zone{position:absolute;top:0;height:14px;background:rgba(22,163,74,0.15);border-left:2px solid #16A34A;border-right:2px solid #16A34A}
+.prog-bar{position:absolute;top:0;left:0;height:14px;border-radius:7px;transition:width .35s ease,background .3s}
+.prog-bar.lo{background:#AAA}
+.prog-bar.ok{background:#16A34A}
+.prog-bar.hi{background:#EA580C}
+.prog-nums{display:flex;justify-content:space-between;font-size:12px;color:#AAA;margin-top:4px;font-weight:500}
+
+/* Stats */
+.stats{display:flex;gap:12px;margin-top:16px}
+.stat{flex:1;text-align:center;background:#fff;border:1px solid #E0DED8;border-radius:10px;padding:12px 8px}
+.stat-v{font-size:22px;font-weight:800;line-height:1.2}
+.stat-v.off{color:#BBB}
+.stat-v.on{color:#16A34A}
+.stat-l{font-size:11px;color:#999;text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-top:2px}
+
+/* Suggestions */
+.sugs{padding:14px 20px}
+.sug{display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:1px solid #E0DED8;border-radius:10px;margin-bottom:8px;cursor:pointer;font-family:inherit;font-size:15px;text-align:left;width:100%;transition:background .15s}
+.sug:active{background:#F0EFEB}
+.sug-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sug-icon.g{background:rgba(22,163,74,.1);color:#16A34A}
+.sug-icon.r{background:rgba(234,88,12,.1);color:#EA580C}
+.sug-icon.b{background:rgba(37,99,235,.1);color:#2563EB}
+.sug-icon.y{background:rgba(158,122,31,.1);color:#92700C}
+.sug-icon.ck{background:rgba(22,163,74,.15);color:#16A34A}
+.sug-txt{flex:1}
+.sug-title{font-weight:700;color:#1A1D23}
+.sug-sub{font-size:13px;color:#888;margin-top:1px}
+.sug-arr{color:#CCC;font-size:13px}
+
+/* Selected */
+.sel-hdr{padding:10px 20px 6px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#AAA;font-weight:700}
+.sel-list{padding:0 20px 8px}
+.sel-item{display:flex;align-items:center;gap:12px;padding:14px;background:#fff;border:2px solid #16A34A;border-radius:10px;margin-bottom:8px}
+.sel-x{width:36px;height:36px;border-radius:50%;background:rgba(234,88,12,.08);color:#EA580C;border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit}
+.sel-x:active{background:rgba(234,88,12,.15)}
+.sel-body{flex:1}
+.sel-name{font-size:16px;font-weight:700}
+.sel-stats{font-size:13px;color:#888;margin-top:2px}
+.sel-price{font-size:16px;font-weight:800;color:#92700C;flex-shrink:0}
+
+/* Divider */
+.div{height:1px;background:#E0DED8;margin:0 20px}
+
+/* Available */
+.av-hdr{padding:10px 20px 6px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#AAA;font-weight:700;display:flex;justify-content:space-between}
+.av-hdr span{background:#E0DED8;color:#888;padding:1px 8px;border-radius:10px;font-size:11px}
+.av-list{padding:0 20px 100px}
+.av-item{display:flex;align-items:center;gap:12px;padding:16px 14px;background:#fff;border:1px solid #E0DED8;border-radius:10px;margin-bottom:8px;cursor:pointer;transition:background .15s;position:relative}
+.av-item:active{background:#F0EFEB}
+.av-item.used{opacity:.2;pointer-events:none}
+.av-plus{width:36px;height:36px;border-radius:50%;background:rgba(22,163,74,.08);color:#16A34A;border:none;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit}
+.av-plus:active{background:rgba(22,163,74,.18)}
+.av-body{flex:1;min-width:0}
+.av-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.av-city{font-size:16px;font-weight:700}
+.av-cap{font-size:13px;font-weight:800;color:#16A34A;flex-shrink:0}
+.av-info{font-size:13px;color:#888;margin-top:3px}
+.av-note{font-size:12px;color:#777;margin-top:4px}
+.av-badge{position:absolute;top:8px;right:10px;font-size:9px;font-weight:700;background:rgba(22,163,74,.1);color:#16A34A;padding:2px 6px;border-radius:4px}
+
+/* Empty state */
+.empty{text-align:center;padding:40px 20px;color:#AAA;font-size:15px;line-height:1.6}
+.empty i{font-size:28px;display:block;margin-bottom:10px;color:#CCC}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-row">
+    <div class="hdr-left">
+      <div class="hdr-dot"></div>
+      <div>
+        <div class="hdr-title">DG 1031 Builder</div>
+        <div class="hdr-sub">Tap to add or remove properties</div>
+      </div>
+    </div>
+    <button class="clear-btn" id="clearBtn" style="display:none" onclick="clearAll()"><i class="fas fa-rotate-left"></i> Reset</button>
+  </div>
+  <div class="prog-lbl"><span class="cur" id="pCur">$0</span><span class="tgt">$3.5M — $3.7M</span></div>
+  <div class="prog-track"><div class="prog-zone" id="pZone"></div><div class="prog-bar lo" id="pBar"></div></div>
+  <div class="prog-nums"><span>$0</span><span>$3.5M</span><span>$3.7M</span><span>$5M</span></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-v off" id="sCap">—</div><div class="stat-l">Cap Rate</div></div>
+    <div class="stat"><div class="stat-v off" id="sNoi">—</div><div class="stat-l">Annual Income</div></div>
+    <div class="stat"><div class="stat-v off" id="sCt">0</div><div class="stat-l">Properties</div></div>
+  </div>
+</header>
+
+<div id="sugBox"></div>
+<div id="selHdr" class="sel-hdr" style="display:none">Your Selection</div>
+<div id="selList" class="sel-list"></div>
+<div id="div1" class="div" style="display:none"></div>
+<div id="avHdr" class="av-hdr">Available <span id="avCt">14</span></div>
+<div id="avList" class="av-list"></div>
+
+<script>
+var P=[
+{id:'webb_mo',c:'Webb City',s:'MO',noi:115132,cap:7.40,pop:54496,inc:73879,w:11.9,msa:'Joplin MSA',n:'54K pop, I-44, 36% growth'},
+{id:'lansing_ny',c:'Lansing',s:'NY',noi:105510,cap:7.40,pop:5816,inc:103264,w:12.3,msa:'Ithaca area',n:'Cornell University, $103K income'},
+{id:'harrison_mo',c:'Harrisonville',s:'MO',noi:96511,cap:7.40,pop:13686,inc:86478,w:12.0,msa:'Kansas City MSA',n:'KC metro, I-49, 11% growth'},
+{id:'kittanning_pa',c:'Kittanning',s:'PA',noi:105137,cap:7.40,pop:17289,inc:66223,w:11.7,msa:'Pittsburgh fringe',n:'US-422, 17K pop, 3.6% unemploy'},
+{id:'northwood_ia',c:'Northwood',s:'IA',noi:111448,cap:7.40,pop:2766,inc:81686,w:11.9,msa:'Mason City area',n:'Winnebago HQ, $82K income, I-35'},
+{id:'belle_plaine_ia',c:'Belle Plaine',s:'IA',noi:112357,cap:7.40,pop:3281,inc:72418,w:11.7,msa:'Cedar Rapids fringe',n:'Near I-80, 3-acre site'},
+{id:'hemlock_ny',c:'Hemlock',s:'NY',noi:111880,cap:7.50,pop:8104,inc:92745,w:11.1,msa:'Rochester area',n:'Finger Lakes, SUNY Geneseo'},
+{id:'josephine_pa',c:'Josephine',s:'PA',noi:95837,cap:7.50,pop:9210,inc:63223,w:11.3,msa:'Indiana PA area',n:'IUP 10K students, no comp 7+ mi'},
+{id:'litchfield_mn',c:'Litchfield',s:'MN',noi:95004,cap:7.50,pop:8614,inc:74782,w:11.0,msa:'St Cloud area',n:'Manufacturing town, Lake Country'},
+{id:'hopewell_pa',c:'Hopewell',s:'PA',noi:109925,cap:7.75,pop:3913,inc:58698,w:11.5,msa:'Huntingdon area',n:'Raystown Lake 1.2M visitors/yr'},
+{id:'rankin_il',c:'Rankin',s:'IL',noi:127993,cap:7.75,pop:840,inc:68077,w:12.1,msa:'Champaign fringe',n:'Only 840 pop, 5% increases only'},
+{id:'topmost_ky',c:'Topmost',s:'KY',noi:82999,cap:8.00,pop:4482,inc:40859,w:11.2,msa:'Rural Appalachian',n:'No competition 14+ mi, $41K income'},
+{id:'breeding_ky',c:'Breeding',s:'KY',noi:80178,cap:8.00,pop:1371,inc:60035,w:10.9,msa:'Rural south-central KY',n:'1,371 pop, lowest price'},
+{id:'manchester_ky',c:'Manchester',s:'KY',noi:89616,cap:8.00,pop:1484,inc:38874,w:10.9,msa:'Rural Appalachian',n:'Lowest income $39K, poorest county'}
+];
+for(var i=0;i<P.length;i++)P[i].p=Math.round(P[i].noi/P[i].cap*100)/100;
+P.sort(function(a,b){return a.cap-b.cap||b.pop-a.pop});
+
+var sel={},LO=3500000,HI=3700000,MX=5000000;
+function f(id){for(var i=0;i<P.length;i++)if(P[i].id===id)return P[i];return null}
+function ids(){var r=[];for(var k in sel)if(sel[k])r.push(k);return r}
+function tot(){var t=0,n=0,ii=ids();for(var i=0;i<ii.length;i++){var p=f(ii[i]);t+=p.p;n+=p.noi}return{t:t,n:n,c:ii.length}}
+function fm(v){return v>=1e6?'$'+(v/1e6).toFixed(2)+'M':'$'+Math.round(v/1e3)+'K'}
+function fn(v){return v.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',')}
+
+function tog(id){sel[id]=!sel[id];draw()}
+function clr(){sel={};draw()}
+
+function sugs(){
+  var s=tot(),ii=ids(),r=[];
+  if(!ii.length){
+    r.push({i:'y',t:'Getting started',d:'Two top-tier (7.40%) properties exceed $3.7M with any third — you\'ll need 3 including value options below.'});
+    r.push({i:'g',t:'Add Webb City, MO',d:'Best location — 54,000 pop, Joplin MSA',a:'webb_mo'});
+    r.push({i:'g',t:'Add Lansing, NY',d:'Highest income area — Cornell University',a:'lansing_ny'});
+    return r;
+  }
+  if(s.t<LO){
+    var av=P.filter(function(p){return!sel[p.id]&&p.p<=LO-s.t+300000});
+    av.sort(function(a,b){var aZ=s.t+a.p>=LO&&s.t+a.p<=HI?1:0,bZ=s.t+b.p>=LO&&s.t+b.p<=HI?1:0;if(aZ!==bZ)return bZ-aZ;return a.cap-b.cap});
+    for(var i=0;i<Math.min(2,av.length);i++){
+      var nt=s.t+av[i].p,ok=nt>=LO&&nt<=HI;
+      r.push({i:'g',t:'Add '+av[i].c+', '+av[i].s,d:ok?'Reaches target at '+fm(nt):'Brings to '+fm(nt),a:av[i].id});
+    }
+    if(!av.length)r.push({i:'r',t:'Too tight a gap',d:'Remove a property and try a different combination.'});
+    return r;
+  }
+  if(s.t>HI){
+    var sp=ii.map(function(id){return f(id)});
+    sp.sort(function(a,b){return Math.abs(s.t-a.p-(LO+HI)/2)-Math.abs(s.t-b.p-(LO+HI)/2)});
+    for(var i=0;i<Math.min(2,sp.length);i++){
+      var nt=s.t-sp[i].p,ok=nt>=LO&&nt<=HI;
+      r.push({i:'r',t:'Remove '+sp[i].c+', '+sp[i].s,d:ok?'Back to '+fm(nt):'Drops to '+fm(nt),a:sp[i].id});
+    }
+    return r;
+  }
+  var bc=s.n/s.t*100;
+  r.push({i:'ck',t:'In target zone',d:ii.length+' properties at '+bc.toFixed(2)+'% cap, $'+fn(Math.round(s.n))+'/yr income'});
+  var av=P.filter(function(p){return!sel[p.id]});
+  for(var i=0;i<sp.length&&r.length<3;i++){
+    for(var j=0;j<av.length;j++){
+      var d=av[j].p-sp[i].p,nt=s.t+d;
+      if(nt>=LO&&nt<=HI&&av[j].cap>sp[i].cap){
+        var dn=av[j].noi-sp[i].noi;
+        if(dn>0)r.push({i:'b',t:'Swap '+sp[i].c+' for '+av[j].c,d:'+'+(av[j].cap-sp[i].cap).toFixed(2)+'% cap, +$'+fn(Math.round(dn))+'/yr',a:sp[i].id,b:av[j].id});
+      }
+    }
+    var sp=ii.map(function(id){return f(id)});
+  }
+  return r;
+}
+
+function draw(){
+  var s=tot(),ii=ids(),ok=s.t>=LO&&s.t<=HI;
+
+  document.getElementById('pCur').textContent=fm(s.t);
+  var zL=LO/MX*100,zW=(HI-LO)/MX*100;
+  var z=document.getElementById('pZone');z.style.left=zL+'%';z.style.width=zW+'%';
+  var b=document.getElementById('pBar');b.style.width=Math.min(s.t/MX*100,100)+'%';
+  b.className='prog-bar '+(s.t<LO?'lo':ok?'ok':'hi');
+
+  var bc=s.t>0?s.n/s.t*100:0,cls=ok?'on':'off';
+  var sc=document.getElementById('sCap');sc.textContent=s.c?bc.toFixed(2)+'%':'—';sc.className='stat-v '+cls;
+  var sn=document.getElementById('sNoi');sn.textContent=s.c?'$'+fn(Math.round(s.n)):'—';sn.className='stat-v '+cls;
+  var sct=document.getElementById('sCt');sct.textContent=s.c;sct.className='stat-v '+cls;
+
+  document.getElementById('clearBtn').style.display=ii.length?'block':'none';
+
+  var sg=sugs(),sb=document.getElementById('sugBox');
+  if(sg.length){
+    var h='<div class="sugs">';
+    for(var i=0;i<sg.length;i++){
+      var g=sg[i],ic=g.i==='g'?'g':g.i==='r'?'r':g.i==='b'?'b':g.i==='ck'?'ck':'y';
+      if(g.a&&!g.b)h+='<button class="sug" onclick="tog(\''+g.a+'\')"><div class="sug-icon '+ic+'"><i class="fas fa-'+(ic==='g'?'plus':ic==='r'?'minus':ic==='b'?'exchange-alt':ic==='ck'?'check':'info')+'"></i></div><div class="sug-txt"><div class="sug-title">'+g.t+'</div><div class="sug-sub">'+g.d+'</div></div><div class="sug-arr"><i class="fas fa-chevron-right"></i></div></button>';
+      else if(g.a&&g.b)h+='<button class="sug" onclick="tog(\''+g.a+'\');setTimeout(function(){tog(\''+g.b+'\')},80)"><div class="sug-icon '+ic+'"><i class="fas fa-exchange-alt"></i></div><div class="sug-txt"><div class="sug-title">'+g.t+'</div><div class="sug-sub">'+g.d+'</div></div><div class="sug-arr"><i class="fas fa-chevron-right"></i></div></button>';
+      else h+='<div class="sug" style="cursor:default"><div class="sug-icon '+ic+'"><i class="fas fa-'+(ic==='ck'?'check':'info')+'"></i></div><div class="sug-txt"><div class="sug-title"'+(ic==='ck'?' style="color:#16A34A"':'')+'>'+g.t+'</div><div class="sug-sub">'+g.d+'</div></div></div>';
+    }
+    h+='</div>';sb.innerHTML=h;
+  }else sb.innerHTML='';
+
+  var sh=document.getElementById('selHdr'),sl=document.getElementById('selList');
+  if(ii.length){
+    sh.style.display='block';
+    var h='';
+    for(var i=0;i<ii.length;i++){
+      var p=f(ii[i]);
+      h+='<div class="sel-item"><button class="sel-x" onclick="tog(\''+p.id+'\')" aria-label="Remove"><i class="fas fa-times"></i></button><div class="sel-body"><div class="sel-name">'+p.c+', '+p.s+' &middot; '+p.cap.toFixed(2)+'%</div><div class="sel-stats">'+fn(p.pop)+' pop &middot; $'+Math.round(p.inc/1000)+'K income &middot; '+p.msa+'</div></div><div class="sel-price">'+fm(p.p)+'</div></div>';
+    }
+    sl.innerHTML=h;
+  }else{sh.style.display='none';sl.innerHTML=''}
+
+  document.getElementById('div1').style.display=ii.length?'block':'none';
+  document.getElementById('avCt').textContent=14-ii.length;
+
+  var al=document.getElementById('avList'),h='';
+  for(var i=0;i<P.length;i++){
+    var p=P[i],u=!!sel[p.id],ab=p.cap>7.4;
+    h+='<div class="av-item'+(u?' used':'')+'" onclick="tog(\''+p.id+'\')">';
+    if(ab)h+='<div class="av-badge">+'+Math.round((p.cap-7.4)*100)+' bps</div>';
+    h+='<button class="av-plus" aria-label="Add '+p.c+'"><i class="fas fa-plus"></i></button>';
+    h+='<div class="av-body"><div class="av-top"><div class="av-city">'+p.c+', '+p.s+'</div><div class="av-cap">'+p.cap.toFixed(2)+'%</div></div>';
+    h+='<div class="av-info">'+fm(p.p)+' &middot; '+fn(p.pop)+' pop &middot; $'+Math.round(p.inc/1000)+'K income</div>';
+    h+='<div class="av-note">'+p.n+'</div>';
+    h+='</div></div>';
+  }
+  al.innerHTML=h;
+}
+
+draw();
+</script>
+</body>
+</html>
