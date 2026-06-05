@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closing Cost Worksheet Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    display: ['Space Grotesk', 'sans-serif'],
+                    body: ['DM Sans', 'sans-serif'],
+                }
+            }
+        }
+    }
+    </script>
+    <style>
+        :root {
+            --bg: #F5F3EE;
+            --bg-alt: #EBE8E1;
+            --card: #FFFFFF;
+            --card-alt: #FAFAF8;
+            --card-hover: #F7F6F3;
+            --accent: #A67C2E;
+            --accent-light: #C49A3C;
+            --accent-dim: rgba(166,124,46,0.10);
+            --accent-dim2: rgba(166,124,46,0.06);
+            --flag-red: #C0392B;
+            --flag-red-dim: rgba(192,57,43,0.08);
+            --flag-yellow: #D4850A;
+            --flag-yellow-dim: rgba(212,133,10,0.08);
+            --flag-green: #1D8348;
+            --flag-green-dim: rgba(29,131,72,0.08);
+            --flag-blue: #2471A3;
+            --flag-blue-dim: rgba(36,113,163,0.08);
+            --text: #1A1A1A;
+            --text-secondary: #3D3D3D;
+            --text-muted: #7A7A7A;
+            --border: #DDD9D0;
+            --border-light: #E8E5DD;
+            --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+        h1,h2,h3,h4,h5,h6 { font-family: 'Space Grotesk', sans-serif; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+        @keyframes fadeInUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideRight { from { width:0; } }
+        @keyframes scaleIn { from { transform:scale(0.97); opacity:0; } to { transform:scale(1); opacity:1; } }
+
+        .fade-in { animation: fadeInUp 0.45s ease-out both; }
+        .delay-1 { animation-delay: 0.08s; }
+        .delay-2 { animation-delay: 0.16s; }
+        .delay-3 { animation-delay: 0.24s; }
+        .delay-4 { animation-delay: 0.32s; }
+
+        /* Tab navigation */
+        .tab-nav { display: flex; gap: 0; border-bottom: 2px solid var(--border-light); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .tab-btn { position: relative; padding: 14px 20px; font-weight: 600; font-size: 14px; color: var(--text-muted);
+            border: none; background: none; cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: 0.01em; white-space: nowrap; transition: color 0.2s; flex-shrink: 0; }
+        .tab-btn:hover { color: var(--accent-light); }
+        .tab-btn.active { color: var(--accent); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 16px; right: 16px; height: 2px;
+            background: var(--accent); border-radius: 1px; }
+
+        /* Badges */
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+        .badge-ok { background: var(--flag-green-dim); color: var(--flag-green); }
+        .badge-caution { background: var(--flag-yellow-dim); color: var(--flag-yellow); }
+        .badge-flag { background: var(--flag-red-dim); color: var(--flag-red); }
+        .badge-info { background: var(--flag-blue-dim); color: var(--flag-blue); }
+
+        /* Item rows */
+        .item-row { transition: background 0.15s; cursor: pointer; border-radius: 8px; }
+        .item-row:hover { background: var(--card-hover); }
+        .item-row:active { background: var(--bg-alt); }
+
+        /* Expandable notes */
+        .notes-panel { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s; opacity: 0; }
+        .notes-panel.open { max-height: 500px; opacity: 1; }
+
+        /* Calculator inputs */
+        .calc-input { background: var(--card); border: 1.5px solid var(--border); color: var(--text); border-radius: 10px;
+            padding: 12px 14px; transition: border-color 0.2s, box-shadow 0.2s; width: 100%; font-size: 16px;
+            font-family: 'Space Grotesk', sans-serif; -webkit-appearance: none; }
+        .calc-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+
+        /* Summary cards */
+        .summary-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 14px; padding: 20px;
+            box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; }
+        .summary-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+        /* Result cards */
+        .result-card { background: var(--card); border: 1px solid var(--border-light); border-radius: 14px; padding: 20px;
+            box-shadow: var(--shadow); }
+
+        /* Progress bar */
+        .progress-bar { height: 10px; border-radius: 5px; background: var(--bg-alt); overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 5px; animation: slideRight 0.8s ease-out; }
+
+        /* Section divider */
+        .section-line { height: 1px; background: linear-gradient(to right, transparent, var(--border), transparent); margin: 28px 0; }
+
+        /* Chevron */
+        .chevron-icon { transition: transform 0.3s; }
+        .chevron-icon.rotated { transform: rotate(180deg); }
+
+        /* Term button */
+        .term-btn { padding: 10px 0; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; font-family: 'Space Grotesk', sans-serif; border: 1.5px solid var(--border);
+            background: var(--card); color: var(--text-muted); }
+        .term-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+        /* Range slider */
+        input[type="range"] { -webkit-appearance: none; height: 6px; border-radius: 3px; background: var(--border); outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+            background: var(--accent); cursor: pointer; border: 3px solid var(--card); box-shadow: var(--shadow); }
+        input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%;
+            background: var(--accent); cursor: pointer; border: 3px solid var(--card); }
+
+        /* Red flag card */
+        .red-flag-card { border-left: 3px solid; }
+
+        /* Responsive overrides */
+        @media (max-width: 640px) {
+            .tab-btn { padding: 12px 14px; font-size: 13px; }
+            .summary-card { padding: 14px; }
+            .result-card { padding: 14px; }
+            .item-row { padding: 10px 8px !important; gap: 8px !important; }
+            .notes-panel.open { padding-left: 12px !important; padding-right: 12px !important; }
+            h1 { font-size: 1.35rem !important; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+        <!-- Header -->
+        <header class="fade-in mb-6 sm:mb-8">
+            <div class="flex items-start sm:items-center gap-3 mb-3">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--accent-dim);">
+                    <i class="fas fa-file-invoice-dollar text-sm sm:text-base" style="color:var(--accent);"></i>
+                </div>
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold tracking-widest uppercase" style="color:var(--accent);">Mortgage Review</p>
+                    <h1 class="font-display text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight" style="color:var(--text);">Closing Cost Worksheet Analysis</h1>
+                </div>
+            </div>
+            <p class="text-xs sm:text-sm max-w-2xl leading-relaxed" style="color:var(--text-muted);">
+                Review of the estimate provided by <strong style="color:var(--text-secondary);">Home Mortgage Advisors, LLC</strong> dated <strong style="color:var(--text-secondary);">04/17/2028</strong>.
+                Items flagged with status indicators highlight potential inaccuracies, junk fees, and optimistic assumptions that deserve scrutiny.
+            </p>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav fade-in delay-1 mb-6 sm:mb-8" role="tablist">
+            <button class="tab-btn active" onclick="switchTab('analysis')" role="tab" aria-selected="true" id="tab-analysis">
+                <i class="fas fa-search-plus mr-1.5"></i>Worksheet Analysis
+            </button>
+            <button class="tab-btn" onclick="switchTab('calculator')" role="tab" aria-selected="false" id="tab-calculator">
+                <i class="fas fa-calculator mr-1.5"></i>Mortgage Calculator
+            </button>
+        </nav>
+
+        <!-- ==================== ANALYSIS TAB ==================== -->
+        <section id="section-analysis">
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8" id="summary-cards"></div>
+
+            <!-- Loan Terms -->
+            <div class="fade-in delay-2 mb-6 sm:mb-8">
+                <div class="flex items-center gap-2 mb-3">
+                    <i class="fas fa-file-contract text-sm" style="color:var(--accent);"></i>
+                    <h2 class="font-display text-base sm:text-lg font-semibold">Loan Terms Overview</h2>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3" id="loan-terms"></div>
+            </div>
+
+            <div class="section-line"></div>
+
+            <!-- Closing Costs -->
+            <div class="fade-in delay-3 mb-6 sm:mb-8">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fas fa-receipt text-sm" style="color:var(--accent);"></i>
+                    <h2 class="font-display text-base sm:text-lg font-semibold">Estimated Closing Costs</h2>
+                </div>
+                <p class="text-[11px] sm:text-xs mb-3" style="color:var(--text-muted);">Tap any item to expand detailed analysis</p>
+                <div id="closing-costs-table"></div>
+            </div>
+
+            <div class="section-line"></div>
+
+            <!-- Prepaid Items -->
+            <div class="fade-in delay-3 mb-6 sm:mb-8">
+                <div class="flex items-center gap-2 mb-1">
+                    <i class="fas fa-calendar-check text-sm" style="color:var(--accent);"></i>
+                    <h2 class="font-display text-base sm:text-lg font-semibold">Estimated Prepaid Items</h2>
+                </div>
+                <p class="text-[11px] sm:text-xs mb-3" style="color:var(--text-muted);">Items paid at closing in advance of their due date</p>
+                <div id="prepaid-items-table"></div>
+            </div>
+
+            <div class="section-line"></div>
+
+            <!-- Monthly Payment -->
+            <div class="fade-in delay-3 mb-6 sm:mb-8">
+                <div class="flex items-center gap-2 mb-3">
+                    <i class="fas fa-wallet text-sm" style="color:var(--accent);"></i>
+                    <h2 class="font-display text-base sm:text-lg font-semibold">Monthly Payment Breakdown</h2>
+                </div>
+                <div id="monthly-table"></div>
+            </div>
+
+            <div class="section-line"></div>
+
+            <!-- Red Flags -->
+            <div class="fade-in delay-4 mb-6 sm:mb-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fas fa-exclamation-triangle text-sm" style="color:var(--flag-red);"></i>
+                    <h2 class="font-display text-base sm:text-lg font-semibold" style="color:var(--flag-red);">Key Red Flags</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4" id="red-flags"></div>
+            </div>
+
+            <!-- Reality Check -->
+            <div class="fade-in delay-4 mb-6" id="reality-check"></div>
+        </section>
+
+        <!-- ==================== CALCULATOR TAB ==================== -->
+        <section id="section-calculator" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 sm:gap-6">
+                <!-- Inputs -->
+                <div class="lg:col-span-2">
+                    <div class="result-card lg:sticky lg:top-6">
+                        <h3 class="font-display text-base sm:text-lg font-semibold mb-5 flex items-center gap-2">
+                            <i class="fas fa-sliders text-sm" style="color:var(--accent);"></i>Property Details
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] sm:text-xs font-bold mb-1.5 uppercase tracking-wider" style="color:var(--text-muted);">Purchase Price</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color:var(--text-muted);">$</span>
+                                    <input type="number" id="calc-price" value="425000" class="calc-input pl-7" oninput="calculate()">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] sm:text-xs font-bold mb-1.5 uppercase tracking-wider" style="color:var(--text-muted);">Down Payment %</label>
+                                <input type="range" id="calc-down-pct-range" min="0" max="40" step="0.5" value="5" class="w-full" oninput="document.getElementById('calc-down-pct').value=this.value;calculate()">
+                                <div class="flex items-center gap-2 mt-2">
+                                    <input type="number" id="calc-down-pct" value="5" step="0.5" class="calc-input w-20 text-center" oninput="document.getElementById('calc-down-pct-range').value=this.value;calculate()">
+                                    <span class="text-xs" style="color:var(--text-muted);">%</span>
+                                    <span class="text-xs ml-auto" style="color:var(--text-muted);">= <strong id="calc-down-amt" style="color:var(--text);">$21,250</strong></span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] sm:text-xs font-bold mb-1.5 uppercase tracking-wider" style="color:var(--text-muted);">Interest Rate (%)</label>
+                                <input type="number" id="calc-rate" value="5.99" step="0.125" class="calc-input" oninput="calculate()">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] sm:text-xs font-bold mb-1.5 uppercase tracking-wider" style="color:var(--text-muted);">Loan Term</label>
+                                <div class="flex gap-2">
+                                    <button class="term-btn flex-1" data-term="15" onclick="selectTerm(15)">15 yr</button>
+                                    <button class="term-btn flex-1" data-term="20" onclick="selectTerm(20)">20 yr</button>
+                                    <button class="term-btn flex-1 active" data-term="30" onclick="selectTerm(30)">30 yr</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] sm:text-xs font-bold mb-1.5 uppercase tracking-wider" style="color:var(--text-muted);">Annual Property Tax Rate (%)</label>
+                                <input type="number" id="calc-tax-rate" value="1.2" step="0.1" class="calc-input" oninput="calculate()">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] sm:text-xs font-bold mb-1.5 uppercase tracking-wider" style="color:var(--text-muted);">Annual Homeowner's Insurance</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color:var(--text-muted);">$</span>
+                                    <input type="number" id="calc-insurance" value="2400" class="calc-input pl-7" oninput="calculate()">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] sm:text-xs font-bold mb-1.5 uppercase tracking-wider" style="color:var(--text-muted);">Annual PMI Rate (%) <span style="font-weight:400;">— if below 20% down</span></label>
+                                <input type="number" id="calc-pmi-rate" value="0.5" step="0.1" class="calc-input" oninput="calculate()">
+                                <p class="text-[10px] sm:text-xs mt-1" style="color:var(--text-muted);">Typical range: 0.3%–1.5% of loan amount</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="lg:col-span-3 space-y-4 sm:space-y-5">
+                    <!-- Monthly Payment Result -->
+                    <div class="result-card" style="border-color:var(--accent); border-width:1.5px;">
+                        <p class="text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-1" style="color:var(--accent);">Estimated Monthly Payment</p>
+                        <div class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight" id="calc-monthly-total">$3,154</div>
+                        <div class="mt-4 space-y-2.5" id="calc-breakdown"></div>
+                    </div>
+
+                    <!-- Chart + Stats -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                        <div class="result-card flex flex-col items-center justify-center py-6">
+                            <canvas id="donut-chart" width="200" height="200"></canvas>
+                            <div class="mt-3 grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]" id="chart-legend"></div>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="result-card">
+                                <p class="text-[10px] sm:text-xs uppercase tracking-wider font-bold mb-0.5" style="color:var(--text-muted);">Loan Amount</p>
+                                <p class="font-display text-lg sm:text-xl font-bold" id="calc-loan-amt">$403,750</p>
+                            </div>
+                            <div class="result-card">
+                                <p class="text-[10px] sm:text-xs uppercase tracking-wider font-bold mb-0.5" style="color:var(--text-muted);">Total Interest Paid</p>
+                                <p class="font-display text-lg sm:text-xl font-bold" style="color:var(--flag-red);" id="calc-total-interest">$464,587</p>
+                            </div>
+                            <div class="result-card">
+                                <p class="text-[10px] sm:text-xs uppercase tracking-wider font-bold mb-0.5" style="color:var(--text-muted);">Total Cost of Loan</p>
+                                <p class="font-display text-lg sm:text-xl font-bold" id="calc-total-cost">$868,337</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rate Comparison -->
+                    <div class="result-card">
+                        <h3 class="font-display text-xs sm:text-sm font-bold mb-4 uppercase tracking-wider flex items-center gap-2" style="color:var(--accent);">
+                            <i class="fas fa-chart-bar"></i>Rate Comparison
+                        </h3>
+                        <div id="rate-comparison" class="space-y-2.5"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-10 sm:mt-12 pt-5" style="border-top:1px solid var(--border-light);">
+            <p class="text-[10px] sm:text-xs leading-relaxed" style="color:var(--text-muted);">
+                <i class="fas fa-info-circle mr-1"></i>
+                This analysis is for informational purposes only and does not constitute financial or legal advice. Amounts are reconstructed from the provided worksheet and may differ from actual figures. Always verify numbers directly with your lender and consult a licensed mortgage professional before making decisions.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+    /* ============================================================
+       DATA
+       ============================================================ */
+    const loanTerms = {
+        purchasePrice: 425000,
+        downPaymentPct: 5,
+        downPayment: 21250,
+        loanAmount: 403750,
+        interestRate: 5.99,
+        loanTermYears: 30
+    };
+
+    const closingCosts = [
+        { name:'Loan Origination Fee', amount:1500, status:'ok', icon:'fa-building-columns',
+          notes:'At 0.37% of the loan amount, this is within the typical range (0.5%–1%). Reasonable as-is.' },
+        { name:'Loan Discount Points (1.5 pts)', amount:6056, status:'caution', icon:'fa-percent',
+          notes:'This is the cost to buy down the rate to 5.99%. At 1.5 points × $403,750 = $6,056. Without points, expect a market rate closer to 6.75%–7.25%. Break-even vs. a no-point 7.0% rate: ~22 months. If you plan to stay longer than 2 years, points can pay off — but you\'re tying up $6,056 at closing. Ask the lender for a zero-point rate quote to compare.' },
+        { name:'Appraisal Fee', amount:550, status:'ok', icon:'fa-house-chimney',
+          notes:'Standard range is $450–$750 depending on property type and location. This is normal.' },
+        { name:'Credit Report Fee', amount:65, status:'ok', icon:'fa-file-lines',
+          notes:'Typical cost for a tri-merge credit report. No issue here.' },
+        { name:'Tax Service Fee', amount:85, status:'ok', icon:'fa-landmark',
+          notes:'Covers the lender\'s tax monitoring service to track your property tax payments. Standard fee.' },
+        { name:'Flood Certification Fee', amount:25, status:'ok', icon:'fa-water',
+          notes:'Determines if the property is in a FEMA flood zone. If it is, flood insurance will be required separately. This fee itself is standard.' },
+        { name:'Lender\'s Title Insurance', amount:1800, status:'caution', icon:'fa-shield-halved',
+          notes:'Required by the lender to protect their interest. Prices vary significantly by provider — shop around. You may save $200–$400 by comparing title companies. In some states, the seller pays this; check local custom.' },
+        { name:'Owner\'s Title Insurance', amount:1200, status:'info', icon:'fa-user-shield',
+          notes:'Not required by the lender, but strongly recommended to protect YOUR ownership interest against title defects, liens, or claims that emerge after closing. Often available at a discounted "simultaneous issue" rate when purchased with the lender\'s policy.' },
+        { name:'Escrow / Settlement Fee', amount:750, status:'caution', icon:'fa-handshake',
+          notes:'This fee varies significantly by region and provider. $500–$800 is common, but it\'s negotiable. Compare with other settlement/escrow agents in the area.' },
+        { name:'Recording Fee', amount:125, status:'ok', icon:'fa-stamp',
+          notes:'Government fee for recording the deed and mortgage with the county. Non-negotiable, set by the county.' },
+        { name:'Document Preparation Fee', amount:350, status:'flag', icon:'fa-file-signature',
+          notes:'JUNK FEE — The lender is already charging an origination fee ($1,500), processing fee ($495), and underwriting fee ($695) to prepare and review your loan documents. This "doc prep" fee is redundant double-charging. Request that it be removed.' },
+        { name:'Processing Fee', amount:495, status:'flag', icon:'fa-gears',
+          notes:'REDUNDANT — Combined with the origination fee ($1,500) and underwriting fee ($695), the lender is triple-charging for loan processing. The origination fee already covers the cost of processing your application. Many lenders include this in the origination fee. Negotiate to remove it or roll it into the origination fee.' },
+        { name:'Underwriting Fee', amount:695, status:'flag', icon:'fa-magnifying-glass-dollar',
+          notes:'REDUNDANT — This is the third fee for the same administrative service. Standard practice is to charge ONE of: origination fee OR underwriting fee — not both plus a separate processing fee. Having all three ($1,500 + $495 + $695 = $2,690) is excessive. Negotiate to consolidate into a single charge.' },
+        { name:'Courier / Shipping Fee', amount:45, status:'flag', icon:'fa-truck',
+          notes:'OBSOLETE FEE — In 2025, virtually all mortgage documents are transmitted electronically. There is no legitimate reason for a courier fee on a modern mortgage. Request removal. If they insist, ask for documentation of what was physically shipped.' },
+    ];
+
+    const prepaidItems = [
+        { name:'Prepaid Interest (est. 15 days)', amount:1208, status:'caution', icon:'fa-calendar-days',
+          notes:'Daily interest on $403,750 at 5.99% = ~$66.27/day. For 15 days that\'s ~$994, not $1,208. The $1,208 implies ~18 days of interest. Verify against your actual closing date. Tip: closing near the end of the month significantly reduces prepaid interest.' },
+        { name:'Hazard Insurance (1 year)', amount:1800, status:'flag', icon:'fa-house-crack',
+          notes:'POTENTIALLY UNDERESTIMATED — $1,800/year ($150/month) is on the low end for a $425,000 home. Actual costs often range from $2,400–$4,500+ depending on location, especially in areas prone to hurricanes, wildfires, or flooding. A low estimate means: (1) more cash needed at closing, and (2) your monthly escrow payment will increase. Get real insurance quotes before accepting this estimate.' },
+        { name:'Property Taxes (6 months)', amount:2125, status:'flag', icon:'fa-receipt',
+          notes:'CRITICAL — This implies annual taxes of ~$4,250 (1.0% of purchase price). This may be based on the CURRENT assessed value, which could be far below the purchase price. Many jurisdictions reassess upon sale, and your actual tax bill could jump 30%–100%+ after purchase. Contact the county assessor to confirm what your post-purchase tax bill will be.' },
+        { name:'PMI Escrow (2 months)', amount:268, status:'caution', icon:'fa-shield',
+          notes:'With only 5% down on a conventional loan, PMI is required. The $134/month implied here ($1,608/year = 0.40% of loan) is optimistic. Typical PMI for 5% down ranges from 0.5%–1.5% depending on credit score. At 0.5%, monthly PMI = ~$168; at 1.0% = ~$336. Verify your actual PMI rate.' },
+        { name:'Tax & Insurance Reserve', amount:450, status:'caution', icon:'fa-vault',
+          notes:'Lenders can require an escrow cushion of up to 1/6 (2 months) of annual escrow disbursements under RESPA. This amount should be verified — it shouldn\'t exceed the legal limit. Some lenders waive this if you have strong credit.' },
+    ];
+
+    const monthlyItems = [
+        { name:'Principal & Interest', amount:2416, status:'caution', icon:'fa-money-bill-wave',
+          notes:'At 5.99% on $403,750 for 30 years, this is mathematically correct — BUT only if the rate is actually locked. This rate likely requires buying points ($6,056). Without points, expect 6.75%–7.25%, which would push P&I to $2,616–$2,756/month. Confirm the rate lock status and expiration date.' },
+        { name:'Property Tax (monthly)', amount:354, status:'flag', icon:'fa-landmark',
+          notes:'Based on $4,250/year. As noted in prepaids, this likely reflects the current (lower) assessment. After reassessment at the purchase price, this could easily jump to $425–$530+/month. Budget for the higher amount.' },
+        { name:'Homeowner\'s Insurance (monthly)', amount:150, status:'flag', icon:'fa-house-crack',
+          notes:'Based on $1,800/year. As flagged above, this is likely $200–$375/month in reality. A $150/month insurance estimate for a $425K home is almost certainly too low.' },
+        { name:'PMI (monthly)', amount:134, status:'caution', icon:'fa-shield',
+          notes:'As flagged above, this may be $168–$336 depending on your credit score and the actual PMI rate the insurer charges for 5% down.' },
+    ];
+
+    const redFlags = [
+        { title:'5.99% Interest Rate Is Optimistic', severity:'high', icon:'fa-percent',
+          detail:'Current market rates for a 30-year fixed mortgage with 5% down are more typically in the 6.5%–7.5% range. The 5.99% rate almost certainly requires paying 1.5 discount points ($6,056). If the rate is not locked, it could change before closing. Always get a Loan Estimate (LE) within 3 days of application — it\'s legally binding.' },
+        { title:'Triple-Charging for Loan Processing', severity:'high', icon:'fa-layer-group',
+          detail:'The lender is charging three separate fees for the same administrative work: Origination ($1,500) + Processing ($495) + Underwriting ($695) = $2,690. Standard practice is ONE fee — either origination OR underwriting. The doc prep fee ($350) makes it quadruple-charging. Negotiate to consolidate.' },
+        { title:'Property Tax Reassessment Risk', severity:'high', icon:'fa-chart-line',
+          detail:'The tax estimate appears based on the current assessment, not the post-purchase assessment. In many states, property is reassessed at the sale price, which could increase your annual tax bill by 30%–100%+. This affects both closing costs and your ongoing monthly payment.' },
+        { title:'Insurance Estimate Too Low', severity:'medium', icon:'fa-house-crack',
+          detail:'$1,800/year for a $425,000 home is likely below market rate in most areas. Actual premiums of $2,400–$4,500 are common. This means you\'ll need more cash at closing, and your monthly payment will be higher than quoted. Obtain actual insurance quotes before closing.' },
+        { title:'Future-Dated Worksheet', severity:'medium', icon:'fa-calendar-xmark',
+          detail:'The worksheet is dated 04/17/2028 — a future date. This means all figures are projections, not current quotes. Interest rates, insurance costs, and tax rates will all change. Do not rely on this worksheet for budgeting until updated with current figures and the rate is locked.' },
+        { title:'Junk Fees totaling $1,590', severity:'medium', icon:'fa-broom',
+          detail:'Document Prep ($350), Processing ($495), Underwriting ($695), and Courier ($45) are either redundant or obsolete. These are negotiable and many lenders will waive them if asked. That\'s $1,590 that could stay in your pocket.' },
+    ];
+
+    /* ============================================================
+       UTILITIES
+       ============================================================ */
+    function fmt(n) { return '$' + n.toLocaleString('en-US'); }
+
+    function statusBadge(status) {
+        const map = {
+            ok:      { cls:'badge-ok',      label:'Acceptable', icon:'fa-check-circle' },
+            caution: { cls:'badge-caution',  label:'Verify',     icon:'fa-exclamation-circle' },
+            flag:    { cls:'badge-flag',     label:'Flagged',    icon:'fa-flag' },
+            info:    { cls:'badge-info',     label:'Optional',   icon:'fa-info-circle' },
+        };
+        const m = map[status];
+        return `<span class="badge ${m.cls}"><i class="fas ${m.icon}"></i>${m.label}</span>`;
+    }
+
+    /* ============================================================
+       ANALYSIS RENDERING
+       ============================================================ */
+    function renderAnalysis() {
+        const totalClosing = closingCosts.reduce((s,i) => s + i.amount, 0);
+        const totalPrepaid = prepaidItems.reduce((s,i) => s + i.amount, 0);
+        const totalMonthly = monthlyItems.reduce((s,i) => s + i.amount, 0);
+        const junkTotal = closingCosts.filter(i => i.status === 'flag').reduce((s,i) => s + i.amount, 0);
+
+        document.getElementById('summary-cards').innerHTML = `
+            <div class="summary-card fade-in" style="animation-delay:0.05s;">
+                <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);border-radius:14px 14px 0 0;"></div>
+                <p class="text-[10px] sm:text-xs uppercase tracking-wider font-bold mb-1" style="color:var(--text-muted);">Closing Costs</p>
+                <p class="font-display text-xl sm:text-2xl font-bold">${fmt(totalClosing)}</p>
+                <p class="text-[10px] sm:text-xs mt-1" style="color:var(--flag-red);">${fmt(junkTotal)} in junk fees</p>
+            </div>
+            <div class="summary-card fade-in" style="animation-delay:0.1s;">
+                <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--flag-yellow);border-radius:14px 14px 0 0;"></div>
+                <p class="text-[10px] sm:text-xs uppercase tracking-wider font-bold mb-1" style="color:var(--text-muted);">Prepaid Items</p>
+                <p class="font-display text-xl sm:text-2xl font-bold">${fmt(totalPrepaid)}</p>
+                <p class="text-[10px] sm:text-xs mt-1" style="color:var(--flag-yellow);">Likely underestimated</p>
+            </div>
+            <div class="summary-card fade-in" style="animation-delay:0.15s;">
+                <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--flag-red);border-radius:14px 14px 0 0;"></div>
+                <p class="text-[10px] sm:text-xs uppercase tracking-wider font-bold mb-1" style="color:var(--text-muted);">Monthly Payment</p>
+                <p class="font-display text-xl sm:text-2xl font-bold">${fmt(totalMonthly)}</p>
+                <p class="text-[10px] sm:text-xs mt-1" style="color:var(--flag-red);">Realistic: ~${fmt(3400)}+</p>
+            </div>
+            <div class="summary-card fade-in" style="animation-delay:0.2s;">
+                <div style="position:absolute;top:0;left:0;right:0;height:3px;background:var(--flag-green);border-radius:14px 14px 0 0;"></div>
+                <p class="text-[10px] sm:text-xs uppercase tracking-wider font-bold mb-1" style="color:var(--text-muted);">Negotiable Savings</p>
+                <p class="font-display text-xl sm:text-2xl font-bold" style="color:var(--flag-green);">${fmt(junkTotal)}</p>
+                <p class="text-[10px] sm:text-xs mt-1" style="color:var(--text-muted);">From removing junk fees</p>
+            </div>
+        `;
+
+        // Loan Terms
+        const lt = loanTerms;
+        document.getElementById('loan-terms').innerHTML = [
+            { label:'Purchase Price', value:fmt(lt.purchasePrice) },
+            { label:'Down Payment', value:fmt(lt.downPayment)+' ('+lt.downPaymentPct+'%)' },
+            { label:'Loan Amount', value:fmt(lt.loanAmount) },
+            { label:'Interest Rate', value:lt.interestRate+'%', highlight:true },
+            { label:'Loan Term', value:lt.loanTermYears+' Years Fixed' },
+        ].map(t => `
+            <div class="p-3 rounded-xl" style="background:var(--card);border:1.5px solid ${t.highlight ? 'rgba(192,57,43,0.35)' : 'var(--border-light)'};box-shadow:var(--shadow);">
+                <p class="text-[10px] sm:text-xs uppercase tracking-wider font-bold" style="color:var(--text-muted);">${t.label}</p>
+                <p class="font-display text-sm sm:text-lg font-bold mt-0.5" style="color:${t.highlight ? 'var(--flag-red)' : 'var(--text)'};">${t.value}</p>
+            </div>
+        `).join('');
+
+        renderItemsTable('closing-costs-table', closingCosts);
+        renderItemsTable('prepaid-items-table', prepaidItems);
+        renderItemsTable('monthly-table', monthlyItems);
+
+        // Red Flags
+        document.getElementById('red-flags').innerHTML = redFlags.map((f, i) => {
+            const isHigh = f.severity === 'high';
+            const col = isHigh ? 'var(--flag-red)' : 'var(--flag-yellow)';
+            const dimCol = isHigh ? 'var(--flag-red-dim)' : 'var(--flag-yellow-dim)';
+            return `
+            <div class="result-card red-flag-card fade-in" style="animation-delay:${0.05+i*0.04}s; border-left-color:${col};">
+                <div class="flex items-start gap-3">
+                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:${dimCol};">
+                        <i class="fas ${f.icon} text-xs sm:text-sm" style="color:${col};"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h4 class="font-display text-xs sm:text-sm font-semibold">${f.title}</h4>
+                            <span class="badge ${isHigh ? 'badge-flag' : 'badge-caution'}">${isHigh ? 'High' : 'Medium'}</span>
+                        </div>
+                        <p class="text-[11px] sm:text-xs mt-1.5 leading-relaxed" style="color:var(--text-muted);">${f.detail}</p>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+
+        // Reality Check
+        const realisticMonthly = 2687 + 425 + 250 + 200;
+        const diff = realisticMonthly - totalMonthly;
+        const pctCovered = ((totalMonthly/realisticMonthly)*100).toFixed(0);
+        document.getElementById('reality-check').innerHTML = `
+            <div class="result-card" style="border:1.5px solid rgba(192,57,43,0.3); background:linear-gradient(135deg, var(--flag-red-dim), var(--card));">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--flag-red-dim);">
+                        <i class="fas fa-triangle-exclamation text-base sm:text-lg" style="color:var(--flag-red);"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display text-base sm:text-lg font-bold" style="color:var(--flag-red);">Monthly Payment Reality Check</h3>
+                        <p class="text-[10px] sm:text-xs" style="color:var(--text-muted);">What you should actually budget, assuming realistic rates and costs</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-4">
+                    <div class="text-center p-3 sm:p-4 rounded-xl" style="background:var(--bg);">
+                        <p class="text-[9px] sm:text-xs uppercase tracking-wider font-bold" style="color:var(--text-muted);">Lender's Estimate</p>
+                        <p class="font-display text-lg sm:text-2xl font-bold mt-0.5">${fmt(totalMonthly)}</p>
+                        <p class="text-[9px] sm:text-xs" style="color:var(--text-muted);">/month at 5.99%</p>
+                    </div>
+                    <div class="text-center p-3 sm:p-4 rounded-xl" style="background:var(--bg);">
+                        <p class="text-[9px] sm:text-xs uppercase tracking-wider font-bold" style="color:var(--flag-yellow);">Realistic Budget</p>
+                        <p class="font-display text-lg sm:text-2xl font-bold mt-0.5" style="color:var(--flag-yellow);">~${fmt(realisticMonthly)}</p>
+                        <p class="text-[9px] sm:text-xs" style="color:var(--text-muted);">/month at ~7.0%</p>
+                    </div>
+                    <div class="text-center p-3 sm:p-4 rounded-xl" style="background:var(--bg);">
+                        <p class="text-[9px] sm:text-xs uppercase tracking-wider font-bold" style="color:var(--flag-red);">Monthly Gap</p>
+                        <p class="font-display text-lg sm:text-2xl font-bold mt-0.5" style="color:var(--flag-red);">+${fmt(diff)}</p>
+                        <p class="text-[9px] sm:text-xs" style="color:var(--text-muted);">more per month</p>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:${pctCovered}%; background:linear-gradient(to right, var(--accent), var(--flag-red));"></div>
+                </div>
+                <p class="text-[10px] sm:text-xs mt-2 text-center" style="color:var(--text-muted);">
+                    Lender's estimate covers only <strong style="color:var(--text);">${pctCovered}%</strong> of the likely realistic monthly cost
+                </p>
+            </div>
+        `;
+    }
+
+    function renderItemsTable(containerId, items) {
+        const total = items.reduce((s,i) => s + i.amount, 0);
+        document.getElementById(containerId).innerHTML = `
+            <div class="space-y-0.5">
+                ${items.map((item, idx) => `
+                    <div>
+                        <div class="item-row flex items-center gap-2 sm:gap-3 px-2 sm:px-4 py-2.5 sm:py-3"
+                             onclick="toggleNotes('${containerId}-${idx}')"
+                             role="button" tabindex="0" aria-expanded="false" aria-label="Expand notes for ${item.name}">
+                            <i class="fas ${item.icon} w-4 text-center text-[11px] sm:text-xs" style="color:var(--accent);"></i>
+                            <span class="flex-1 text-[11px] sm:text-sm font-medium leading-tight">${item.name}</span>
+                            <span class="hidden sm:inline">${statusBadge(item.status)}</span>
+                            <span class="sm:hidden"><i class="fas ${item.status==='ok'?'fa-check-circle':item.status==='caution'?'fa-exclamation-circle':item.status==='flag'?'fa-flag':'fa-info-circle'}" style="color:${item.status==='ok'?'var(--flag-green)':item.status==='caution'?'var(--flag-yellow)':item.status==='flag'?'var(--flag-red)':'var(--flag-blue)'}; font-size:12px;"></i></span>
+                            <span class="font-display font-semibold text-[11px] sm:text-sm tabular-nums" style="min-width:60px sm:min-width:80px;text-align:right;">${fmt(item.amount)}</span>
+                            <i class="fas fa-chevron-down text-[10px] chevron-icon" style="color:var(--text-muted);" id="chevron-${containerId}-${idx}"></i>
+                        </div>
+                        <div class="notes-panel mx-2 sm:mx-4 rounded-lg" style="background:var(--card-alt);" id="notes-${containerId}-${idx}">
+                            <div class="px-3 sm:px-4 py-3">
+                                <span class="sm:hidden mb-1.5 inline-block">${statusBadge(item.status)}</span>
+                                <p class="text-[11px] sm:text-xs leading-relaxed" style="color:var(--text-muted);">${item.notes}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+                <div class="flex items-center justify-between px-3 sm:px-4 py-3 rounded-xl mt-2" style="background:var(--card);border:1px solid var(--border-light);box-shadow:var(--shadow);">
+                    <span class="font-display text-xs sm:text-sm font-semibold" style="color:var(--accent);">Total</span>
+                    <span class="font-display text-base sm:text-lg font-bold tabular-nums">${fmt(total)}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    function toggleNotes(id) {
+        const panel = document.getElementById('notes-' + id);
+        const chevron = document.getElementById('chevron-' + id);
+        const isOpen = panel.classList.contains('open');
+        panel.classList.toggle('open');
+        chevron.classList.toggle('rotated', !isOpen);
+    }
+
+    /* ============================================================
+       CALCULATOR
+       ============================================================ */
+    let selectedTerm = 30;
+
+    function selectTerm(years) {
+        selectedTerm = years;
+        document.querySelectorAll('.term-btn').forEach(btn => {
+            const isActive = parseInt(btn.dataset.term) === years;
+            btn.classList.toggle('active', isActive);
+        });
+        calculate();
+    }
+
+    function calcMonthlyPI(principal, annualRate, termYears) {
+        if (principal <= 0 || annualRate <= 0 || termYears <= 0) return 0;
+        const r = annualRate / 100 / 12;
+        const n = termYears * 12;
+        return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    }
+
+    function calculate() {
+        const price = parseFloat(document.getElementById('calc-price').value) || 0;
+        const downPct = parseFloat(document.getElementById('calc-down-pct').value) || 0;
+        const rate = parseFloat(document.getElementById('calc-rate').value) || 0;
+        const taxRate = parseFloat(document.getElementById('calc-tax-rate').value) || 0;
+        const insurance = parseFloat(document.getElementById('calc-insurance').value) || 0;
+        const pmiRate = parseFloat(document.getElementById('calc-pmi-rate').value) || 0;
+
+        const downAmt = price * downPct / 100;
+        const loanAmt = Math.max(0, price - downAmt);
+
+        document.getElementById('calc-down-amt').textContent = fmt(Math.round(downAmt));
+        document.getElementById('calc-loan-amt').textContent = fmt(Math.round(loanAmt));
+
+        const pi = calcMonthlyPI(loanAmt, rate, selectedTerm);
+        const monthlyTax = price * taxRate / 100 / 12;
+        const monthlyIns = insurance / 12;
+        const needsPMI = downPct < 20;
+        const monthlyPMI = needsPMI ? loanAmt * pmiRate / 100 / 12 : 0;
+        const totalMonthly = pi + monthlyTax + monthlyIns + monthlyPMI;
+
+        document.getElementById('calc-monthly-total').textContent = fmt(Math.round(totalMonthly));
+
+        const segments = [
+            { label:'Principal & Interest', value:pi, color:'#A67C2E' },
+            { label:'Property Tax', value:monthlyTax, color:'#2471A3' },
+            { label:'Insurance', value:monthlyIns, color:'#1D8348' },
+        ];
+        if (needsPMI) segments.push({ label:'PMI', value:monthlyPMI, color:'#C0392B' });
+
+        document.getElementById('calc-breakdown').innerHTML = segments.map(s => {
+            const pct = totalMonthly > 0 ? (s.value / totalMonthly * 100) : 0;
+            return `
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-sm flex-shrink-0" style="background:${s.color};"></div>
+                    <span class="text-[10px] sm:text-xs flex-1" style="color:var(--text-muted);">${s.label}</span>
+                    <span class="text-[10px] sm:text-xs font-bold tabular-nums" style="min-width:55px;text-align:right;">${fmt(Math.round(s.value))}</span>
+                    <div class="w-14 sm:w-20 h-2 rounded-full overflow-hidden" style="background:var(--bg-alt);">
+                        <div class="h-full rounded-full" style="width:${pct}%;background:${s.color};transition:width 0.3s;"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        const totalPayments = pi * selectedTerm * 12;
+        const totalInterest = totalPayments - loanAmt;
+
+        document.getElementById('calc-total-interest').textContent = fmt(Math.round(totalInterest));
+        document.getElementById('calc-total-cost').textContent = fmt(Math.round(totalPayments + (monthlyTax + monthlyIns + monthlyPMI) * selectedTerm * 12));
+
+        drawDonut(segments, totalMonthly);
+        renderRateComparison(price, downPct, loanAmt, selectedTerm, monthlyTax, monthlyIns, monthlyPMI);
+    }
+
+    function drawDonut(segments, total) {
+        const canvas = document.getElementById('donut-chart');
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+        const size = 200;
+        canvas.width = size * dpr;
+        canvas.height = size * dpr;
+        canvas.style.width = size + 'px';
+        canvas.style.height = size + 'px';
+        ctx.scale(dpr, dpr);
+        ctx.clearRect(0, 0, size, size);
+
+        const cx = size / 2, cy = size / 2;
+        const outerR = 88, innerR = 56;
+        let startAngle = -Math.PI / 2;
+
+        segments.forEach(s => {
+            const sliceAngle = total > 0 ? (s.value / total) * Math.PI * 2 : 0;
+            if (sliceAngle < 0.001) return;
+            const endAngle = startAngle + sliceAngle;
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, outerR, startAngle, endAngle);
+            ctx.arc(cx, cy, innerR, endAngle, startAngle, true);
+            ctx.closePath();
+            ctx.fillStyle = s.color;
+            ctx.fill();
+
+            // Thin gap between slices
+            ctx.beginPath();
+            ctx.arc(cx, cy, outerR, endAngle - 0.008, endAngle + 0.008);
+            ctx.arc(cx, cy, innerR, endAngle + 0.008, endAngle - 0.008, true);
+            ctx.closePath();
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fill();
+
+            startAngle = endAngle;
+        });
+
+        // Center text
+        ctx.fillStyle = '#1A1A1A';
+        ctx.font = '700 20px "Space Grotesk", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(fmt(Math.round(total)), cx, cy - 7);
+        ctx.fillStyle = '#7A7A7A';
+        ctx.font = '600 10px "Space Grotesk", sans-serif';
+        ctx.fillText('PER MONTH', cx, cy + 10);
+
+        document.getElementById('chart-legend').innerHTML = segments.map(s =>
+            `<div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-sm" style="background:${s.color};"></div><span style="color:var(--text-muted);">${s.label}</span></div>`
+        ).join('');
+    }
+
+    function renderRateComparison(price, downPct, loanAmt, term, monthlyTax, monthlyIns, monthlyPMI) {
+        const rates = [5.99, 6.5, 6.75, 7.0, 7.25, 7.5];
+        const currentRate = parseFloat(document.getElementById('calc-rate').value) || 5.99;
+        const maxPI = calcMonthlyPI(loanAmt, rates[rates.length - 1], term);
+
+        document.getElementById('rate-comparison').innerHTML = rates.map(r => {
+            const pi = calcMonthlyPI(loanAmt, r, term);
+            const total = pi + monthlyTax + monthlyIns + monthlyPMI;
+            const isCurrent = Math.abs(r - currentRate) < 0.01;
+            const barW = maxPI > 0 ? Math.max(15, (pi / maxPI) * 100) : 0;
+            return `
+                <div class="flex items-center gap-2 sm:gap-3 py-1.5 ${isCurrent ? 'px-2 sm:px-3 -mx-2 sm:-mx-3 rounded-lg' : ''}" style="${isCurrent ? 'background:var(--accent-dim2);' : ''}">
+                    <span class="font-display text-[11px] sm:text-sm font-semibold tabular-nums" style="min-width:42px;${isCurrent ? 'color:var(--accent);' : 'color:var(--text-secondary);'}">${r.toFixed(2)}%</span>
+                    <div class="flex-1 h-7 rounded-lg overflow-hidden" style="background:var(--bg-alt);">
+                        <div class="h-full rounded-lg flex items-center pl-2 sm:pl-3" style="width:${barW}%;background:${isCurrent ? 'var(--accent)' : 'var(--border)'};transition:width 0.4s;">
+                            <span class="text-[10px] sm:text-xs font-bold tabular-nums whitespace-nowrap" style="color:${isCurrent ? '#FFFFFF' : 'var(--text-secondary)'};">${fmt(Math.round(total))}/mo</span>
+                        </div>
+                    </div>
+                    ${isCurrent ? '<span class="badge badge-ok text-[9px] sm:text-[10px]">Your Rate</span>' : ''}
+                </div>
+            `;
+        }).join('');
+    }
+
+    /* ============================================================
+       TAB NAVIGATION
+       ============================================================ */
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('tab-' + tabName).classList.add('active');
+
+        const analysisSection = document.getElementById('section-analysis');
+        const calcSection = document.getElementById('section-calculator');
+
+        analysisSection.classList.toggle('hidden', tabName !== 'analysis');
+        calcSection.classList.toggle('hidden', tabName !== 'calculator');
+
+        if (tabName === 'calculator') {
+            setTimeout(() => calculate(), 50);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ============================================================
+       KEYBOARD & TOUCH
+       ============================================================ */
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            if (e.target.classList.contains('item-row')) {
+                e.preventDefault();
+                e.target.click();
+            }
+        }
+    });
+
+    /* ============================================================
+       INIT
+       ============================================================ */
+    document.addEventListener('DOMContentLoaded', () => {
+        renderAnalysis();
+        calculate();
+    });
+    </script>
+</body>
+</html>
