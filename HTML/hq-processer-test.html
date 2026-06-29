@@ -1,156 +1,491 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0d1117">
+<meta name="theme-color" content="#f5f7fb">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Hermes">
 <title>Hermes · Command Center</title>
 <style>
   :root {
-    --bg: #0d1117; --panel: #161b22; --panel-2: #1c2330; --border: #2a313c;
-    --text: #e6edf3; --muted: #8b949e; --accent: #2f81f7; --teal: #2dd4bf;
-    --green: #3fb950; --amber: #d29922; --violet: #a371f7;
+    --bg: #f5f7fb;
+    --bg-2: #eef2f9;
+    --panel: #ffffff;
+    --panel-2: #f8fafc;
+    --border: #e4e9f0;
+    --border-strong: #d3dae6;
+    --text: #0f172a;
+    --text-2: #334155;
+    --muted: #64748b;
+    --muted-2: #94a3b8;
+    --accent: #2563eb;
+    --accent-soft: #eff4ff;
+    --teal: #0d9488;
+    --teal-soft: #ecfdf8;
+    --green: #16a34a;
+    --green-soft: #ecfdf3;
+    --amber: #d97706;
+    --amber-soft: #fff7ed;
+    --violet: #7c3aed;
+    --violet-soft: #f5f0ff;
+    --rose: #e11d48;
+    --rose-soft: #fff1f3;
+    --indigo: #4f46e5;
+    --indigo-soft: #eef0ff;
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.04);
+    --shadow-lg: 0 10px 30px rgba(15, 23, 42, 0.08), 0 4px 12px rgba(15, 23, 42, 0.05);
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; }
   body {
-    background: radial-gradient(120% 60% at 50% 0%, #16243b 0%, var(--bg) 55%) no-repeat;
+    background:
+      radial-gradient(140% 50% at 50% 0%, #e8eef9 0%, transparent 60%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
     background-attachment: fixed;
-    color: var(--text); font-family: var(--sans); line-height: 1.5;
-    padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 40px);
-    max-width: 560px; margin: 0 auto; min-height: 100vh;
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.5;
+    padding: env(safe-area-inset-top) 20px calc(env(safe-area-inset-bottom) + 40px);
+    max-width: 980px; /* Wider max-width to accommodate the grid */
+    margin: 0 auto;
+    min-height: 100vh;
     -webkit-text-size-adjust: 100%;
   }
-  header { text-align: center; padding: 28px 8px 18px; }
-  .logo { font-size: 38px; line-height: 1; }
-  h1 { font-size: 22px; margin: 10px 0 2px; letter-spacing: -0.3px; }
-  .tagline { color: var(--muted); font-size: 13.5px; }
-  .status { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12.5px; color: var(--muted);
-            background: var(--panel); border: 1px solid var(--border); padding: 5px 12px; border-radius: 999px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
-  .section-label { font-size: 11.5px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted);
-                   margin: 26px 4px 10px; font-weight: 600; }
-  /* Primary action buttons */
-  a.btn {
-    display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--text);
-    background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
-    padding: 18px 18px; margin-bottom: 12px; transition: transform .08s ease, background .15s ease;
-    min-height: 68px;
+
+  /* ---------- Hero / Header ---------- */
+  .hero {
+    position: relative;
+    margin: 18px 0 24px;
+    padding: 28px 28px 24px;
+    border-radius: 24px;
+    background:
+      radial-gradient(120% 120% at 0% 0%, #dbe7ff 0%, transparent 55%),
+      radial-gradient(120% 120% at 100% 0%, #e7dbff 0%, transparent 55%),
+      linear-gradient(135deg, #ffffff 0%, #f4f7fd 100%);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
   }
-  a.btn:active { transform: scale(0.98); background: var(--panel-2); }
-  a.btn .ico { font-size: 26px; width: 46px; height: 46px; flex: 0 0 46px; display: flex; align-items: center; justify-content: center;
-               border-radius: 12px; background: var(--panel-2); }
-  a.btn .txt { flex: 1; min-width: 0; }
-  a.btn .title { font-size: 16.5px; font-weight: 650; }
-  a.btn .sub { font-size: 12.5px; color: var(--muted); font-family: var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  a.btn .chev { color: var(--muted); font-size: 20px; flex: 0 0 auto; }
-  a.btn.primary { border-color: #2b5fb0; background: linear-gradient(135deg, #18335c, #14233a); }
-  a.btn.primary .ico { background: #1d4480; }
-  a.btn.teal .ico { color: var(--teal); }
-  a.btn.violet .ico { color: var(--violet); }
-  a.btn.amber .ico { color: var(--amber); }
-  /* Doc grid */
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  a.card {
-    text-decoration: none; color: var(--text); background: var(--panel); border: 1px solid var(--border);
-    border-radius: 14px; padding: 16px 14px; transition: transform .08s ease, background .15s ease; min-height: 92px;
+  .hero::after {
+    content: "";
+    position: absolute; right: -60px; top: -60px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.10), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .hero-top { display: flex; align-items: center; gap: 18px; }
+  .logo-badge {
+    width: 64px; height: 64px; flex: 0 0 64px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+  }
+  .hero h1 {
+    font-size: 26px; margin: 0; letter-spacing: -0.5px;
+    font-weight: 750;
+  }
+  .hero .tagline { color: var(--muted); font-size: 14px; margin-top: 4px; }
+  .status {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 20px;
+    font-size: 13px; color: var(--text-2); font-weight: 500;
+    background: rgba(255,255,255,0.8);
+    border: 1px solid var(--border);
+    padding: 7px 15px; border-radius: 999px;
+    backdrop-filter: blur(8px);
+  }
+  .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.18);
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.18); }
+    50% { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0.08); }
+  }
+
+  /* ---------- Section labels ---------- */
+  .section-label {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 1.4px;
+    color: var(--muted); margin: 32px 4px 16px; font-weight: 700;
+  }
+  .section-label::after {
+    content: ""; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+  }
+
+  /* ---------- Service Grid & Cards ---------- */
+  .svc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  a.svc-card {
+    display: flex; flex-direction: column; 
+    text-decoration: none; color: var(--text);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    transition: transform .12s ease, box-shadow .15s ease, border-color .15s ease;
+    min-height: 160px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+  }
+  a.svc-card:active { transform: scale(0.98); }
+  a.svc-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); }
+  
+  .svc-icon {
+    width: 56px; height: 56px; 
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 16px;
+    background: var(--panel-2);
+    font-size: 28px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .svc-icon.logo-img { background: #fff; box-shadow: inset 0 0 0 1px var(--border); padding: 10px; }
+  .svc-icon.logo-img img { width: 100%; height: 100%; object-fit: contain; }
+  
+  .svc-title { font-size: 17px; font-weight: 650; color: var(--text); display: flex; align-items: center; }
+  .svc-sub {
+    font-size: 13px; color: var(--muted); font-family: var(--mono);
+    margin-top: 4px; word-break: break-all;
+  }
+  .tag-new {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.6px;
+    background: var(--rose); color: #fff;
+    padding: 3px 8px; border-radius: 999px; margin-left: 10px;
+    vertical-align: middle;
+  }
+
+  /* Color variants */
+  a.svc-card.primary { background: linear-gradient(135deg, #ffffff 0%, #f0f5ff 100%); border-color: #c7d8f5; }
+  a.svc-card.primary .svc-icon { background: var(--accent-soft); color: var(--accent); }
+  a.svc-card.teal .svc-icon { background: var(--teal-soft); color: var(--teal); }
+  a.svc-card.violet .svc-icon { background: var(--violet-soft); color: var(--violet); }
+  a.svc-card.rose .svc-icon { background: var(--rose-soft); color: var(--rose); }
+  a.svc-card.indigo .svc-icon { background: var(--indigo-soft); color: var(--indigo); }
+  a.svc-card.green .svc-icon { background: var(--green-soft); color: var(--green); }
+
+  /* ---------- Utility Grid (Path & Password) ---------- */
+  .util-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  /* Path / upload card */
+  .path-card {
+    background: linear-gradient(135deg, #fffaf0 0%, #fff7ed 100%);
+    border: 1px solid #fde4c4;
+    border-radius: 20px;
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column;
+  }
+  .path-card .head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .path-card .head .ico {
+    width: 44px; height: 44px; flex: 0 0 44px;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff; border-radius: 12px; font-size: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .path-card .head .ttl { font-size: 15px; font-weight: 700; color: var(--text); }
+  .path-card .head .ttl small { display: block; font-weight: 500; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .path-row {
+    display: flex; align-items: stretch; gap: 8px;
+    background: #fff; border: 1px solid #f4d9b0; border-radius: 12px;
+    padding: 4px 4px 4px 14px;
+    margin-top: auto;
+  }
+  .path-row code {
+    flex: 1; font-family: var(--mono); font-size: 12.5px; color: var(--text-2);
+    padding: 12px 4px; word-break: break-all; line-height: 1.4;
+    align-self: center;
+  }
+  .copy-btn {
+    flex: 0 0 auto; border: none; background: var(--amber); color: #fff;
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    padding: 0 16px; border-radius: 9px; cursor: pointer;
+    transition: background .15s ease, transform .1s ease;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .copy-btn:active { transform: scale(0.95); }
+  .copy-btn:hover { background: #b45309; }
+  .copy-btn.copied { background: var(--green); }
+
+  /* Password chip */
+  .pwd-card {
+    background: linear-gradient(135deg, #f5f0ff 0%, #eef0ff 100%);
+    border: 1px solid #ddd6f5;
+    border-radius: 20px;
+    padding: 18px;
+    box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column;
+  }
+  .pwd-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .pwd-head .ico {
+    width: 44px; height: 44px; flex: 0 0 44px;
+    display: flex; align-items: center; justify-content: center;
+    background: #fff; border-radius: 12px; font-size: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .pwd-head .lbl { font-size: 15px; font-weight: 700; color: var(--text); }
+  .pwd-head .lbl small { display: block; font-weight: 500; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .pwd-controls { display: flex; gap: 10px; margin-top: auto; }
+  .pwd-val {
+    flex: 1; background: #fff; border: 1px solid #ddd6f5; border-radius: 12px;
+    padding: 12px 14px; font-family: var(--mono); font-size: 13.5px; color: var(--text); font-weight: 600;
+    display: flex; align-items: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+  .pwd-val.masked { letter-spacing: 3px; }
+  .reveal-toggle {
+    flex: 0 0 auto; background: #fff; border: 1px solid var(--border);
+    border-radius: 12px; padding: 0 16px; font-size: 13px; font-weight: 600;
+    color: var(--violet); cursor: pointer; font-family: var(--sans);
+    transition: all .15s ease;
+  }
+  .reveal-toggle:hover { background: var(--violet); color: #fff; border-color: var(--violet); }
+
+  /* ---------- Docs grid ---------- */
+  .docs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  a.doc-card {
+    text-decoration: none; color: var(--text);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 18px;
+    transition: transform .12s ease, box-shadow .15s ease, border-color .15s ease;
+    min-height: 120px;
     display: flex; flex-direction: column; justify-content: space-between;
+    box-shadow: var(--shadow-sm);
   }
-  a.card:active { transform: scale(0.97); background: var(--panel-2); }
-  a.card .cico { font-size: 22px; }
-  a.card .ctitle { font-size: 14px; font-weight: 600; margin-top: 8px; }
-  a.card .csub { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
-  /* Quick reference */
-  details { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; margin-top: 12px; overflow: hidden; }
-  summary { padding: 16px 18px; font-size: 15px; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  a.doc-card:active { transform: scale(0.98); }
+  a.doc-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); }
+  .doc-ico {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: var(--panel-2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 14px;
+  }
+  .doc-title { font-size: 14.5px; font-weight: 650; }
+  .doc-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* ---------- Quick reference ---------- */
+  details {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    margin-top: 4px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  summary {
+    padding: 18px 22px; font-size: 15px; font-weight: 650; cursor: pointer;
+    list-style: none; display: flex; justify-content: space-between; align-items: center;
+    color: var(--text);
+  }
   summary::-webkit-details-marker { display: none; }
-  summary .arrow { color: var(--muted); transition: transform .2s ease; }
-  details[open] summary .arrow { transform: rotate(90deg); }
-  .ref { padding: 0 18px 16px; }
-  .ref-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid var(--border); font-size: 13px; }
-  .ref-row .k { color: var(--muted); flex: 0 0 auto; }
-  .ref-row .v { font-family: var(--mono); font-size: 12px; text-align: right; word-break: break-all; }
-  footer { text-align: center; color: var(--muted); font-size: 11.5px; margin-top: 30px; line-height: 1.6; }
-  .tip { background: var(--panel); border: 1px dashed var(--border); border-radius: 12px; padding: 12px 14px; font-size: 12.5px; color: var(--muted); margin-top: 22px; }
+  summary .arrow {
+    color: var(--muted); transition: transform .2s ease;
+    width: 28px; height: 28px; border-radius: 9px;
+    background: var(--panel-2); display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+  details[open] summary .arrow { transform: rotate(90deg); background: var(--accent-soft); color: var(--accent); }
+  .ref { padding: 0 22px 18px; }
+  .ref-row {
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 12px 0; border-top: 1px solid var(--border); font-size: 13.5px;
+  }
+  .ref-row .k { color: var(--muted); flex: 0 0 auto; font-weight: 500; }
+  .ref-row .v {
+    font-family: var(--mono); font-size: 12px; text-align: right;
+    word-break: break-all; color: var(--text-2);
+  }
+
+  /* ---------- Tip / footer / github ---------- */
+  .tip {
+    background: linear-gradient(135deg, #eff4ff 0%, #f5f0ff 100%);
+    border: 1px solid #d6e0f7;
+    border-radius: 18px;
+    padding: 16px 20px;
+    font-size: 13px; color: var(--text-2);
+    margin-top: 24px; line-height: 1.55;
+    box-shadow: var(--shadow-sm);
+  }
   .tip b { color: var(--text); }
+
+  .gh-edit {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin: 20px auto 12px; 
+    font-size: 12.5px; color: var(--muted); text-decoration: none;
+    padding: 8px 16px; border: 1px solid var(--border); border-radius: 999px;
+    background: var(--panel); transition: all .15s ease;
+  }
+  .gh-edit:hover { color: var(--text); border-color: var(--border-strong); box-shadow: var(--shadow-sm); }
+  .gh-edit svg { width: 15px; height: 15px; fill: currentColor; }
+
+  footer {
+    text-align: center; color: var(--muted-2);
+    font-size: 12px; margin-top: 14px; line-height: 1.65;
+  }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--text); color: #fff; padding: 12px 20px; border-radius: 12px;
+    font-size: 13.5px; font-weight: 500; box-shadow: var(--shadow-lg);
+    opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (prefers-color-scheme: dark) {
+    :root { color-scheme: light; }
+  }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">⚕</div>
-  <h1>Hermes Command Center</h1>
-  <div class="tagline">Net-lease automation · hermes-vnic</div>
-  <div class="status"><span class="dot"></span> Live services</div>
-</header>
+<!-- ============== HERO ============== -->
+<section class="hero">
+  <div class="hero-top">
+    <div class="logo-badge">⚕</div>
+    <div>
+      <h1>Hermes Command Center</h1>
+      <div class="tagline">Net-lease automation · hermes-vnic</div>
+    </div>
+  </div>
+  <div class="status"><span class="dot"></span> All services live</div>
+</section>
 
+<!-- ============== LIVE SERVICES ============== -->
 <div class="section-label">Live Services</div>
+<div class="svc-grid">
+  
+  <a class="svc-card primary" href="https://hermes.nnn-cre.com" target="_blank" rel="noopener">
+    <div class="svc-icon">🤖</div>
+    <div class="svc-title">Hermes Agent</div>
+    <div class="svc-sub">hermes.nnn-cre.com</div>
+  </a>
 
-<a class="btn primary" href="https://hermes.nnn-cre.com" target="_blank" rel="noopener">
-  <span class="ico">🤖</span>
-  <span class="txt">
-    <div class="title">Hermes Agent</div>
-    <div class="sub">hermes.nnn-cre.com</div>
-  </span>
-  <span class="chev">›</span>
-</a>
+  <a class="svc-card indigo" href="https://webui.nnn-cre.com/" target="_blank" rel="noopener">
+    <div class="svc-icon">🖥️</div>
+    <div class="svc-title">Hermes WebUI<span class="tag-new">NEW</span></div>
+    <div class="svc-sub">webui.nnn-cre.com</div>
+  </a>
 
-<a class="btn teal" href="http://129.159.38.178:8000/" target="_blank" rel="noopener">
-  <span class="ico">🛠️</span>
-  <span class="txt">
-    <div class="title">Coolify</div>
-    <div class="sub">129.159.38.178:8000</div>
-  </span>
-  <span class="chev">›</span>
-</a>
+  <a class="svc-card rose" href="https://hermes.nnn-cre.com/files" target="_blank" rel="noopener">
+    <div class="svc-icon">📁</div>
+    <div class="svc-title">File Manager<span class="tag-new">NEW</span></div>
+    <div class="svc-sub">hermes.nnn-cre.com/files</div>
+  </a>
 
-<a class="btn violet" href="https://portal.nousresearch.com" target="_blank" rel="noopener">
-  <span class="ico">🔑</span>
-  <span class="txt">
-    <div class="title">Nous Portal</div>
-    <div class="sub">portal.nousresearch.com</div>
-  </span>
-  <span class="chev">›</span>
-</a>
+  <a class="svc-card green" href="https://search.nnn-cre.com/" target="_blank" rel="noopener">
+    <div class="svc-icon">🏢</div>
+    <div class="svc-title">SOS Search & CRM<span class="tag-new">NEW</span></div>
+    <div class="svc-sub">search.nnn-cre.com</div>
+  </a>
 
+  <a class="svc-card teal" href="http://129.159.38.178:8000/" target="_blank" rel="noopener">
+    <div class="svc-icon logo-img">
+      <img src="https://docs.hetzner.com/static/1dbc8e5220638f7193ef9f5a24c2eb5b/0b533/coolify-logo.png" alt="Coolify">
+    </div>
+    <div class="svc-title">Coolify</div>
+    <div class="svc-sub">129.159.38.178:8000</div>
+  </a>
+
+  <a class="svc-card violet" href="https://portal.nousresearch.com" target="_blank" rel="noopener">
+    <div class="svc-icon logo-img" style="padding: 8px;">
+      <img src="https://portal.nousresearch.com/logo-portal_horizontal-teal.svg" alt="Nous Portal">
+    </div>
+    <div class="svc-title">Nous Portal</div>
+    <div class="svc-sub">portal.nousresearch.com</div>
+  </a>
+
+</div>
+
+<!-- ============== UTILITIES (PATH & PASSWORD) ============== -->
+<div class="section-label">Access & Uploads</div>
+<div class="util-grid">
+  
+  <!-- Upload Path -->
+  <div class="path-card">
+    <div class="head">
+      <div class="ico">📤</div>
+      <div class="ttl">Search-Tool Index File
+        <small>Local source — upload via File Manager</small>
+      </div>
+    </div>
+    <div class="path-row">
+      <code id="indexPath">F:\Misc\hermes-oracle\CRM-Backbone\search-tool</code>
+      <button class="copy-btn" id="copyPath">⧉ Copy</button>
+    </div>
+  </div>
+
+  <!-- WebUI Password -->
+  <div class="pwd-card">
+    <div class="pwd-head">
+      <div class="ico">🔐</div>
+      <div class="lbl">WebUI Password
+        <small>Tap show, then tap again to copy</small>
+      </div>
+    </div>
+    <div class="pwd-controls">
+      <div class="pwd-val masked" id="pwdVal">••••••••••••••••••••••••••••••</div>
+      <button class="reveal-toggle" id="revealBtn">Show</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============== DOCS ============== -->
 <div class="section-label">Docs &amp; References</div>
-<div class="grid">
-  <a class="card" href="./hermes-agent-config.html">
-    <span class="cico">⚙️</span>
+<div class="docs-grid">
+  <a class="doc-card" href="./hermes-agent-config.html">
+    <div class="doc-ico">⚙️</div>
     <div>
-      <div class="ctitle">Config &amp; Ops</div>
-      <div class="csub">How this instance is set up</div>
+      <div class="doc-title">Config &amp; Ops</div>
+      <div class="doc-sub">How this instance is set up</div>
     </div>
   </a>
-  <a class="card" href="./hermes-automation-roadmap.html">
-    <span class="cico">🗺️</span>
+  <a class="doc-card" href="./hermes-automation-roadmap.html">
+    <div class="doc-ico">🗺️</div>
     <div>
-      <div class="ctitle">Automation Roadmap</div>
-      <div class="csub">Browser, data, outreach plan</div>
+      <div class="doc-title">Automation Roadmap</div>
+      <div class="doc-sub">Browser, data, outreach plan</div>
     </div>
   </a>
-  <a class="card" href="./hermes-oracle-guide.html">
-    <span class="cico">📘</span>
+  <a class="doc-card" href="./hermes-oracle-guide.html">
+    <div class="doc-ico">📘</div>
     <div>
-      <div class="ctitle">Setup Guide</div>
-      <div class="csub">From-scratch build</div>
+      <div class="doc-title">Setup Guide</div>
+      <div class="doc-sub">From-scratch build</div>
     </div>
   </a>
-  <a class="card" href="./hermes-oracle-cloud-guide.html">
-    <span class="cico">☁️</span>
+  <a class="doc-card" href="./hermes-oracle-cloud-guide.html">
+    <div class="doc-ico">☁️</div>
     <div>
-      <div class="ctitle">Cloud Guide</div>
-      <div class="csub">Oracle Cloud notes</div>
+      <div class="doc-title">Cloud Guide</div>
+      <div class="doc-sub">Oracle Cloud notes</div>
     </div>
   </a>
 </div>
 
+<!-- ============== QUICK REFERENCE ============== -->
 <div class="section-label">Quick Reference</div>
 <details>
   <summary>Server &amp; access details <span class="arrow">›</span></summary>
@@ -158,6 +493,9 @@
     <div class="ref-row"><span class="k">Public IP</span><span class="v">129.159.38.178</span></div>
     <div class="ref-row"><span class="k">Hostname</span><span class="v">hermes-vnic</span></div>
     <div class="ref-row"><span class="k">Dashboard</span><span class="v">hermes.nnn-cre.com</span></div>
+    <div class="ref-row"><span class="k">WebUI</span><span class="v">webui.nnn-cre.com</span></div>
+    <div class="ref-row"><span class="k">Files</span><span class="v">hermes.nnn-cre.com/files</span></div>
+    <div class="ref-row"><span class="k">SOS Search</span><span class="v">search.nnn-cre.com</span></div>
     <div class="ref-row"><span class="k">Dashboard port</span><span class="v">9119</span></div>
     <div class="ref-row"><span class="k">Coolify port</span><span class="v">8000</span></div>
     <div class="ref-row"><span class="k">Hermes ver.</span><span class="v">v0.16.0</span></div>
@@ -165,18 +503,92 @@
     <div class="ref-row"><span class="k">Config</span><span class="v">/opt/data/config.yaml</span></div>
     <div class="ref-row"><span class="k">Env file</span><span class="v">/opt/data/.env</span></div>
     <div class="ref-row"><span class="k">Themes dir</span><span class="v">/opt/data/dashboard-themes/</span></div>
+    <div class="ref-row"><span class="k">Local index</span><span class="v">F:\Misc\hermes-oracle\CRM-Backbone\search-tool</span></div>
     <div class="ref-row"><span class="k">SSH</span><span class="v">ssh -i ~/.ssh/hermes-agent.key ubuntu@129.159.38.178</span></div>
   </div>
 </details>
 
+<!-- ============== TIP ============== -->
 <div class="tip">
-  <b>Add to Home Screen</b> — open this page in Safari/Chrome, tap Share → "Add to Home Screen" for a one-tap app icon. The Docs cards open when this folder is hosted together (or stored locally on your phone).
+  <b>Workflow tip:</b> After editing the search-tool index on your machine, copy the path above → open <b>File Manager</b> → re-upload the index file. Use the <b>Show</b> button on the WebUI password chip to reveal credentials when signing in.
+</div>
+
+<!-- ============== GITHUB EDIT LINK ============== -->
+<div style="text-align: center;">
+  <a class="gh-edit" href="https://github.com/sgfroerer/gmaps-grist-widgets/blob/master/HTML/hq-processer-test.html" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+    Edit Dashboard on GitHub
+  </a>
 </div>
 
 <footer>
   Hermes Command Center · phone homepage<br>
   Live buttons work anywhere · doc links resolve when files are co-located
 </footer>
+
+<!-- ============== TOAST ============== -->
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<script>
+  // ---- Copy path to clipboard ----
+  const copyBtn = document.getElementById('copyPath');
+  const indexPath = document.getElementById('indexPath');
+  const toast = document.getElementById('toast');
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+
+  copyBtn.addEventListener('click', async () => {
+    const text = indexPath.textContent.trim();
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (_) {}
+      document.body.removeChild(ta);
+    }
+    copyBtn.classList.add('copied');
+    copyBtn.innerHTML = '✓ Copied';
+    showToast('Index path copied to clipboard');
+    setTimeout(() => {
+      copyBtn.classList.remove('copied');
+      copyBtn.innerHTML = '⧉ Copy';
+    }, 1800);
+  });
+
+  // ---- Reveal / copy password ----
+  const PWD = 'gaanTr5kg96cjMgoAufJ7bmbtWRHxDR7';
+  const pwdVal = document.getElementById('pwdVal');
+  const revealBtn = document.getElementById('revealBtn');
+  let revealed = false;
+
+  revealBtn.addEventListener('click', async (e) => {
+    if (!revealed) {
+      pwdVal.textContent = PWD;
+      pwdVal.classList.remove('masked');
+      revealBtn.textContent = 'Copy';
+      revealed = true;
+    } else {
+      try {
+        await navigator.clipboard.writeText(PWD);
+      } catch (_) {
+        const ta = document.createElement('textarea');
+        ta.value = PWD; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch (_) {}
+        document.body.removeChild(ta);
+      }
+      showToast('Password copied to clipboard');
+      revealBtn.textContent = '✓';
+      setTimeout(() => { revealBtn.textContent = 'Copy'; }, 1500);
+    }
+  });
+</script>
 
 </body>
 </html>
