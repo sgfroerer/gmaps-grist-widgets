@@ -155,8 +155,9 @@
     margin-bottom: 16px;
     overflow: hidden;
   }
-  .svc-icon.logo-img { background: #fff; box-shadow: inset 0 0 0 1px var(--border); padding: 10px; }
+  .svc-icon.logo-img { background: #fff; box-shadow: inset 0 0 0 1px var(--border); padding: 8px; }
   .svc-icon.logo-img img { width: 100%; height: 100%; object-fit: contain; }
+  .svc-icon.logo-img.round img { border-radius: 50%; } /* For circular logos like Twenty CRM */
   
   .svc-title { font-size: 17px; font-weight: 650; color: var(--text); display: flex; align-items: center; }
   .svc-sub {
@@ -179,10 +180,10 @@
   a.svc-card.indigo .svc-icon { background: var(--indigo-soft); color: var(--indigo); }
   a.svc-card.green .svc-icon { background: var(--green-soft); color: var(--green); }
 
-  /* ---------- Utility Grid (Path & Password) ---------- */
+  /* ---------- Utility Grid (Path) ---------- */
   .util-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: 1fr;
     gap: 16px;
   }
 
@@ -225,39 +226,6 @@
   .copy-btn:active { transform: scale(0.95); }
   .copy-btn:hover { background: #b45309; }
   .copy-btn.copied { background: var(--green); }
-
-  /* Password chip */
-  .pwd-card {
-    background: linear-gradient(135deg, #f5f0ff 0%, #eef0ff 100%);
-    border: 1px solid #ddd6f5;
-    border-radius: 20px;
-    padding: 18px;
-    box-shadow: var(--shadow-sm);
-    display: flex; flex-direction: column;
-  }
-  .pwd-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-  .pwd-head .ico {
-    width: 44px; height: 44px; flex: 0 0 44px;
-    display: flex; align-items: center; justify-content: center;
-    background: #fff; border-radius: 12px; font-size: 20px;
-    box-shadow: var(--shadow-sm);
-  }
-  .pwd-head .lbl { font-size: 15px; font-weight: 700; color: var(--text); }
-  .pwd-head .lbl small { display: block; font-weight: 500; color: var(--muted); font-size: 12px; margin-top: 2px; }
-  .pwd-controls { display: flex; gap: 10px; margin-top: auto; }
-  .pwd-val {
-    flex: 1; background: #fff; border: 1px solid #ddd6f5; border-radius: 12px;
-    padding: 12px 14px; font-family: var(--mono); font-size: 13.5px; color: var(--text); font-weight: 600;
-    display: flex; align-items: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-  }
-  .pwd-val.masked { letter-spacing: 3px; }
-  .reveal-toggle {
-    flex: 0 0 auto; background: #fff; border: 1px solid var(--border);
-    border-radius: 12px; padding: 0 16px; font-size: 13px; font-weight: 600;
-    color: var(--violet); cursor: pointer; font-family: var(--sans);
-    transition: all .15s ease;
-  }
-  .reveal-toggle:hover { background: var(--violet); color: #fff; border-color: var(--violet); }
 
   /* ---------- Docs grid ---------- */
   .docs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
@@ -382,10 +350,12 @@
     <div class="svc-sub">hermes.nnn-cre.com</div>
   </a>
 
-  <a class="svc-card indigo" href="https://webui.nnn-cre.com/" target="_blank" rel="noopener">
-    <div class="svc-icon">🖥️</div>
-    <div class="svc-title">Hermes WebUI<span class="tag-new">NEW</span></div>
-    <div class="svc-sub">webui.nnn-cre.com</div>
+  <a class="svc-card indigo" href="https://crm.nnn-cre.com/" target="_blank" rel="noopener">
+    <div class="svc-icon logo-img round">
+      <img src="https://avatars.githubusercontent.com/u/119600397?v=4" alt="Twenty CRM">
+    </div>
+    <div class="svc-title">Twenty CRM<span class="tag-new">NEW</span></div>
+    <div class="svc-sub">crm.nnn-cre.com</div>
   </a>
 
   <a class="svc-card rose" href="https://hermes.nnn-cre.com/files" target="_blank" rel="noopener">
@@ -418,8 +388,8 @@
 
 </div>
 
-<!-- ============== UTILITIES (PATH & PASSWORD) ============== -->
-<div class="section-label">Access & Uploads</div>
+<!-- ============== UTILITIES (PATH) ============== -->
+<div class="section-label">Local Index & Uploads</div>
 <div class="util-grid">
   
   <!-- Upload Path -->
@@ -427,26 +397,12 @@
     <div class="head">
       <div class="ico">📤</div>
       <div class="ttl">Search-Tool Index File
-        <small>Local source — upload via File Manager</small>
+        <small>Local source — upload via File Manager after changes</small>
       </div>
     </div>
     <div class="path-row">
       <code id="indexPath">F:\Misc\hermes-oracle\CRM-Backbone\search-tool</code>
       <button class="copy-btn" id="copyPath">⧉ Copy</button>
-    </div>
-  </div>
-
-  <!-- WebUI Password -->
-  <div class="pwd-card">
-    <div class="pwd-head">
-      <div class="ico">🔐</div>
-      <div class="lbl">WebUI Password
-        <small>Tap show, then tap again to copy</small>
-      </div>
-    </div>
-    <div class="pwd-controls">
-      <div class="pwd-val masked" id="pwdVal">••••••••••••••••••••••••••••••</div>
-      <button class="reveal-toggle" id="revealBtn">Show</button>
     </div>
   </div>
 
@@ -493,7 +449,7 @@
     <div class="ref-row"><span class="k">Public IP</span><span class="v">129.159.38.178</span></div>
     <div class="ref-row"><span class="k">Hostname</span><span class="v">hermes-vnic</span></div>
     <div class="ref-row"><span class="k">Dashboard</span><span class="v">hermes.nnn-cre.com</span></div>
-    <div class="ref-row"><span class="k">WebUI</span><span class="v">webui.nnn-cre.com</span></div>
+    <div class="ref-row"><span class="k">CRM</span><span class="v">crm.nnn-cre.com</span></div>
     <div class="ref-row"><span class="k">Files</span><span class="v">hermes.nnn-cre.com/files</span></div>
     <div class="ref-row"><span class="k">SOS Search</span><span class="v">search.nnn-cre.com</span></div>
     <div class="ref-row"><span class="k">Dashboard port</span><span class="v">9119</span></div>
@@ -510,7 +466,7 @@
 
 <!-- ============== TIP ============== -->
 <div class="tip">
-  <b>Workflow tip:</b> After editing the search-tool index on your machine, copy the path above → open <b>File Manager</b> → re-upload the index file. Use the <b>Show</b> button on the WebUI password chip to reveal credentials when signing in.
+  <b>Workflow tip:</b> After editing the search-tool index on your machine, copy the path above → open <b>File Manager</b> → re-upload the index file to keep the dashboard synchronized.
 </div>
 
 <!-- ============== GITHUB EDIT LINK ============== -->
@@ -559,34 +515,6 @@
       copyBtn.classList.remove('copied');
       copyBtn.innerHTML = '⧉ Copy';
     }, 1800);
-  });
-
-  // ---- Reveal / copy password ----
-  const PWD = 'gaanTr5kg96cjMgoAufJ7bmbtWRHxDR7';
-  const pwdVal = document.getElementById('pwdVal');
-  const revealBtn = document.getElementById('revealBtn');
-  let revealed = false;
-
-  revealBtn.addEventListener('click', async (e) => {
-    if (!revealed) {
-      pwdVal.textContent = PWD;
-      pwdVal.classList.remove('masked');
-      revealBtn.textContent = 'Copy';
-      revealed = true;
-    } else {
-      try {
-        await navigator.clipboard.writeText(PWD);
-      } catch (_) {
-        const ta = document.createElement('textarea');
-        ta.value = PWD; ta.style.position = 'fixed'; ta.style.opacity = '0';
-        document.body.appendChild(ta); ta.select();
-        try { document.execCommand('copy'); } catch (_) {}
-        document.body.removeChild(ta);
-      }
-      showToast('Password copied to clipboard');
-      revealBtn.textContent = '✓';
-      setTimeout(() => { revealBtn.textContent = 'Copy'; }, 1500);
-    }
   });
 </script>
 
