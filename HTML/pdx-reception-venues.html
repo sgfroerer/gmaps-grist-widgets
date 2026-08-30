@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beyond the Clubhouse — Reception Venues Outside Portland</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap');
+
+  :root{
+    --forest:#1F3B2C;
+    --forest-deep:#152A1F;
+    --paper:#ECE9DA;
+    --paper-2:#F5F3E9;
+    --slate:#3D5A73;
+    --slate-deep:#2A4053;
+    --amber:#C1861F;
+    --clay:#8B4A3D;
+    --moss:#5C7A52;
+    --ink:#1B2620;
+    --ink-soft:#4B5750;
+    --line: rgba(27,38,32,0.14);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+
+  .eyebrow{
+    font-family:'Public Sans', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    font-size:0.68rem;
+    font-weight:700;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(255,255,255,0.06), transparent 55%),
+      linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 100%);
+    color:var(--paper-2);
+    padding:3.2rem 1.4rem 2.6rem;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute;
+    inset:auto 0 -1px 0;
+    height:44px;
+    background:var(--paper);
+    clip-path: polygon(0 100%, 0 40%, 4% 55%, 8% 30%, 12% 58%, 16% 20%, 20% 60%, 24% 35%, 28% 62%, 32% 15%, 36% 58%, 40% 40%, 44% 65%, 48% 25%, 52% 55%, 56% 32%, 60% 60%, 64% 18%, 68% 58%, 72% 42%, 76% 62%, 80% 20%, 84% 55%, 88% 38%, 92% 60%, 96% 30%, 100% 55%, 100% 100%);
+  }
+  .hero-eyebrow{color:var(--amber); margin-bottom:0.9rem; display:flex; align-items:center; gap:0.5rem;}
+  .hero-eyebrow .dash{width:22px; height:2px; background:var(--amber); display:inline-block;}
+  .hero h1{
+    font-size:2.35rem;
+    line-height:1.06;
+    margin:0 0 1rem;
+    max-width:15ch;
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--amber);
+  }
+  .hero p{
+    font-size:1rem;
+    line-height:1.6;
+    color:rgba(245,243,233,0.82);
+    max-width:46ch;
+    margin:0 0 1.4rem;
+  }
+  .hero-meta{
+    display:flex;
+    gap:1.4rem;
+    flex-wrap:wrap;
+    padding-top:1rem;
+    border-top:1px solid rgba(245,243,233,0.18);
+  }
+  .hero-meta .stat b{
+    display:block;
+    font-family:'Fraunces', serif;
+    font-size:1.5rem;
+    color:var(--paper-2);
+    font-weight:600;
+  }
+  .hero-meta .stat span{
+    font-size:0.72rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:rgba(245,243,233,0.6);
+  }
+
+  /* ---------- INTRO NOTE ---------- */
+  .intro{
+    padding:1.8rem 1.4rem 0.6rem;
+    max-width:640px;
+    margin:0 auto;
+  }
+  .intro p{
+    line-height:1.65;
+    color:var(--ink-soft);
+    font-size:0.96rem;
+  }
+  .intro p + p{margin-top:0.8rem;}
+
+  /* ---------- LEGEND / FILTERS ---------- */
+  .filters{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:var(--paper);
+    padding:0.9rem 1.4rem 0.8rem;
+    border-bottom:1px solid var(--line);
+    max-width:640px;
+    margin:0 auto;
+  }
+  .filters-row{
+    display:flex;
+    gap:0.5rem;
+    overflow-x:auto;
+    padding-bottom:0.2rem;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .filters-row::-webkit-scrollbar{display:none;}
+  .chip{
+    flex:0 0 auto;
+    font-family:'Public Sans', sans-serif;
+    font-size:0.78rem;
+    font-weight:600;
+    padding:0.5rem 0.9rem;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--paper-2);
+    color:var(--ink-soft);
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .chip.active{
+    background:var(--forest);
+    border-color:var(--forest);
+    color:var(--paper-2);
+  }
+
+  /* ---------- SECTION DIVIDERS (route motif) ---------- */
+  .route-divider{
+    max-width:640px;
+    margin:2.2rem auto 0.4rem;
+    padding:0 1.4rem;
+    display:flex;
+    align-items:center;
+    gap:0.8rem;
+  }
+  .route-divider svg{flex:0 0 auto;}
+  .route-divider .cat-label{
+    font-family:'Fraunces', serif;
+    font-size:1.15rem;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .route-divider .cat-sub{
+    display:block;
+    font-family:'Public Sans', sans-serif;
+    font-size:0.74rem;
+    color:var(--ink-soft);
+    font-weight:500;
+    margin-top:0.15rem;
+  }
+
+  /* ---------- CARDS ---------- */
+  .cards{
+    max-width:640px;
+    margin:0 auto;
+    padding:0.8rem 1.4rem 0.4rem;
+    display:flex;
+    flex-direction:column;
+    gap:1rem;
+  }
+  .card{
+    background:var(--paper-2);
+    border-radius:18px;
+    border:1px solid var(--line);
+    padding:1.15rem 1.15rem 1.25rem;
+    position:relative;
+    box-shadow:0 1px 0 rgba(27,38,32,0.03);
+  }
+  .card[data-cat]{border-left:4px solid var(--cat-color, var(--moss));}
+
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:0.8rem;
+    margin-bottom:0.55rem;
+  }
+  .card-title h3{
+    font-size:1.22rem;
+    margin:0 0 0.2rem;
+    line-height:1.15;
+  }
+  .card-title .loc{
+    font-size:0.8rem;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+
+  .dial{
+    flex:0 0 auto;
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    background:var(--forest);
+    color:var(--paper-2);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    line-height:1;
+    border:2px solid var(--cat-color, var(--moss));
+  }
+  .dial b{font-family:'Fraunces', serif; font-size:1.05rem; font-weight:600;}
+  .dial span{font-size:0.5rem; text-transform:uppercase; letter-spacing:0.06em; opacity:0.75; margin-top:2px;}
+
+  .vibe{
+    font-size:0.94rem;
+    line-height:1.55;
+    color:var(--ink);
+    margin:0.4rem 0 0.7rem;
+  }
+
+  .why{
+    background:rgba(193,134,31,0.1);
+    border-left:2px solid var(--amber);
+    padding:0.55rem 0.7rem;
+    border-radius:0 8px 8px 0;
+    font-size:0.86rem;
+    line-height:1.5;
+    color:var(--ink);
+    margin-bottom:0.75rem;
+  }
+  .why b{color:var(--clay); font-family:'Public Sans',sans-serif; text-transform:uppercase; font-size:0.68rem; letter-spacing:0.07em; display:block; margin-bottom:0.2rem;}
+
+  .facts{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.4rem 0.5rem;
+    margin-bottom:0.7rem;
+  }
+  .fact{
+    font-size:0.72rem;
+    font-weight:600;
+    color:var(--ink-soft);
+    background:var(--paper);
+    border:1px solid var(--line);
+    padding:0.28rem 0.55rem;
+    border-radius:7px;
+  }
+  .fact strong{color:var(--ink); font-weight:700;}
+
+  .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.35rem;
+  }
+  .tag{
+    font-size:0.68rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    color:var(--cat-color, var(--moss));
+    background:color-mix(in srgb, var(--cat-color, var(--moss)) 12%, transparent);
+    padding:0.22rem 0.5rem;
+    border-radius:5px;
+  }
+
+  .heads-up{
+    max-width:640px;
+    margin:1.6rem auto 0;
+    padding:1.1rem 1.4rem;
+  }
+  .heads-up .box{
+    background:var(--slate-deep);
+    color:var(--paper-2);
+    border-radius:16px;
+    padding:1.1rem 1.2rem;
+  }
+  .heads-up h4{
+    font-family:'Fraunces', serif;
+    font-size:1.02rem;
+    margin:0 0 0.5rem;
+    color:#fff;
+  }
+  .heads-up ul{
+    margin:0;
+    padding-left:1.1rem;
+    font-size:0.85rem;
+    line-height:1.6;
+    color:rgba(245,243,233,0.85);
+  }
+  .heads-up li + li{margin-top:0.3rem;}
+
+  footer{
+    max-width:640px;
+    margin:2rem auto 0;
+    padding:1.4rem 1.4rem 2.4rem;
+    text-align:center;
+  }
+  footer p{
+    font-size:0.76rem;
+    color:var(--ink-soft);
+    line-height:1.6;
+  }
+  footer .brand{
+    font-family:'Fraunces', serif;
+    font-size:0.95rem;
+    color:var(--ink);
+    margin-bottom:0.3rem;
+  }
+
+  .hidden{display:none !important;}
+
+  .card-img{
+    width:100%;
+    height:150px;
+    object-fit:cover;
+    border-radius:12px;
+    margin-bottom:0.8rem;
+    display:block;
+    background:var(--paper);
+  }
+  .site-link{
+    display:inline-flex;
+    align-items:center;
+    gap:0.3rem;
+    font-size:0.78rem;
+    font-weight:700;
+    color:var(--cat-color, var(--moss));
+    text-decoration:none;
+    border-bottom:1px solid currentColor;
+    padding-bottom:1px;
+    margin-top:0.15rem;
+  }
+  .site-link:hover{opacity:0.75;}
+
+  @media (min-width:640px){
+    .hero h1{font-size:2.8rem;}
+    .cards{padding-left:0; padding-right:0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow eyebrow"><span class="dash"></span>Field guide · Portland, OR radius</div>
+  <h1>Beyond the <em>clubhouse.</em></h1>
+  <p>Eleven reception venues within roughly 45–75 minutes of Portland — no fairways, no ballroom carpet, no "banquet hall beige." Vineyards carved into the Gorge, a barn under 200 vintage aircraft, a heart-shaped lavender field, a brewery on a bluff over the Columbia.</p>
+  <div class="hero-meta">
+    <div class="stat"><b>18</b><span>Venues scouted</span></div>
+    <div class="stat"><b>5</b><span>Distinct moods</span></div>
+    <div class="stat"><b>30–75</b><span>Minutes from PDX</span></div>
+  </div>
+</div>
+
+<div class="intro">
+  <p><strong>How this list works:</strong> every venue below is a genuine reception space (not just a ceremony backdrop), sits outside city limits, and skips the country-club script. Drive times are from downtown Portland in normal traffic — treat them as a ballpark, not a promise, especially anything routed through the Gorge on I-84. The last section is a different animal entirely: public river and county parks in the spirit of Carver, Milo McIver, and Champoeg, where you rent a shelter or field directly and bring in everything else yourself.</p>
+  <p>Each card has a quick read on vibe, capacity, and rough pricing, plus a note on what actually makes it <em>creative</em> rather than just "outdoorsy." Tap a category below to filter.</p>
+</div>
+
+<div class="filters">
+  <div class="filters-row" id="chipRow">
+    <button class="chip active" data-filter="all">All 11</button>
+    <button class="chip" data-filter="gorge">Gorge &amp; Water</button>
+    <button class="chip" data-filter="vine">Vineyard &amp; Wine Country</button>
+    <button class="chip" data-filter="farm">Farm &amp; Garden Whimsy</button>
+    <button class="chip" data-filter="museum">Museum &amp; Unexpected</button>
+    <button class="chip" data-filter="riverpark">River &amp; County Parks</button>
+  </div>
+</div>
+
+<!-- GORGE & WATER -->
+<div class="route-divider" data-section="gorge">
+  <svg width="34" height="20" viewBox="0 0 34 20" fill="none"><path d="M1 18 C 8 4, 14 18, 20 8 S 30 2, 33 10" stroke="#3D5A73" stroke-width="2" stroke-dasharray="1 4.5" stroke-linecap="round"/></svg>
+  <div><span class="cat-label">Gorge &amp; Water</span><span class="cat-sub">East on I-84 — cliffs, waterfalls, the Columbia below you</span></div>
+</div>
+<div class="cards" data-group="gorge">
+
+  <div class="card" data-cat="gorge" style="--cat-color:#3D5A73">
+    <img class="card-img" src="https://www.gorgesbeer.com/images/space-hilltop.jpg" alt="The open-air Hilltop venue at Gorges Beer Co. with a wedding tent and Columbia Gorge views" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Gorges Beer Co.</h3><div class="loc">Cascade Locks, OR</div></div>
+      <div class="dial"><b>30–40</b><span>min</span></div>
+    </div>
+    <p class="vibe">A three-story brewpub stacked on a bluff above the Columbia, with rooftop patios facing the Bridge of the Gods. Ceremonies happen on a one-acre hilltop lawn under an open-sided tent; the reception can spill across the taproom, mezzanine lounge, and rooftop bar, with shuffleboard and cornhole for the after-party.</p>
+    <div class="why"><b>Why it's creative</b>It's a working brewery, not a rented-out event barn — guests drink beer brewed on-site, and the couple can brew and can a custom batch for the wedding.</div>
+    <div class="facts">
+      <div class="fact"><strong>Up to 250</strong> guests (tent)</div>
+      <div class="fact">From <strong>~$2,000–$7,800</strong></div>
+      <div class="fact">Indoor + outdoor</div>
+    </div>
+    <div class="tags"><span class="tag">Brewery</span><span class="tag">River view</span><span class="tag">Casual</span></div>
+    <a class="site-link" href="https://www.gorgesbeer.com/weddings-events" target="_blank" rel="noopener">gorgesbeer.com/weddings-events ↗</a>
+  </div>
+
+  <div class="card" data-cat="gorge" style="--cat-color:#3D5A73">
+    <img class="card-img" src="https://static.wixstatic.com/media/b3fbaa_6f042170f838409ab1f0a79083d1d582~mv2.jpg/v1/crop/x_0,y_661,w_1067,h_762/fill/w_560,h_400,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/Krysta%20and%20Nick%20-%20A%2BB-79_websize.jpg" alt="The lakeside pavilion at Bridal Veil Lakes set up for a reception" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Bridal Veil Lakes</h3><div class="loc">Bridal Veil, OR</div></div>
+      <div class="dial"><b>30</b><span>min</span></div>
+    </div>
+    <p class="vibe">A three-acre spring-fed lake ringed by old-growth forest, just off the Historic Columbia River Highway near Multnomah Falls. Cocktail hour comes with canoes on the water; the reception moves into an open-air lakeside pavilion strung with lights.</p>
+    <div class="why"><b>Why it's creative</b>Guests get on the water — canoeing between the ceremony and reception is baked into the flow of the day, which turns cocktail hour into an actual activity instead of standing around a bar.</div>
+    <div class="facts">
+      <div class="fact"><strong>Up to 400</strong> seated</div>
+      <div class="fact">From <strong>~$3,000–$8,400</strong></div>
+      <div class="fact">Outdoor, covered pavilion</div>
+    </div>
+    <div class="tags"><span class="tag">Lakeside</span><span class="tag">Old growth</span><span class="tag">DIY-friendly</span></div>
+    <a class="site-link" href="https://www.bridalveillakes.com" target="_blank" rel="noopener">bridalveillakes.com ↗</a>
+  </div>
+
+  <div class="card" data-cat="gorge" style="--cat-color:#3D5A73">
+    <img class="card-img" src="https://images.squarespace-cdn.com/content/v1/65572db5a8eb9c1d3caebb21/557580b6-a866-4f45-8d75-0b50d8872580/tin-roof-1.jpg" alt="The century-old Tin Roof Barn in White Salmon, Washington" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Tin Roof Barn</h3><div class="loc">White Salmon, WA</div></div>
+      <div class="dial"><b>55–65</b><span>min</span></div>
+    </div>
+    <p class="vibe">A 100-year-old open-sided barn on the Washington side of the Gorge, surrounded by orchards and rolling fields. Custom farm tables and a mix of vintage dining chairs come with the rental; the layout keeps ceremony, cocktail pavilion, and reception close enough to flow easily but distinct enough to feel like separate chapters.</p>
+    <div class="why"><b>Why it's creative</b>It's genuinely a working orchard property, not a barn built for events — the patina and the mismatched vintage chairs are the real thing, not a styled rental package.</div>
+    <div class="facts">
+      <div class="fact">Farm tables included</div>
+      <div class="fact">Barn + courtyard + patio</div>
+      <div class="fact">Grateful Vineyard catering (or BYO)</div>
+    </div>
+    <div class="tags"><span class="tag">Barn</span><span class="tag">Orchard</span><span class="tag">Rustic</span></div>
+    <a class="site-link" href="https://www.tinroofbarn.com" target="_blank" rel="noopener">tinroofbarn.com ↗</a>
+  </div>
+
+</div>
+
+<!-- VINEYARD & WINE COUNTRY -->
+<div class="route-divider" data-section="vine">
+  <svg width="34" height="20" viewBox="0 0 34 20" fill="none"><path d="M1 18 C 8 4, 14 18, 20 8 S 30 2, 33 10" stroke="#C1861F" stroke-width="2" stroke-dasharray="1 4.5" stroke-linecap="round"/></svg>
+  <div><span class="cat-label">Vineyard &amp; Wine Country</span><span class="cat-sub">South into the Willamette Valley, or east across the river into Hood River</span></div>
+</div>
+<div class="cards" data-group="vine">
+
+  <div class="card" data-cat="vine" style="--cat-color:#C1861F">
+    <img class="card-img" src="https://images.squarespace-cdn.com/content/v1/5a03462ae5dd5b571fb3cb70/1514154570615-ZLCAI766PNQKN9P192G1/143-4-blainebethany-gorge-crest.jpg" alt="Gorge Crest Vineyards grounds with Mt. Hood in the distance" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Gorge Crest Vineyards</h3><div class="loc">Underwood, WA</div></div>
+      <div class="dial"><b>55–65</b><span>min</span></div>
+    </div>
+    <p class="vibe">An award-winning estate winery on the Washington bluffs, built around one of the most unobstructed views of Mt. Hood in the region. Vows happen on a lawn facing the mountain, dinner and dancing move into a finished barn with a stone fireplace, and getting-ready suites sit upstairs for both parties.</p>
+    <div class="why"><b>Why it's creative</b>Both the ceremony and reception face the same mountain view — no awkward shuttle between a pretty spot for photos and a plain room for dinner. Estate wine is poured all night.</div>
+    <div class="facts">
+      <div class="fact">Rental <strong>~$8,000–$8,500</strong></div>
+      <div class="fact">11 hrs incl. setup</div>
+      <div class="fact">Lavender fields + orchard for portraits</div>
+    </div>
+    <div class="tags"><span class="tag">Vineyard</span><span class="tag">Mt. Hood view</span><span class="tag">Barn</span></div>
+    <a class="site-link" href="https://www.gorgecrest.com" target="_blank" rel="noopener">gorgecrest.com ↗</a>
+  </div>
+
+  <div class="card" data-cat="vine" style="--cat-color:#C1861F">
+    <img class="card-img" src="https://saffronfields.com/wp-content/uploads/2022/05/Saffron-Fields_20130918_722.jpg" alt="The modern tasting room and hospitality center at Saffron Fields Vineyard" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Saffron Fields Vineyard</h3><div class="loc">Carlton, OR</div></div>
+      <div class="dial"><b>60</b><span>min</span></div>
+    </div>
+    <p class="vibe">The anti-barn: an ultra-modern tasting room with a sloped roof and floor-to-ceiling glass, overlooking a Japanese garden and rows of vines. The building doubles as a private fine-art gallery, so guests are dining among an actual curated collection rather than string-light decor.</p>
+    <div class="why"><b>Why it's creative</b>If "rustic" isn't the goal, this is the sharpest architectural alternative in wine country — clean modern lines, a real art collection, and a fire pit patio for the after-dinner wind-down.</div>
+    <div class="facts">
+      <div class="fact"><strong>Up to 150</strong> guests</div>
+      <div class="fact">Indoor + patio</div>
+      <div class="fact">Fire pit cocktail hour</div>
+    </div>
+    <div class="tags"><span class="tag">Modern</span><span class="tag">Art gallery</span><span class="tag">Wine country</span></div>
+    <a class="site-link" href="https://saffronfields.com/plan-your-event/" target="_blank" rel="noopener">saffronfields.com ↗</a>
+  </div>
+
+  <div class="card" data-cat="vine" style="--cat-color:#C1861F">
+    <img class="card-img" src="https://abbeyroadfarm.com/wp-content/uploads/2023/08/jesky-smith_orig.jpeg" alt="The grain silos and gardens at Abbey Road Farm" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Abbey Road Farm</h3><div class="loc">Carlton, OR</div></div>
+      <div class="dial"><b>60</b><span>min</span></div>
+    </div>
+    <p class="vibe">A working, solar-powered farm right next to the Trappist Abbey in Yamhill County — rolling farmland, a working vineyard, and event barns built specifically for weddings rather than retrofitted from storage.</p>
+    <div class="why"><b>Why it's creative</b>The neighbor is a functioning monastery — the bells, the quiet, and the genuinely rural setting give it a different emotional register than a polished tasting-room wedding.</div>
+    <div class="facts">
+      <div class="fact">Working farm setting</div>
+      <div class="fact">Sustainable / solar powered</div>
+      <div class="fact">Indoor barn + grounds</div>
+    </div>
+    <div class="tags"><span class="tag">Farm</span><span class="tag">Yamhill County</span><span class="tag">Sustainable</span></div>
+    <a class="site-link" href="https://abbeyroadfarm.com/weddings-and-events/weddings/" target="_blank" rel="noopener">abbeyroadfarm.com ↗</a>
+  </div>
+
+  <div class="card" data-cat="vine" style="--cat-color:#C1861F">
+    <img class="card-img" src="https://images.squarespace-cdn.com/content/v1/559c34dfe4b0ffc53d0935c1/1437582168991-0KD8XEQQNRJFTZU86P7H/jhp_0337-min.jpg" alt="The 20-foot-ceiling ballroom and patio at Zenith Vineyard" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Zenith Vineyard</h3><div class="loc">Eola-Amity Hills, near Salem, OR</div></div>
+      <div class="dial"><b>60–70</b><span>min</span></div>
+    </div>
+    <p class="vibe">A ballroom with 20-foot ceilings set into the rolling Eola-Amity Hills, with acres of grounds to wander during cocktail hour. Both indoor and outdoor reception setups are available, which makes it one of the more weather-proof wine-country options.</p>
+    <div class="why"><b>Why it's creative</b>The scale is unusual for a vineyard venue — the tall, light-filled ballroom reads more like a modern great hall than a typical tasting room, good for a larger guest list that still wants a wine-country backdrop.</div>
+    <div class="facts">
+      <div class="fact"><strong>100+</strong> guests comfortably</div>
+      <div class="fact">Onsite catering, tables, chairs</div>
+      <div class="fact">Indoor / outdoor, year-round</div>
+    </div>
+    <div class="tags"><span class="tag">Vineyard</span><span class="tag">Ballroom</span><span class="tag">Large groups</span></div>
+    <a class="site-link" href="https://www.zenithvineyard.com/weddings" target="_blank" rel="noopener">zenithvineyard.com ↗</a>
+  </div>
+
+</div>
+
+<!-- FARM & GARDEN WHIMSY -->
+<div class="route-divider" data-section="farm">
+  <svg width="34" height="20" viewBox="0 0 34 20" fill="none"><path d="M1 18 C 8 4, 14 18, 20 8 S 30 2, 33 10" stroke="#5C7A52" stroke-width="2" stroke-dasharray="1 4.5" stroke-linecap="round"/></svg>
+  <div><span class="cat-label">Farm &amp; Garden Whimsy</span><span class="cat-sub">South and west — Canby, Hillsboro, the Salem hills</span></div>
+</div>
+<div class="cards" data-group="farm">
+
+  <div class="card" data-cat="farm" style="--cat-color:#5C7A52">
+    <img class="card-img" src="https://lh3.googleusercontent.com/sitesv/AG8ngQWL60kZmRsuUTFYUgtDpfho26W_CzCGQLSgmG9d74H-u9pYcJoJSb2uAUMHLSx8fQzs2TooGoXxU5JvgqnnjpIx37pkMDIBMSuJtHgPDbdn-YR1HDQoYUpVJJcLsNuluYBKZkEmO__t6hX2tK1Z3hOwsF1r3IWUe_qrgpxSghXv7JIHQmqStLFxtVN3a61F6jXIgCfccAxrl9P2Uwi3Tczb9zAVtSoTs_ZzugtcCBg=w1280" alt="Wooded garden grounds at Lavender Owl Farm in Canby, Oregon" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Lavender Owl Farm</h3><div class="loc">Canby, OR</div></div>
+      <div class="dial"><b>45</b><span>min</span></div>
+    </div>
+    <p class="vibe">Twenty-one private acres of mature maple, oak, and cedar with a flower-bordered wedding garden and a courtyard for dinner and dancing. It also happens to have a 9-basket disc golf course, a vintage tractor, hidden hammocks, and — no exaggeration — a giant robot statue tucked into the grounds.</p>
+    <div class="why"><b>Why it's creative</b>It's earnestly quirky rather than styled-quirky: the owners built the disc golf course themselves and keep adding oddball details, so it feels like a family property with personality, not a rented backdrop.</div>
+    <div class="facts">
+      <div class="fact"><strong>Up to 80</strong> seated</div>
+      <div class="fact">From <strong>~$2,500–$3,000</strong></div>
+      <div class="fact">Overnight lodging (B&amp;B)</div>
+    </div>
+    <div class="tags"><span class="tag">Farm</span><span class="tag">Lavender</span><span class="tag">Quirky</span></div>
+    <a class="site-link" href="https://www.lavenderowlfarm.com" target="_blank" rel="noopener">lavenderowlfarm.com ↗</a>
+  </div>
+
+  <div class="card" data-cat="farm" style="--cat-color:#5C7A52">
+    <img class="card-img" src="https://static.wixstatic.com/media/a8f067_3c86f15355d84309888514536599aa2b~mv2.jpeg/v1/fill/w_1909,h_1087,al_c/a8f067_3c86f15355d84309888514536599aa2b~mv2.jpeg" alt="Garden grounds at Oakwood Gardens alpaca farm in Hillsboro, Oregon" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Oakwood Gardens</h3><div class="loc">Hillsboro, OR</div></div>
+      <div class="dial"><b>30–35</b><span>min</span></div>
+    </div>
+    <p class="vibe">Seventy acres near the Willamette Valley wineries, built around one of the country's first alpaca ranches. The reception space, Camp Atfalati, sits by a natural pond with a pergola and a footbridge over the Tualatin River — and yes, guests can mingle with the alpacas during cocktail hour.</p>
+    <div class="why"><b>Why it's creative</b>Live alpacas as part of the guest experience is not a metaphor — it's a literal, photograph-ready novelty that costs nothing extra and that no one at the reception will forget.</div>
+    <div class="facts">
+      <div class="fact">Pond + footbridge setting</div>
+      <div class="fact">Alpaca ranch on-site</div>
+      <div class="fact">Indoor hall + expansive lawn</div>
+    </div>
+    <div class="tags"><span class="tag">Alpacas</span><span class="tag">Riverside</span><span class="tag">Closest option</span></div>
+    <a class="site-link" href="https://www.oakwoodgardensestate.com/" target="_blank" rel="noopener">oakwoodgardensestate.com ↗</a>
+  </div>
+
+  <div class="card" data-cat="farm" style="--cat-color:#5C7A52">
+    <img class="card-img" src="https://happimiss.com/cdn/shop/files/Hailee_Rawson_Photo_Oregon_Wedding_Photographer-00928.jpg?v=1783908997&width=1500" alt="A couple at the heart-shaped lavender garden at HappiMiss, Salem, Oregon" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>HappiMiss Lavender Garden</h3><div class="loc">South hills of Salem, OR</div></div>
+      <div class="dial"><b>55–65</b><span>min</span></div>
+    </div>
+    <p class="vibe">Part of a private 100-acre family estate, newly opened as a venue: a heart-shaped lavender garden on a hilltop with sweeping views in every direction. It's intimate, freshly built, and not yet the default "everyone's been there" wine-country stop.</p>
+    <div class="why"><b>Why it's creative</b>The garden itself is planted in a heart shape — the "concept" is literally built into the landscaping, and being newly opened means less-crowded photos and a genuinely personal welcome from the family that owns it.</div>
+    <div class="facts">
+      <div class="fact">Newly opened, 2026</div>
+      <div class="fact">Hilltop, 360° views</div>
+      <div class="fact">Outdoor ceremony + reception</div>
+    </div>
+    <div class="tags"><span class="tag">Lavender</span><span class="tag">New venue</span><span class="tag">Hilltop</span></div>
+    <a class="site-link" href="https://happimiss.com/pages/lavender-garden-wedding-venue" target="_blank" rel="noopener">happimiss.com ↗</a>
+  </div>
+
+</div>
+
+<!-- MUSEUM & UNEXPECTED -->
+<div class="route-divider" data-section="museum">
+  <svg width="34" height="20" viewBox="0 0 34 20" fill="none"><path d="M1 18 C 8 4, 14 18, 20 8 S 30 2, 33 10" stroke="#8B4A3D" stroke-width="2" stroke-dasharray="1 4.5" stroke-linecap="round"/></svg>
+  <div><span class="cat-label">Museum &amp; Unexpected</span><span class="cat-sub">The one that isn't outdoorsy at all</span></div>
+</div>
+<div class="cards" data-group="museum">
+
+  <div class="card" data-cat="museum" style="--cat-color:#8B4A3D">
+    <img class="card-img" src="https://evergreenevents.com/wp-content/uploads/2024/04/LDP2-9721.webp" alt="Reception space at Evergreen Events, McMinnville, Oregon" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Evergreen Aviation &amp; Space Museum</h3><div class="loc">McMinnville, OR</div></div>
+      <div class="dial"><b>55–65</b><span>min</span></div>
+    </div>
+    <p class="vibe">A 300-acre campus built around Howard Hughes's "Spruce Goose" and 200+ historic aircraft. The ceremony happens in the Lodge — a large timber building with a chandelier and steeple-shaped roofline — and the reception can spill onto the museum mezzanine, surrounded by full-size vintage planes and space exhibits.</p>
+    <div class="why"><b>Why it's creative</b>There is no other venue on this list where the centerpiece decor is an actual flying boat with a 320-foot wingspan. It's the single most photograph-defining choice here, and it's genuinely unlike anything else in the region.</div>
+    <div class="facts">
+      <div class="fact"><strong>Up to 450</strong> guests</div>
+      <div class="fact">12-hr access incl. setup</div>
+      <div class="fact">In-house catering &amp; coordination</div>
+    </div>
+    <div class="tags"><span class="tag">Museum</span><span class="tag">Aviation</span><span class="tag">Statement venue</span></div>
+    <a class="site-link" href="https://evergreenevents.com/weddings-receptions/" target="_blank" rel="noopener">evergreenevents.com ↗</a>
+  </div>
+
+</div>
+
+<!-- RIVER & COUNTY PARKS -->
+<div class="route-divider" data-section="riverpark">
+  <svg width="34" height="20" viewBox="0 0 34 20" fill="none"><path d="M1 18 C 8 4, 14 18, 20 8 S 30 2, 33 10" stroke="#3A6B63" stroke-width="2" stroke-dasharray="1 4.5" stroke-linecap="round"/></svg>
+  <div><span class="cat-label">River &amp; County Parks</span><span class="cat-sub">Public day-use parks — bring your own everything, pay a fraction of the price</span></div>
+</div>
+<div class="intro" style="padding-top:0.4rem; padding-bottom:0;">
+  <p>A different category entirely: county and state day-use parks along the Clackamas, Molalla, Sandy, and Willamette rivers, in the spirit of Carver Park, Milo McIver near Estacada, and Champoeg. These aren't run by wedding coordinators — you reserve a picnic shelter or event field directly through the county or state park system, bring your own caterer, rentals, and decor, and the "venue fee" is often under $500. The tradeoff for the price is real: no indoor backup, no staff on-site, and shelters are shared park infrastructure, not private estates.</p>
+</div>
+<div class="cards" data-group="riverpark">
+
+  <div class="card" data-cat="riverpark" style="--cat-color:#3A6B63">
+    <img class="card-img" src="https://www.clackamas.us/sites/default/files/2026-04/banner_barton.jpg" alt="Barton Park along the Clackamas River" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Barton Park</h3><div class="loc">Boring, OR</div></div>
+      <div class="dial"><b>30</b><span>min</span></div>
+    </div>
+    <p class="vibe">A Clackamas County park directly on the Clackamas River, with a dedicated 50'×70' Event Area plus three sheltered and three unsheltered picnic sites. This is the closest thing on the list to a purpose-built "reception field" inside a public park.</p>
+    <div class="why"><b>Why it's creative</b>The rental fee is genuinely around $220 for up to 12 hours, refundable deposit included — river-view real estate at a fraction of any private venue, if you're comfortable running the whole event yourself.</div>
+    <div class="facts">
+      <div class="fact"><strong>~$220</strong> event area rental</div>
+      <div class="fact">Riverside, open lawn</div>
+      <div class="fact">BYO everything</div>
+    </div>
+    <div class="tags"><span class="tag">County park</span><span class="tag">Budget</span><span class="tag">River</span></div>
+    <a class="site-link" href="https://www.clackamas.us/parks/barton" target="_blank" rel="noopener">clackamas.us/parks/barton ↗</a>
+  </div>
+
+  <div class="card" data-cat="riverpark" style="--cat-color:#3A6B63">
+    <img class="card-img" src="https://www.clackamas.us/sites/default/files/2026-04/banner_carver_0.jpg" alt="Carver Park where Clear Creek meets the Clackamas River" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Carver Park</h3><div class="loc">Carver, OR</div></div>
+      <div class="dial"><b>30–35</b><span>min</span></div>
+    </div>
+    <p class="vibe">A smaller, quieter county day-use park right where Clear Creek meets the Clackamas River — mostly known as a boat-launch and fishing spot, which means it stays uncrowded for a smaller gathering or a cocktail-hour-style reception on the water.</p>
+    <div class="why"><b>Why it's creative</b>It's the most low-key, least "wedding-scene" option here — a genuine local river-access park rather than anything styled for events, good for couples who want the day to feel unfussy.</div>
+    <div class="facts">
+      <div class="fact">Confluence setting</div>
+      <div class="fact">Boat ramp + day use</div>
+      <div class="fact">Call county for group rates</div>
+    </div>
+    <div class="tags"><span class="tag">County park</span><span class="tag">Quiet</span><span class="tag">River</span></div>
+    <a class="site-link" href="https://www.clackamas.us/parks/carver" target="_blank" rel="noopener">clackamas.us/parks/carver ↗</a>
+  </div>
+
+  <div class="card" data-cat="riverpark" style="--cat-color:#3A6B63">
+    <img class="card-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Milo%20McIver%20SP%20Clackamas.jpg" alt="Milo McIver State Park on the Clackamas River near Estacada" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Milo McIver State Park</h3><div class="loc">Estacada, OR</div></div>
+      <div class="dial"><b>45</b><span>min</span></div>
+    </div>
+    <p class="vibe">A big state park along the Clackamas River and the calmer Estacada Lake, with reservable group picnic shelters, a 27-hole disc golf course, hiking and horse trails, and Mt. Hood and Mt. St. Helens both visible from the viewpoint on a clear day.</p>
+    <div class="why"><b>Why it's creative</b>Enough acreage and activities (disc golf, the lake, the fish hatchery) to turn the reception into a genuine day-long gathering rather than a few hours in a rented room.</div>
+    <div class="facts">
+      <div class="fact">Reservable shelters</div>
+      <div class="fact">Lake + river + disc golf</div>
+      <div class="fact">Day-use parking permit required</div>
+    </div>
+    <div class="tags"><span class="tag">State park</span><span class="tag">Lake view</span><span class="tag">Active</span></div>
+    <a class="site-link" href="https://stateparks.oregon.gov/index.cfm?do=park.profile&parkId=102" target="_blank" rel="noopener">stateparks.oregon.gov ↗</a>
+  </div>
+
+  <div class="card" data-cat="riverpark" style="--cat-color:#3A6B63">
+    <img class="card-img" src="https://www.clackamas.us/sites/default/files/2026-04/banner_metzler.jpg" alt="Metzler Park forest along Clear Creek near Estacada" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Metzler Park</h3><div class="loc">Estacada, OR</div></div>
+      <div class="dial"><b>50</b><span>min</span></div>
+    </div>
+    <p class="vibe">Five miles south of Estacada along Clear Creek, under towering Douglas-fir and western red cedar. A suspension bridge crosses the creek into the trail network, and the park has a genuinely isolated, deep-woods feel despite the short drive.</p>
+    <div class="why"><b>Why it's creative</b>The suspension bridge and old-growth canopy give it a storybook-forest backdrop that no styled barn can fake — and it's one of the least-known parks on this list.</div>
+    <div class="facts">
+      <div class="fact">Reservable picnic shelters</div>
+      <div class="fact">Suspension bridge + trails</div>
+      <div class="fact">Deep forest, Clear Creek</div>
+    </div>
+    <div class="tags"><span class="tag">County park</span><span class="tag">Forest</span><span class="tag">Secluded</span></div>
+    <a class="site-link" href="https://www.clackamas.us/parks/metzler" target="_blank" rel="noopener">clackamas.us/parks/metzler ↗</a>
+  </div>
+
+  <div class="card" data-cat="riverpark" style="--cat-color:#3A6B63">
+    <img class="card-img" src="https://www.clackamas.us/sites/default/files/2026-04/banner_feyrer.jpg" alt="Feyrer Park along the Molalla River" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Feyrer Park</h3><div class="loc">Molalla, OR</div></div>
+      <div class="dial"><b>55–60</b><span>min</span></div>
+    </div>
+    <p class="vibe">A riverside county park on the Molalla River, with two sheltered and one unsheltered reservable picnic area, natural swimming holes, and a rope swing just downstream — the furthest-out, most small-town option on this list.</p>
+    <div class="why"><b>Why it's creative</b>It has the least "Portland wedding industry" feel of anywhere here — a real local river-swimming-hole park, good for a couple who wants the day to feel like a family reunion at the river rather than a produced event.</div>
+    <div class="facts">
+      <div class="fact">Reservable riverside shelters</div>
+      <div class="fact">Swimming holes nearby</div>
+      <div class="fact">Molalla River corridor</div>
+    </div>
+    <div class="tags"><span class="tag">County park</span><span class="tag">Swimming hole</span><span class="tag">Rural</span></div>
+    <a class="site-link" href="https://www.clackamas.us/parks/feyrer" target="_blank" rel="noopener">clackamas.us/parks/feyrer ↗</a>
+  </div>
+
+  <div class="card" data-cat="riverpark" style="--cat-color:#3A6B63">
+    <img class="card-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Champoeg%20State%20Park%20museum.JPG" alt="Historic museum building at Champoeg State Heritage Area" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Champoeg State Heritage Area</h3><div class="loc">St. Paul, OR</div></div>
+      <div class="dial"><b>40–45</b><span>min</span></div>
+    </div>
+    <p class="vibe">A historic riverside park on the Willamette — site of the 1843 vote that formed Oregon's first provisional government — with four covered group picnic areas, open meadows, an 18-hole disc golf course, and the restored 1852 Newell House and pioneer museum grounds next door.</p>
+    <div class="why"><b>Why it's creative</b>It's the one park option with genuine historical weight — forest, fields, and a museum-grade backdrop, and it borders Newell Pioneer Village if you want a small paid ceremony space instead of a fully DIY setup.</div>
+    <div class="facts">
+      <div class="fact">4 covered group areas</div>
+      <div class="fact">Willamette riverfront</div>
+      <div class="fact">Historic site + museums</div>
+    </div>
+    <div class="tags"><span class="tag">State park</span><span class="tag">Historic</span><span class="tag">Riverfront</span></div>
+    <a class="site-link" href="https://stateparks.oregon.gov/index.cfm?do=park.profile&parkId=79" target="_blank" rel="noopener">stateparks.oregon.gov ↗</a>
+  </div>
+
+  <div class="card" data-cat="riverpark" style="--cat-color:#3A6B63">
+    <img class="card-img" src="https://commons.wikimedia.org/wiki/Special:FilePath/Oxbow%20Park1.JPG" alt="Oxbow Regional Park along the Sandy River" loading="lazy">
+    <div class="card-top">
+      <div class="card-title"><h3>Oxbow Regional Park</h3><div class="loc">Gresham / Springdale, OR</div></div>
+      <div class="dial"><b>45</b><span>min</span></div>
+    </div>
+    <p class="vibe">A 1,000-acre Metro park wrapped around a bend of the Wild and Scenic Sandy River, with five spacious reservable picnic shelters (each with a grill, horseshoe pit, and turf play area) and a loop through one of the closest true old-growth forests to Portland.</p>
+    <div class="why"><b>Why it's creative</b>The "Ancient Forest" loop is real old growth, not a planted grove — the most genuinely wild backdrop of any option on this whole page. Note: no dogs allowed, and alcohol requires a separate $225 permit.</div>
+    <div class="facts">
+      <div class="fact">5 reservable shelters</div>
+      <div class="fact">Old-growth forest loop</div>
+      <div class="fact">$5/vehicle parking + shelter fee</div>
+    </div>
+    <div class="tags"><span class="tag">Metro park</span><span class="tag">Old growth</span><span class="tag">Wild &amp; Scenic river</span></div>
+    <a class="site-link" href="https://www.oregonmetro.gov/places/oxbow-regional-park" target="_blank" rel="noopener">oregonmetro.gov ↗</a>
+  </div>
+
+</div>
+
+<div class="heads-up">
+  <div class="box">
+    <h4>Before you fall in love with one</h4>
+    <ul>
+      <li>Gorge routes (I-84 east) get materially slower on summer weekends and during waterfall-corridor traffic — pad 15–20 min either way if you're booking a Saturday in July or August.</li>
+      <li>Nearly all of these are seasonal or weather-dependent for the ceremony piece — confirm the indoor backup plan (barn, lodge, tent) before you book, even if you're set on an outdoor vow exchange.</li>
+      <li>Farm and vineyard venues almost always require an outside caterer and rentals; brewery and museum venues (Gorges, Evergreen) tend to bundle catering in-house — worth factoring into your total budget comparison, not just the site fee.</li>
+      <li>Book a tour before signing anything — several of these (HappiMiss, Tin Roof Barn) are newer or smaller operations where photos online may lag the current state of the grounds.</li>
+      <li>For the county and state parks: reservations open months out and the best shelters go fast for summer Saturdays, alcohol usually needs a separate permit, there's no indoor backup or on-site staff, and the park stays open to the public around you — it's a real park, not a private rental.</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <div class="brand">Beyond the Clubhouse</div>
+  <p>Compiled from current venue listings and wedding-industry directories, August 2026. Drive times are estimates from downtown Portland — always confirm against your actual starting point and travel day. Pricing reflects publicly listed ranges and can change with season, guest count, and package.</p>
+</footer>
+
+<script>
+  const chips = document.querySelectorAll('.chip');
+  const groups = document.querySelectorAll('.cards');
+  const dividers = document.querySelectorAll('.route-divider');
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const f = chip.dataset.filter;
+
+      groups.forEach(g => {
+        g.classList.toggle('hidden', !(f === 'all' || g.dataset.group === f));
+      });
+      dividers.forEach(d => {
+        d.classList.toggle('hidden', !(f === 'all' || d.dataset.section === f));
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
